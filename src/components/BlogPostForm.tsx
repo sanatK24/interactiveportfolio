@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useFileUpload } from '../hooks/useFileUpload';
+import { Editor } from '@tinymce/tinymce-react';
 
 interface BlogPostFormProps {
   onSuccess?: () => void;
@@ -85,12 +86,22 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         <label className="block text-sm font-medium text-gray-700">
           Content
         </label>
-        <textarea
+        <Editor
+          apiKey="your-tinymce-api-key"
+          init={{
+            height: 500,
+            menubar: true,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar: 'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help'
+          }}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          rows={10}
-          required
+          onEditorChange={(content) => setContent(content)}
         />
       </div>
 
@@ -102,11 +113,11 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           type="file"
           accept="image/png,image/jpeg,image/webp"
           onChange={(e) => {
-            if (e.target.files?.[0]) {
+            if (e.target.files && e.target.files[0]) {
               setThumbnail(e.target.files[0]);
             }
           }}
-          className="mt-1 block w-full"
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
       </div>
 
@@ -117,7 +128,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Creating...' : 'Create Post'}
       </button>
