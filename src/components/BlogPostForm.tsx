@@ -30,16 +30,43 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
     setError(null);
 
     try {
+      // Check authentication
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        throw new Error('You must be logged in to create a blog post');
+      }
+
+      if (!title.trim()) {
+        throw new Error('Title is required');
+      }
+
       let thumbnailUrl = '';
       if (thumbnail) {
         const uploadResult = await uploadFile(thumbnail, 'blog');
         if (uploadResult.error) {
-          throw new Error('Failed to upload thumbnail');
+          throw new Error('Failed to upload thumbnail: ' + uploadResult.error.message);
         }
         thumbnailUrl = uploadResult.url || '';
       }
 
       const slug = generateSlug(title);
+
+      // First check if slug exists
+      const { data: existingPost, error: checkError } = await supabase
+        .from('blog_posts')
+        .select('id')
+        .eq('slug', slug)
+        .single();
+
+      if (checkError) {
+        if (checkError.code === 'PGRST116') {
+          throw new Error('A post with this title already exists. Please choose a different title.');
+        }
+        throw checkError;
+      }
+      if (existingPost) {
+        throw new Error('A post with this title already exists. Please choose a different title.');
+      }
 
       const { error: createError } = await supabase
         .from('blog_posts')
@@ -50,15 +77,20 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           thumbnail_url: thumbnailUrl,
           slug,
           is_published: true
-        });
+        })
+        .select();
 
-      if (createError) throw createError;
+      if (createError) {
+        console.error('Create error:', createError);
+        throw new Error(createError.message || 'Failed to create blog post');
+      }
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create blog post');
+      console.error('Blog post creation failed:', err);
     } finally {
       setLoading(false);
     }
