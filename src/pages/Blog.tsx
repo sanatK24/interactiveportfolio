@@ -1,30 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useBlogPosts } from '../hooks/useBlogPosts';
 import { supabase } from '../lib/supabase';
 
 const BlogPage: React.FC = () => {
   const { posts, loading, error, sortOrder, setSortOrder } = useBlogPosts();
-  const [postsState, setPosts] = useState(posts);
-  const [loadingState, setLoading] = useState(loading);
-  const [errorState, setError] = useState(error);
-
-  const fetchPosts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setPosts(data || []);
-    } catch (err) {
-      console.error('Error fetching blog posts:', err);
-      setError('Failed to fetch blog posts');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handlePublish = async (postId: string) => {
     try {
@@ -34,17 +14,12 @@ const BlogPage: React.FC = () => {
         .eq('id', postId);
       
       if (error) throw error;
-      fetchPosts();
     } catch (err) {
       console.error('Error publishing post:', err);
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  if (loadingState) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -52,10 +27,10 @@ const BlogPage: React.FC = () => {
     );
   }
 
-  if (errorState) {
+  if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-red-500">{errorState}</p>
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
@@ -79,7 +54,7 @@ const BlogPage: React.FC = () => {
       </div>
 
       <div className="space-y-8">
-        {postsState.map((post) => (
+        {posts.map((post) => (
           <motion.div
             key={post.id}
             className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
