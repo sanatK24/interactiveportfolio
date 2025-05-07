@@ -87,7 +87,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           Content
         </label>
         <Editor
-          apiKey="your-tinymce-api-key"
+          apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
           init={{
             height: 500,
             menubar: true,
