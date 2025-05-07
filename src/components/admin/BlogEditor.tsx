@@ -45,20 +45,29 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
         thumbnailUrl = result.url!;
       }
 
+      const currentPost = post || {
+        id: null,
+        title: formData.title,
+        content: formData.content,
+        excerpt: formData.excerpt,
+        thumbnail_url: thumbnailUrl,
+        published_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
       const { error } = await supabase
         .from('blog_posts')
-        .upsert({
-          id: post?.id,
-          title: formData.title,
-          content: formData.content,
-          excerpt: formData.excerpt,
-          thumbnail_url: thumbnailUrl,
-          published_at: new Date().toISOString()
-        });
+        .upsert(currentPost);
 
       if (error) throw error;
       toast.success(post ? 'Post updated successfully' : 'Post created successfully');
       onClose();
+      
+      // Notify parent component about the update
+      if (onClose instanceof Function) {
+        onClose();
+      }
     } catch (error) {
       toast.error('Failed to save post');
     }

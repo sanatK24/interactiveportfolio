@@ -4,6 +4,13 @@ import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
 import BlogEditor from '../../components/admin/BlogEditor';
 
+enum SortOrder {
+  Newest = 'newest',
+  Oldest = 'oldest',
+  TitleAsc = 'title_asc',
+  TitleDesc = 'title_desc'
+}
+
 type BlogPost = {
   id: string;
   title: string;
@@ -22,20 +29,37 @@ const AdminBlog: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Newest);
 
   useEffect(() => {
     fetchBlogPosts();
-  }, []);
+  }, [sortOrder]);
 
   const fetchBlogPosts = async () => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('*')
-        .order('published_at', { ascending: false });
+        .select('*');
 
       if (error) throw error;
-      setBlogPosts(data || []);
+      
+      let sortedPosts = data || [];
+      switch (sortOrder) {
+        case SortOrder.Newest:
+          sortedPosts.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+          break;
+        case SortOrder.Oldest:
+          sortedPosts.sort((a, b) => new Date(a.published_at).getTime() - new Date(b.published_at).getTime());
+          break;
+        case SortOrder.TitleAsc:
+          sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case SortOrder.TitleDesc:
+          sortedPosts.sort((a, b) => b.title.localeCompare(a.title));
+          break;
+      }
+
+      setBlogPosts(sortedPosts);
     } catch (error) {
       addToast({
         type: 'error',
@@ -90,7 +114,19 @@ const AdminBlog: React.FC = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">Blog Posts</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-semibold">Blog Posts</h2>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            >
+              <option value={SortOrder.Newest}>Newest First</option>
+              <option value={SortOrder.Oldest}>Oldest First</option>
+              <option value={SortOrder.TitleAsc}>Title A-Z</option>
+              <option value={SortOrder.TitleDesc}>Title Z-A</option>
+            </select>
+          </div>
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
             onClick={handleAddPost}
@@ -125,16 +161,16 @@ const AdminBlog: React.FC = () => {
                 <h3 className="text-xl font-semibold">{post.title}</h3>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => deleteBlogPost(post.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
-                  <button
                     onClick={() => handleEditPost(post)}
                     className="text-blue-500 hover:text-blue-700"
                   >
                     Edit
+                  </button>
+                  <button
+                    onClick={() => deleteBlogPost(post.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
