@@ -3,12 +3,12 @@ import { supabase } from '../lib/supabase';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { Editor } from '@tinymce/tinymce-react';
 
-const generateSlug = (title: string): string => {
-  return title
+const generateSlug = (title: string, timestamp = Date.now()): string => {
+  return `${title
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+|-+$/g, '')}-${timestamp}`;
 };
 
 interface BlogPostFormProps {
@@ -49,7 +49,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         thumbnailUrl = uploadResult.url || '';
       }
 
-      const slug = generateSlug(title);
+      // Generate a unique slug with timestamp
+      let slug = generateSlug(title);
 
       // First check if slug exists
       const { data: existingPost, error: checkError } = await supabase
@@ -59,14 +60,22 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         .single();
 
       if (checkError) {
+        console.error('Check error:', checkError);
         if (checkError.code === 'PGRST116') {
-          throw new Error('A post with this title already exists. Please choose a different title.');
+          // Generate a new slug with timestamp
+          slug = generateSlug(title, Date.now());
+          console.log('Generated new slug:', slug);
+        } else {
+          throw checkError;
         }
-        throw checkError;
       }
       if (existingPost) {
-        throw new Error('A post with this title already exists. Please choose a different title.');
+        // Generate a new slug with timestamp
+        slug = generateSlug(title, Date.now());
+        console.log('Generated new slug:', slug);
       }
+
+      console.log('Final slug:', slug);
 
       const { error: createError } = await supabase
         .from('blog_posts')
@@ -82,15 +91,38 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
 
       if (createError) {
         console.error('Create error:', createError);
-        throw new Error(createError.message || 'Failed to create blog post');
+        if (createError.code === '23505') {
+          // Generate a new slug with timestamp
+          slug = generateSlug(title, Date.now());
+          console.log('Generated new slug:', slug);
+          
+          // Try again with new slug
+          const { error: retryError } = await supabase
+            .from('blog_posts')
+            .insert({
+              title,
+              content,
+              excerpt,
+              thumbnail_url: thumbnailUrl,
+              slug,
+              is_published: true
+            })
+            .select();
+
+          if (retryError) {
+            throw retryError;
+          }
+        } else {
+          throw createError;
+        }
       }
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
+      console.error('Error object:', err);
       setError(err instanceof Error ? err.message : 'Failed to create blog post');
-      console.error('Blog post creation failed:', err);
     } finally {
       setLoading(false);
     }
