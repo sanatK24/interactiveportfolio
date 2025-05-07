@@ -82,10 +82,10 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         .insert({
           title,
           content,
-          excerpt,
-          thumbnail_url: thumbnailUrl,
           slug,
-          is_published: true
+          is_published: false,  // Set to false by default
+          excerpt: excerpt || '',
+          thumbnail_url: thumbnailUrl || null
         })
         .select();
 
@@ -102,10 +102,10 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
             .insert({
               title,
               content,
-              excerpt,
-              thumbnail_url: thumbnailUrl,
               slug,
-              is_published: true
+              is_published: false,  // Set to false by default
+              excerpt: excerpt || '',
+              thumbnail_url: thumbnailUrl || null
             })
             .select();
 

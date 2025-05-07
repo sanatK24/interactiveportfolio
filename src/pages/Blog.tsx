@@ -1,11 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useBlogPosts } from '../hooks/useBlogPosts';
+import { supabase } from '../lib/supabase';
 
 const BlogPage: React.FC = () => {
   const { posts, loading, error, sortOrder, setSortOrder } = useBlogPosts();
+  const [postsState, setPosts] = useState(posts);
+  const [loadingState, setLoading] = useState(loading);
+  const [errorState, setError] = useState(error);
 
-  if (loading) {
+  const fetchPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (err) {
+      console.error('Error fetching blog posts:', err);
+      setError('Failed to fetch blog posts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePublish = async (postId: string) => {
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ is_published: true })
+        .eq('id', postId);
+      
+      if (error) throw error;
+      fetchPosts();
+    } catch (err) {
+      console.error('Error publishing post:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  if (loadingState) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
@@ -13,10 +52,10 @@ const BlogPage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (errorState) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500">{errorState}</p>
       </div>
     );
   }
@@ -40,7 +79,7 @@ const BlogPage: React.FC = () => {
       </div>
 
       <div className="space-y-8">
-        {posts.map((post) => (
+        {postsState.map((post) => (
           <motion.div
             key={post.id}
             className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
@@ -50,9 +89,19 @@ const BlogPage: React.FC = () => {
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-2xl font-bold">{post.title}</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {new Date(post.published_at).toLocaleDateString()}
-              </span>
+              <div className="flex gap-2 items-center">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(post.created_at).toLocaleDateString()}
+                </span>
+                {!post.is_published && (
+                  <button
+                    onClick={() => handlePublish(post.id)}
+                    className="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700"
+                  >
+                    Publish
+                  </button>
+                )}
+              </div>
             </div>
 
             {post.thumbnail_url && (
