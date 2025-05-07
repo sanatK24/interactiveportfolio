@@ -90,6 +90,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
           <Editor
             initialValue={formData.content}
+            apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
             init={{
               height: 500,
               menubar: false,
