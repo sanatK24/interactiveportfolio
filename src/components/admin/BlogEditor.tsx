@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ interface BlogFormProps {
 }
 
 const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
+  const editorRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     title: post?.title || '',
     content: post?.content || '',
@@ -62,6 +63,10 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
     }
   };
 
+  const handleEditorChange = (content: string) => {
+    setFormData(prev => ({ ...prev, content }));
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -89,6 +94,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
           <Editor
+            ref={editorRef}
             initialValue={formData.content}
             apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
             init={{
@@ -99,9 +105,14 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
                 'searchreplace visualblocks code fullscreen',
                 'insertdatetime media table paste code help wordcount'
               ],
-              toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+              toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+              setup: (editor: any) => {
+                editor.on('init', () => {
+                  editor.setContent(formData.content);
+                });
+              }
             }}
-            onEditorChange={(content: string) => setFormData({ ...formData, content })}
+            onEditorChange={handleEditorChange}
           />
         </div>
 
