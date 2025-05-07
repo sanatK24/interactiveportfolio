@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useBlogPosts } from '../../hooks/useBlogPosts';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-toastify';
+import { Editor } from '@tinymce/tinymce-react';
 
 type BlogPost = {
   id: string;
@@ -55,185 +55,78 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
         });
 
       if (error) throw error;
-      toast.success(post ? 'Blog post updated successfully' : 'Blog post created successfully');
+      toast.success(post ? 'Post updated successfully' : 'Post created successfully');
       onClose();
     } catch (error) {
-      toast.error('Failed to save blog post');
+      toast.error('Failed to save post');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label>Title</label>
-        <input
-          type="text"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full p-2 border rounded"
-          required
-        />
-      </div>
-      <div>
-        <label>Excerpt</label>
-        <textarea
-          value={formData.excerpt}
-          onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-          className="w-full p-2 border rounded"
-          rows={3}
-          required
-        />
-      </div>
-      <div>
-        <label>Content</label>
-        <div className="w-full">
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            className="w-full p-2 border rounded"
-            rows={10}
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             required
           />
         </div>
-      </div>
-      <div>
-        <label>Thumbnail</label>
-        <input
-          type="file"
-          name="thumbnail"
-          accept="image/*"
-          className="w-full p-2 border rounded"
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {post ? 'Update' : 'Create'} Post
-        </button>
-      </div>
-    </form>
-  );
-};
 
-const BlogEditor = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [editingPost, setEditingPost] = useState<{
-    id: string;
-    title: string;
-    content: string;
-    excerpt: React.ReactNode;
-    thumbnail_url?: string;
-    published_at: string | number | Date;
-    created_at: string;
-    updated_at: string;
-  } | null>(null);
-
-  const { posts, error } = useBlogPosts();
-
-  if (error) return <div>Error loading blog posts</div>;
-
-  const handleDelete = async (postId: string) => {
-    if (!window.confirm('Are you sure you want to delete this blog post?')) return;
-
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', postId);
-
-      if (error) throw error;
-      toast.success('Blog post deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete blog post');
-    }
-  };
-
-  return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Blog Editor</h2>
-        <button
-          onClick={() => {
-            setShowForm(true);
-            setEditingPost(null);
-          }}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Add Blog Post
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
-            <BlogForm
-              post={editingPost}
-              onClose={() => {
-                setShowForm(false);
-                setEditingPost(null);
-              }}
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Thumbnail</label>
+          <input
+            type="file"
+            name="thumbnail"
+            accept="image/*"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-400 dark:file:text-blue-100"
+          />
         </div>
-      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts?.map((post) => (
-          post && (
-            <div key={post.id} className="bg-white rounded-lg p-4 shadow">
-              <div className="flex justify-between items-start">
-                <div>   
-                  <h3 className="text-lg font-semibold">{post.title}</h3>
-                  <p className="text-gray-600">{post.excerpt}</p>
-                  <div className="mt-2">
-                    <span className="text-sm">Published:</span>
-                    <span className="ml-2 text-gray-500">
-                      {new Date(post.published_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setShowForm(true);
-                      setEditingPost({
-                        id: post.id,
-                        title: post.title,
-                        content: post.content,
-                        excerpt: post.excerpt,
-                        thumbnail_url: post.thumbnail_url,
-                        published_at: post.published_at,
-                        created_at: post.created_at,
-                        updated_at: post.updated_at
-                      });
-                    }}
-                    className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(post.id)}
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          )
-        ))}
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
+          <Editor
+            initialValue={formData.content}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+            }}
+            onEditorChange={(content: string) => setFormData({ ...formData, content })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Excerpt</label>
+          <textarea
+            value={formData.excerpt}
+            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            rows={3}
+            placeholder="Enter a brief excerpt..."
+            required
+          />
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          >
+            {post ? 'Update' : 'Create'} Post
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default BlogEditor;
+export default BlogForm as React.FC<BlogFormProps>;

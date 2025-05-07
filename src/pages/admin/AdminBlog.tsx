@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
+import BlogEditor from '../../components/admin/BlogEditor';
 
 type BlogPost = {
   id: string;
@@ -19,6 +20,8 @@ const AdminBlog: React.FC = () => {
   const { addToast } = useToast();
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     fetchBlogPosts();
@@ -64,6 +67,21 @@ const AdminBlog: React.FC = () => {
     }
   };
 
+  const handleAddPost = () => {
+    setShowEditor(true);
+    setEditingPost(null);
+  };
+
+  const handleEditPost = (post: BlogPost) => {
+    setShowEditor(true);
+    setEditingPost(post);
+  };
+
+  const handleCloseEditor = () => {
+    setShowEditor(false);
+    setEditingPost(null);
+  };
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -75,12 +93,19 @@ const AdminBlog: React.FC = () => {
           <h2 className="text-2xl font-semibold">Blog Posts</h2>
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            onClick={() => window.location.href = '/admin-create'}
+            onClick={handleAddPost}
           >
             Add New Post
           </button>
         </div>
       </motion.div>
+
+      {showEditor && (
+        <BlogEditor
+          post={editingPost}
+          onClose={handleCloseEditor}
+        />
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
@@ -104,6 +129,12 @@ const AdminBlog: React.FC = () => {
                     className="text-red-500 hover:text-red-700"
                   >
                     Delete
+                  </button>
+                  <button
+                    onClick={() => handleEditPost(post)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    Edit
                   </button>
                 </div>
               </div>
