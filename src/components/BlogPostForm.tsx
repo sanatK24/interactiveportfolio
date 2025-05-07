@@ -3,6 +3,14 @@ import { supabase } from '../lib/supabase';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { Editor } from '@tinymce/tinymce-react';
 
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 interface BlogPostFormProps {
   onSuccess?: () => void;
 }
@@ -31,6 +39,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         thumbnailUrl = uploadResult.url || '';
       }
 
+      const slug = generateSlug(title);
+
       const { error: createError } = await supabase
         .from('blog_posts')
         .insert({
@@ -38,8 +48,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           content,
           excerpt,
           thumbnail_url: thumbnailUrl,
-          is_published: true,
-          published_at: new Date().toISOString(),
+          slug,
+          is_published: true
         });
 
       if (createError) throw createError;
