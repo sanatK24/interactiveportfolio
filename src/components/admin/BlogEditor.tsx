@@ -3,6 +3,7 @@ import { useFileUpload } from '../../hooks/useFileUpload';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-toastify';
 import { Editor } from '@tinymce/tinymce-react';
+import type { Editor as TinyMCEEditor } from 'tinymce';
 
 type BlogPost = {
   id: string;
@@ -21,7 +22,7 @@ interface BlogFormProps {
 }
 
 const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<TinyMCEEditor | null>(null);
   const [formData, setFormData] = useState({
     title: post?.title || '',
     content: post?.content || '',
@@ -94,8 +95,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Content</label>
           <Editor
-            ref={editorRef}
-            initialValue={formData.content}
+            onInit={(_evt, editor) => editorRef.current = editor}
             apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
             init={{
               height: 500,
@@ -106,9 +106,9 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
                 'insertdatetime media table paste code help wordcount'
               ],
               toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-              setup: (editor: any) => {
+              setup: (editor: TinyMCEEditor) => {
                 editor.on('init', () => {
-                  editor.setContent(formData.content);
+                  editor.setContent(formData.content || '');
                 });
               }
             }}

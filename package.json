@@ -25,6 +25,7 @@
     "react-toastify": "^11.0.5",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
+    "tinymce": "^7.8.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
