@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "vite preview --port 3000"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
