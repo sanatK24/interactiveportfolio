@@ -3,6 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
 import BlogEditor from '../../components/admin/BlogEditor';
+import { BlogPostForm } from '../../components/BlogPostForm';
 
 enum SortOrder {
   Newest = 'newest',
@@ -30,6 +31,7 @@ const AdminBlog: React.FC = () => {
   const [showEditor, setShowEditor] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Newest);
+  const [showNewPostForm, setShowNewPostForm] = useState(false);
 
   useEffect(() => {
     fetchBlogPosts();
@@ -39,150 +41,148 @@ const AdminBlog: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('*');
+        .select('*')
+        .order('published_at', { ascending: sortOrder === SortOrder.Oldest });
 
       if (error) throw error;
       
-      let sortedPosts = data || [];
-      switch (sortOrder) {
-        case SortOrder.Newest:
-          sortedPosts.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
-          break;
-        case SortOrder.Oldest:
-          sortedPosts.sort((a, b) => new Date(a.published_at).getTime() - new Date(b.published_at).getTime());
-          break;
-        case SortOrder.TitleAsc:
-          sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case SortOrder.TitleDesc:
-          sortedPosts.sort((a, b) => b.title.localeCompare(a.title));
-          break;
-      }
-
-      setBlogPosts(sortedPosts);
+      setBlogPosts(data || []);
     } catch (error) {
+      console.error('Error fetching blog posts:', error);
       addToast({
         type: 'error',
-        message: 'Failed to fetch blog posts',
+        message: 'Failed to fetch blog posts'
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteBlogPost = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      addToast({
-        type: 'success',
-        message: 'Blog post deleted successfully',
-      });
-      fetchBlogPosts();
-    } catch (error) {
-      addToast({
-        type: 'error',
-        message: 'Failed to delete blog post',
-      });
-    }
-  };
-
-  const handleAddPost = () => {
-    setShowEditor(true);
-    setEditingPost(null);
-  };
-
-  const handleEditPost = (post: BlogPost) => {
-    setShowEditor(true);
-    setEditingPost(post);
-  };
-
-  const handleCloseEditor = () => {
-    setShowEditor(false);
-    setEditingPost(null);
+  const handleNewPostSuccess = () => {
+    setShowNewPostForm(false);
+    fetchBlogPosts();
+    addToast({
+      type: 'success',
+      message: 'Blog post created successfully'
+    });
   };
 
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-semibold">Blog Posts</h2>
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-              className="px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-            >
-              <option value={SortOrder.Newest}>Newest First</option>
-              <option value={SortOrder.Oldest}>Oldest First</option>
-              <option value={SortOrder.TitleAsc}>Title A-Z</option>
-              <option value={SortOrder.TitleDesc}>Title Z-A</option>
-            </select>
-          </div>
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            onClick={handleAddPost}
-          >
-            Add New Post
-          </button>
-        </div>
-      </motion.div>
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Blog Posts</h1>
+        <button
+          onClick={() => setShowNewPostForm(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          New Post
+        </button>
+      </div>
 
-      {showEditor && (
-        <BlogEditor
-          post={editingPost}
-          onClose={handleCloseEditor}
-        />
+      {showNewPostForm && (
+        <div className="mb-6">
+          <BlogPostForm onSuccess={handleNewPostSuccess} />
+        </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {blogPosts.map((post) => (
-            <motion.div
-              key={post.id}
-              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold">{post.title}</h3>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditPost(post)}
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteBlogPost(post.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Delete
-                  </button>
+      <div className="space-y-4">
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+          className="px-3 py-2 border rounded-md"
+        >
+          <option value={SortOrder.Newest}>Newest First</option>
+          <option value={SortOrder.Oldest}>Oldest First</option>
+          <option value={SortOrder.TitleAsc}>Title A-Z</option>
+          <option value={SortOrder.TitleDesc}>Title Z-A</option>
+        </select>
+
+        {loading ? (
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {blogPosts.map((post) => (
+              <motion.div
+                key={post.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white p-6 rounded-lg shadow"
+              >
+                <div className="flex justify-between items-start">
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => {
+                        setEditingPost(post);
+                        setShowEditor(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (window.confirm('Are you sure you want to delete this post?')) {
+                          try {
+                            const { error } = await supabase
+                              .from('blog_posts')
+                              .delete()
+                              .eq('id', post.id);
+
+                            if (error) throw error;
+
+                            fetchBlogPosts();
+                            addToast({
+                              type: 'success',
+                              message: 'Post deleted successfully'
+                            });
+                          } catch (error) {
+                            console.error('Error deleting post:', error);
+                            addToast({
+                              type: 'error',
+                              message: 'Failed to delete post'
+                            });
+                          }
+                        }
+                      }}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">{post.excerpt}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+
+                <p className="mt-2 text-gray-600">{post.excerpt}</p>
+
+                {post.thumbnail_url && (
+                  <img
+                    src={post.thumbnail_url}
+                    alt={post.title}
+                    className="mt-4 w-full h-48 object-cover rounded-lg"
+                  />
+                )}
+
+                <div className="mt-4 text-sm text-gray-500">
                   Published: {new Date(post.published_at).toLocaleDateString()}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {showEditor && editingPost && (
+        <BlogEditor
+          post={editingPost}
+          onClose={() => {
+            setShowEditor(false);
+            setEditingPost(null);
+            fetchBlogPosts();
+          }}
+        />
       )}
     </div>
   );
