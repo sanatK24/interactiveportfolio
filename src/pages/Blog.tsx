@@ -14,6 +14,8 @@ const BlogPage: React.FC = () => {
         .eq('id', postId);
       
       if (error) throw error;
+      // Refresh posts after publishing
+      fetchPosts();
     } catch (err) {
       console.error('Error publishing post:', err);
     }
@@ -107,3 +109,7 @@ const BlogPage: React.FC = () => {
 };
 
 export default BlogPage;
+function fetchPosts() {
+  throw new Error('Function not implemented.');
+}
+

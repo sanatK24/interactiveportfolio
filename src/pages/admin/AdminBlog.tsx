@@ -12,24 +12,45 @@ enum SortOrder {
   TitleDesc = 'title_desc'
 }
 
-type BlogPost = {
+interface AdminBlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  thumbnail_url: string | undefined;
+  published_at: string | number | Date | null;
+  created_at: string;
+  updated_at: string;
+  is_published: boolean;
+};
+
+interface BlogPost {
   id: string;
   title: string;
   content: string;
   excerpt: string;
   thumbnail_url: string;
-  published_at: string;
+  published_at: string | number | Date;
   created_at: string;
   updated_at: string;
-};
+  is_published: boolean;
+}
+
+const convertToBlogPost = (post: AdminBlogPost): BlogPost => ({
+  ...post,
+  published_at: post.published_at || '',
+  thumbnail_url: post.thumbnail_url || '',
+  excerpt: post.excerpt || '',
+  content: post.content || ''
+});
 
 const AdminBlog: React.FC = () => {
   const supabase = useSupabaseClient();
   const { addToast } = useToast();
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogPosts, setBlogPosts] = useState<AdminBlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [editingPost, setEditingPost] = useState<AdminBlogPost | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Newest);
   const [showNewPostForm, setShowNewPostForm] = useState(false);
 
@@ -42,7 +63,7 @@ const AdminBlog: React.FC = () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .order('published_at', { ascending: sortOrder === SortOrder.Oldest });
+        .order('created_at', { ascending: sortOrder === SortOrder.Oldest });
 
       if (error) throw error;
       
@@ -166,7 +187,12 @@ const AdminBlog: React.FC = () => {
                 )}
 
                 <div className="mt-4 text-sm text-gray-500">
-                  Published: {new Date(post.published_at).toLocaleDateString()}
+                  Created: {new Date(post.created_at).toLocaleDateString()}
+                  {post.published_at && (
+                    <span className="ml-4">
+                      Published: {new Date(post.published_at).toLocaleDateString()}
+                    </span>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -176,7 +202,7 @@ const AdminBlog: React.FC = () => {
 
       {showEditor && editingPost && (
         <BlogEditor
-          post={editingPost}
+          post={convertToBlogPost(editingPost)}
           onClose={() => {
             setShowEditor(false);
             setEditingPost(null);

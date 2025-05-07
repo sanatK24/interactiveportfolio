@@ -53,7 +53,7 @@ export function useBlogPosts() {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .eq('is_published', true);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       
