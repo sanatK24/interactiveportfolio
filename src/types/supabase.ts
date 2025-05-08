@@ -73,6 +73,7 @@ export type Database = {
       }
       certifications: {
         Row: {
+          certificate_images: string[] | null
           created_at: string | null
           credential_url: string | null
           expiration_month: number | null
@@ -82,10 +83,12 @@ export type Database = {
           issue_year: number
           issuing_organization: string
           name: string
+          organization_logo: string | null
           skills: string[] | null
           updated_at: string | null
         }
         Insert: {
+          certificate_images?: string[] | null
           created_at?: string | null
           credential_url?: string | null
           expiration_month?: number | null
@@ -95,10 +98,12 @@ export type Database = {
           issue_year: number
           issuing_organization: string
           name: string
+          organization_logo?: string | null
           skills?: string[] | null
           updated_at?: string | null
         }
         Update: {
+          certificate_images?: string[] | null
           created_at?: string | null
           credential_url?: string | null
           expiration_month?: number | null
@@ -108,6 +113,7 @@ export type Database = {
           issue_year?: number
           issuing_organization?: string
           name?: string
+          organization_logo?: string | null
           skills?: string[] | null
           updated_at?: string | null
         }
@@ -124,7 +130,9 @@ export type Database = {
           field_of_study: string
           grade: string | null
           id: string
+          related_photos: string[] | null
           school: string
+          school_logo: string | null
           start_month: number
           start_year: number
           updated_at: string | null
@@ -139,7 +147,9 @@ export type Database = {
           field_of_study: string
           grade?: string | null
           id?: string
+          related_photos?: string[] | null
           school: string
+          school_logo?: string | null
           start_month: number
           start_year: number
           updated_at?: string | null
@@ -154,7 +164,9 @@ export type Database = {
           field_of_study?: string
           grade?: string | null
           id?: string
+          related_photos?: string[] | null
           school?: string
+          school_logo?: string | null
           start_month?: number
           start_year?: number
           updated_at?: string | null
@@ -163,6 +175,7 @@ export type Database = {
       }
       experience: {
         Row: {
+          company_logo: string | null
           company_name: string
           created_at: string | null
           description: string | null
@@ -172,6 +185,7 @@ export type Database = {
           id: string
           is_current: boolean | null
           location: string | null
+          related_photos: string[] | null
           skills_used: string[] | null
           start_month: number
           start_year: number
@@ -179,6 +193,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          company_logo?: string | null
           company_name: string
           created_at?: string | null
           description?: string | null
@@ -188,6 +203,7 @@ export type Database = {
           id?: string
           is_current?: boolean | null
           location?: string | null
+          related_photos?: string[] | null
           skills_used?: string[] | null
           start_month: number
           start_year: number
@@ -195,6 +211,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          company_logo?: string | null
           company_name?: string
           created_at?: string | null
           description?: string | null
@@ -204,6 +221,7 @@ export type Database = {
           id?: string
           is_current?: boolean | null
           location?: string | null
+          related_photos?: string[] | null
           skills_used?: string[] | null
           start_month?: number
           start_year?: number

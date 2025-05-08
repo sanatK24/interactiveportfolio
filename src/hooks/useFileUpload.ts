@@ -34,46 +34,34 @@ export const useFileUpload = (): {
 
       const fileName = `${Date.now()}-${file.name}`;
       
-      // First check if the bucket exists
-      const { error: bucketError } = await supabase.storage
-        .from('uploads')
-        .list('');
-
-      if (bucketError) {
-        throw new Error(`Bucket error: ${bucketError.message}`);
-      }
-
-      // Upload the file
-      const { error: uploadError } = await supabase.storage
-        .from('uploads')
+      // Upload the file to the certifications bucket
+      const { error: uploadError, data: uploadData } = await supabase.storage
+        .from('certifications')
         .upload(`${folder}/${fileName}`, file, {
           cacheControl: '3600',
           upsert: false
         });
 
       if (uploadError) {
-        throw new Error(`Upload error: ${uploadError.message}`);
+        throw uploadError;
       }
 
-      // Get the public URL
-      const { data: { publicUrl }, error: urlError } = await supabase.storage
-        .from('uploads')
-        .getPublicUrl(`${folder}/${fileName}`) as { data: { publicUrl: string }, error: any };
-
-      if (urlError) {
-        throw new Error(`URL error: ${urlError.message}`);
+      // Extract UUID from the path
+      const uuid = uploadData.path.split('/').pop();
+      if (!uuid) {
+        throw new Error('Failed to extract UUID from uploaded file');
       }
 
       return {
-        url: publicUrl,
+        url: uuid,
         error: null
       };
     } catch (err) {
-      console.error('File upload error:', err);
-      setError(err instanceof Error ? err : new Error('Upload failed'));
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(new Error(errorMessage));
       return {
         url: null,
-        error: err instanceof Error ? err : new Error('Upload failed')
+        error: new Error(errorMessage)
       };
     } finally {
       setIsLoading(false);

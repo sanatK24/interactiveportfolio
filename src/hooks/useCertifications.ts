@@ -4,7 +4,6 @@ import type { Database } from '../types/supabase';
 
 type Tables = Database['public']['Tables'];
 type CertificationsRow = Tables['certifications']['Row'];
-type MediaAttachmentsRow = Tables['media_attachments']['Row'];
 
 export const useCertifications = () => {
   const supabase = useSupabaseClient();
@@ -18,34 +17,41 @@ export const useCertifications = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch certifications data
-        const { data: certificationsData, error: certificationsError } = await supabase
-          .from('certifications')
-          .select('*')
-          .order('issue_year', { ascending: false })
-          .order('issue_month', { ascending: false });
+        // Create query
+        const query = supabase.from('certifications').select('*');
+
+        // Add ordering
+        query.order('issue_year', { ascending: false });
+        query.order('issue_month', { ascending: false });
+
+        // Execute query
+        const { data: certificationsData, error: certificationsError } = await query;
 
         if (certificationsError) throw certificationsError;
 
-        // Fetch media files for each certification
-        const certificationsWithMedia = await Promise.all(
+        // Process each certification to get file URLs
+        const certificationsWithUrls = await Promise.all(
           certificationsData.map(async (cert) => {
-            const { data: mediaData, error: mediaError } = await supabase
-              .from('media_attachments')
-              .select('*')
-              .eq('reference_id', cert.id)
-              .eq('reference_type', 'certification');
+            // Convert certificate image UUIDs to URLs
+            const certificateImages = cert.certificate_images?.map((imageId: string) => {
+              if (!imageId) return null;
+              return supabase.storage.from('certifications').getPublicUrl(imageId).data.publicUrl;
+            }).filter((url: string | null): url is string => url !== null) || [];
 
-            if (mediaError) throw mediaError;
+            // Convert organization logo UUID to URL
+            const organizationLogo = cert.organization_logo 
+              ? supabase.storage.from('certifications').getPublicUrl(cert.organization_logo).data.publicUrl
+              : null;
 
             return {
               ...cert,
-              media: mediaData as MediaAttachmentsRow[]
+              certificate_images: certificateImages,
+              organization_logo: organizationLogo
             };
           })
         );
 
-        setCertifications(certificationsWithMedia);
+        setCertifications(certificationsWithUrls);
       } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMessage);

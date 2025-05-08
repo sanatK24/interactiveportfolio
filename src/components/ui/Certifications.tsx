@@ -1,15 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useCertifications } from '../../hooks/useCertifications';
 import { formatMonth } from '../../utils/dateUtils';
-import type { Database } from '../../types/supabase';
-
-type CertificationsRow = Database['public']['Tables']['certifications']['Row'];
-type MediaAttachment = Database['public']['Tables']['media_attachments']['Row'];
-
-type CertificationWithMedia = CertificationsRow & {
-  media: MediaAttachment[];
-};
+import { useCertifications } from '../../hooks/useCertifications';
 
 const Certifications: React.FC = () => {
   const { certifications, loading, error } = useCertifications();
@@ -79,8 +71,20 @@ const Certifications: React.FC = () => {
             transition={{ delay: 0.4 + certifications.indexOf(cert) * 0.1, duration: 0.6 }}
             className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
           >
-            <div className="flex justify-between items-start">
-              <div>
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Organization Logo */}
+              {cert.organization_logo && (
+                <div className="w-24 h-24 flex-shrink-0">
+                  <img
+                    src={cert.organization_logo}
+                    alt={`${cert.issuing_organization} logo`}
+                    className="w-full h-full object-cover rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+
+              <div className="flex-1">
                 <h3 className="text-lg font-medium">{cert.name}</h3>
                 <p className="text-gray-600 dark:text-gray-400">
                   {formatMonth(cert.issue_month ?? 1)} {cert.issue_year} - 
@@ -114,25 +118,22 @@ const Certifications: React.FC = () => {
                     </div>
                   </div>
                 )}
-                {(cert as CertificationWithMedia).media && (cert as CertificationWithMedia).media.length > 0 && (
-                  <div className="mt-2">
-                    <span className="font-medium">Supporting Documents:</span>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {(cert as CertificationWithMedia).media.map((media: MediaAttachment, index: number) => (
-                        <a
-                          key={index}
-                          href={media.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 dark:text-blue-400 hover:underline"
-                        >
-                          {media.title || media.description || `Document ${index + 1}`}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {/* Certificate Images */}
+              {cert.certificate_images && cert.certificate_images.length > 0 && (
+                <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
+                  {cert.certificate_images.map((imageUrl, index) => (
+                    <img
+                      key={index}
+                      src={imageUrl}
+                      alt={`Certificate ${index + 1}`}
+                      className="w-24 h-24 object-cover rounded-lg"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         ))}

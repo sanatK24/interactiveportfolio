@@ -53,6 +53,18 @@ export function useBlogPosts() {
     fetchPosts();
   }, [sortOrder]);
 
+  // Function to generate a clean excerpt from content
+  const generateExcerpt = (content: string): string => {
+    // Remove HTML tags
+    const text = content.replace(/<[^>]+>/g, '');
+    // Remove markdown formatting
+    const cleanText = text.replace(/\[(.*?)\]\((.*?)\)/g, '$1');
+    // Get first 150 characters
+    const excerpt = cleanText.slice(0, 150);
+    // Add ellipsis if truncated
+    return excerpt.length === 150 ? `${excerpt}...` : excerpt;
+  };
+
   const fetchPosts = async () => {
     try {
       setLoading(true);
@@ -79,7 +91,18 @@ export function useBlogPosts() {
 
       if (error) throw error;
 
-      setPosts(data || []);
+      // Generate excerpts for posts that don't have one
+      const postsWithExcerpts = data?.map(post => {
+        if (!post.excerpt) {
+          return {
+            ...post,
+            excerpt: generateExcerpt(post.content || '')
+          };
+        }
+        return post;
+      }) || [];
+
+      setPosts(postsWithExcerpts);
     } catch (error) {
       console.error('Error fetching posts:', error);
       setError('Failed to fetch blog posts');

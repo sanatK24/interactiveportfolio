@@ -4,19 +4,16 @@ import type { Database } from '../../types/supabase';
 import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
 import { formatMonth } from '../../utils/dateUtils';
+import { useFileUpload } from '../../hooks/useFileUpload';
 
 type ExperienceRow = Database['public']['Tables']['experience']['Row'];
 type ExperienceInsert = Database['public']['Tables']['experience']['Insert'];
-type MediaAttachment = Database['public']['Tables']['media_attachments']['Row'];
-
-type ExperienceWithMedia = ExperienceRow & {
-  media_attachments: MediaAttachment[];
-};
 
 const AdminExperience: React.FC = () => {
   const supabase = useSupabaseClient();
   const { addToast } = useToast();
-  const [experience, setExperience] = useState<ExperienceWithMedia[]>([]);
+  const { uploadFile } = useFileUpload();
+  const [experience, setExperience] = useState<ExperienceRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -31,8 +28,13 @@ const AdminExperience: React.FC = () => {
     end_month: null,
     end_year: null,
     is_current: true,
-    skills_used: [] as string[]
+    skills_used: [] as string[],
+    company_logo: null,
+    related_photos: []
   });
+
+  const [selectedCompanyLogo, setSelectedCompanyLogo] = useState<File | null>(null);
+  const [selectedRelatedPhotos, setSelectedRelatedPhotos] = useState<File[]>([]);
 
   useEffect(() => {
     fetchExperience();
@@ -51,25 +53,7 @@ const AdminExperience: React.FC = () => {
 
       if (experienceError) throw experienceError;
 
-      // Fetch media attachments for each experience entry
-      const experienceWithMedia = await Promise.all(
-        experienceData.map(async (exp) => {
-          const { data: mediaData, error: mediaError } = await supabase
-            .from('media_attachments')
-            .select('*')
-            .eq('reference_id', exp.id)
-            .eq('reference_type', 'experience');
-
-          if (mediaError) throw mediaError;
-
-          return {
-            ...exp,
-            media_attachments: mediaData as MediaAttachment[]
-          };
-        })
-      );
-
-      setExperience(experienceWithMedia);
+      setExperience(experienceData);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
@@ -85,11 +69,39 @@ const AdminExperience: React.FC = () => {
   const handleAddExperience = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase
-        .from('experience')
-        .insert([newExperience]);
+      setLoading(true);
+      setError(null);
+      
+      // Upload related photos
+      const relatedPhotos: string[] = [];
+      if (selectedRelatedPhotos.length > 0) {
+        for (const photo of selectedRelatedPhotos) {
+          const result = await uploadFile(photo, 'experience');
+          if (result.error) throw result.error;
+          if (result.url) {
+            relatedPhotos.push(result.url);
+          }
+        }
+      }
 
-      if (error) throw error;
+      // Upload company logo
+      let companyLogoUrl = null;
+      if (selectedCompanyLogo) {
+        const result = await uploadFile(selectedCompanyLogo, 'experience');
+        if (result.error) throw result.error;
+        companyLogoUrl = result.url;
+      }
+
+      // Insert experience
+      const { error: insertError } = await supabase
+        .from('experience')
+        .insert([{
+          ...newExperience,
+          related_photos: relatedPhotos,
+          company_logo: companyLogoUrl
+        }]);
+
+      if (insertError) throw insertError;
 
       addToast({
         type: 'success',
@@ -108,15 +120,23 @@ const AdminExperience: React.FC = () => {
         end_month: null,
         end_year: null,
         is_current: true,
-        skills_used: [] as string[]
+        skills_used: [] as string[],
+        company_logo: null,
+        related_photos: []
       });
-      fetchExperience();
+      setSelectedCompanyLogo(null);
+      setSelectedRelatedPhotos([]);
+      
+      await fetchExperience();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
       addToast({
         type: 'error',
-        message: `Error adding experience: ${errorMessage}`
+        message: `Failed to add experience entry: ${errorMessage}`
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,14 +146,7 @@ const AdminExperience: React.FC = () => {
     }
 
     try {
-      // Delete media attachments first
-      await supabase
-        .from('media_attachments')
-        .delete()
-        .eq('reference_id', id)
-        .eq('reference_type', 'experience');
-
-      // Then delete the experience entry
+      // Delete the experience entry
       const { error } = await supabase
         .from('experience')
         .delete()
@@ -228,24 +241,6 @@ const AdminExperience: React.FC = () => {
                     <span className="font-medium">Description:</span>
                     <div className="mt-1">
                       <p className="text-gray-600">{exp.description}</p>
-                    </div>
-                  </div>
-                )}
-                {(exp as ExperienceWithMedia).media_attachments && (exp as ExperienceWithMedia).media_attachments.length > 0 && (
-                  <div className="mt-2">
-                    <span className="font-medium">Supporting Documents:</span>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {(exp as ExperienceWithMedia).media_attachments.map((media: MediaAttachment, mediaIndex: number) => (
-                        <a
-                          key={mediaIndex}
-                          href={media.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {media.title || media.description || `Document ${mediaIndex + 1}`}
-                        </a>
-                      ))}
                     </div>
                   </div>
                 )}
@@ -425,6 +420,51 @@ const AdminExperience: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Enter skills separated by commas"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Company Logo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedCompanyLogo(e.target.files[0]);
+                      }
+                    }}
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedCompanyLogo && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Selected: {selectedCompanyLogo.name}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Related Photos (up to 5)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        const files = Array.from(e.target.files).slice(0, 5);
+                        setSelectedRelatedPhotos(files);
+                      }
+                    }}
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedRelatedPhotos.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {selectedRelatedPhotos.map((file, index) => (
+                        <p key={index} className="text-sm text-gray-600">
+                          {file.name}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex justify-end space-x-4">

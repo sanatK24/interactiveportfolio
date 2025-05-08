@@ -4,15 +4,15 @@ import type { Database } from '../../types/supabase';
 import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
 import { formatMonth } from '../../utils/dateUtils';
+import { useFileUpload } from '../../hooks/useFileUpload';
 
 type EducationRow = Database['public']['Tables']['education']['Row'];
 type EducationInsert = Database['public']['Tables']['education']['Insert'];
 
-type MediaAttachment = Database['public']['Tables']['media_attachments']['Row'];
-
 const AdminEducation: React.FC = () => {
   const supabase = useSupabaseClient();
   const { addToast } = useToast();
+  const { uploadFile } = useFileUpload();
   const [education, setEducation] = useState<EducationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +27,13 @@ const AdminEducation: React.FC = () => {
     degree: null,
     grade: null,
     activities: null,
-    description: null
+    description: null,
+    school_logo: null,
+    related_photos: []
   });
+
+  const [selectedSchoolLogo, setSelectedSchoolLogo] = useState<File | null>(null);
+  const [selectedRelatedPhotos, setSelectedRelatedPhotos] = useState<File[]>([]);
 
   useEffect(() => {
     fetchEducation();
@@ -60,7 +65,7 @@ const AdminEducation: React.FC = () => {
 
           return {
             ...edu,
-            media: mediaData as MediaAttachment[]
+            media: mediaData
           };
         })
       );
@@ -81,11 +86,39 @@ const AdminEducation: React.FC = () => {
   const handleAddEducation = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase
-        .from('education')
-        .insert([newEducation]);
+      setLoading(true);
+      setError(null);
+      
+      // Upload related photos
+      const relatedPhotos: string[] = [];
+      if (selectedRelatedPhotos.length > 0) {
+        for (const photo of selectedRelatedPhotos) {
+          const result = await uploadFile(photo, 'education');
+          if (result.error) throw result.error;
+          if (result.url) {
+            relatedPhotos.push(result.url);
+          }
+        }
+      }
 
-      if (error) throw error;
+      // Upload school logo
+      let schoolLogoUrl = null;
+      if (selectedSchoolLogo) {
+        const result = await uploadFile(selectedSchoolLogo, 'education');
+        if (result.error) throw result.error;
+        schoolLogoUrl = result.url;
+      }
+
+      // Insert education
+      const { error: insertError } = await supabase
+        .from('education')
+        .insert([{
+          ...newEducation,
+          related_photos: relatedPhotos,
+          school_logo: schoolLogoUrl
+        }]);
+
+      if (insertError) throw insertError;
 
       addToast({
         type: 'success',
@@ -103,15 +136,23 @@ const AdminEducation: React.FC = () => {
         degree: null,
         grade: null,
         activities: null,
-        description: null
+        description: null,
+        school_logo: null,
+        related_photos: []
       });
-      fetchEducation();
+      setSelectedSchoolLogo(null);
+      setSelectedRelatedPhotos([]);
+      
+      await fetchEducation();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
       addToast({
         type: 'error',
-        message: `Error adding education: ${errorMessage}`
+        message: `Failed to add education entry: ${errorMessage}`
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,14 +162,6 @@ const AdminEducation: React.FC = () => {
     }
 
     try {
-      // Delete media attachments first
-      await supabase
-        .from('media_attachments')
-        .delete()
-        .eq('reference_id', id)
-        .eq('reference_type', 'education');
-
-      // Then delete the education entry
       const { error } = await supabase
         .from('education')
         .delete()
@@ -146,7 +179,7 @@ const AdminEducation: React.FC = () => {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
       addToast({
         type: 'error',
-        message: `Error deleting education: ${errorMessage}`
+        message: `Error deleting education entry: ${errorMessage}`
       });
     }
   };
@@ -174,15 +207,232 @@ const AdminEducation: React.FC = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Education</h1>
+        <h2 className="text-2xl font-bold">Education</h2>
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
         >
           Add Education
         </button>
       </div>
 
+      {showAddModal && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+        >
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
+            <h3 className="text-xl font-bold mb-4">Add Education Entry</h3>
+            <form onSubmit={handleAddEducation} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">School/College</label>
+                  <input
+                    type="text"
+                    value={newEducation.school}
+                    onChange={(e) => setNewEducation({ ...newEducation, school: e.target.value })}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Field of Study</label>
+                  <input
+                    type="text"
+                    value={newEducation.field_of_study}
+                    onChange={(e) => setNewEducation({ ...newEducation, field_of_study: e.target.value })}
+                    className="w-full p-2 border rounded"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Start Date</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={newEducation.start_month}
+                      onChange={(e) => setNewEducation({ ...newEducation, start_month: parseInt(e.target.value) })}
+                      className="w-1/2 p-2 border rounded"
+                    >
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                        <option key={month} value={month}>
+                          {formatMonth(month)}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={newEducation.start_year}
+                      onChange={(e) => setNewEducation({ ...newEducation, start_year: parseInt(e.target.value) })}
+                      className="w-1/2 p-2 border rounded"
+                    >
+                      {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">End Date (Optional)</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={newEducation.end_month || ''}
+                      onChange={(e) => setNewEducation({ ...newEducation, end_month: e.target.value ? parseInt(e.target.value) : null })}
+                      className="w-1/2 p-2 border rounded"
+                    >
+                      <option value="">None</option>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                        <option key={month} value={month}>
+                          {formatMonth(month)}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={newEducation.end_year || ''}
+                      onChange={(e) => setNewEducation({ ...newEducation, end_year: e.target.value ? parseInt(e.target.value) : null })}
+                      className="w-1/2 p-2 border rounded"
+                    >
+                      <option value="">None</option>
+                      {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map(year => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Degree</label>
+                  <input
+                    type="text"
+                    value={newEducation.degree || ''}
+                    onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value || null })}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Grade</label>
+                  <input
+                    type="text"
+                    value={newEducation.grade || ''}
+                    onChange={(e) => setNewEducation({ ...newEducation, grade: e.target.value || null })}
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Activities</label>
+                  <textarea
+                    value={newEducation.activities || ''}
+                    onChange={(e) => setNewEducation({ ...newEducation, activities: e.target.value || null })}
+                    className="w-full p-2 border rounded h-24"
+                    placeholder="Enter activities and societies..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <textarea
+                    value={newEducation.description || ''}
+                    onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value || null })}
+                    className="w-full p-2 border rounded h-24"
+                    placeholder="Enter a description..."
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">School/College Logo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedSchoolLogo(e.target.files[0]);
+                      }
+                    }}
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedSchoolLogo && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Selected: {selectedSchoolLogo.name}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Related Photos (up to 5)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        const files = Array.from(e.target.files).slice(0, 5);
+                        setSelectedRelatedPhotos(files);
+                      }
+                    }}
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedRelatedPhotos.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {selectedRelatedPhotos.map((file, index) => (
+                        <p key={index} className="text-sm text-gray-600">
+                          {file.name}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setNewEducation({
+                      school: '',
+                      field_of_study: '',
+                      start_month: new Date().getMonth() + 1,
+                      start_year: new Date().getFullYear(),
+                      end_month: null,
+                      end_year: null,
+                      degree: null,
+                      grade: null,
+                      activities: null,
+                      description: null,
+                      school_logo: null,
+                      related_photos: []
+                    });
+                    setSelectedSchoolLogo(null);
+                    setSelectedRelatedPhotos([]);
+                  }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  disabled={loading}
+                >
+                  {loading ? 'Adding...' : 'Add Education'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </motion.div>
+      )}
       <div className="space-y-4">
         {education.map((edu) => (
           <motion.div
@@ -226,13 +476,13 @@ const AdminEducation: React.FC = () => {
               </div>
               <div className="flex space-x-2">
                 <button
-                  className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteEducation(edu.id)}
-                  className="px-3 py-1 text-sm text-red-600 hover:text-red-800"
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                 >
                   Delete
                 </button>
@@ -241,177 +491,6 @@ const AdminEducation: React.FC = () => {
           </motion.div>
         ))}
       </div>
-
-      {/* Add Education Modal */}
-      {showAddModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg p-6 max-w-2xl w-full"
-          >
-            <h2 className="text-xl font-bold mb-4">Add New Education</h2>
-            <form onSubmit={handleAddEducation} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  School
-                </label>
-                <input
-                  type="text"
-                  value={newEducation.school}
-                  onChange={(e) => setNewEducation({ ...newEducation, school: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Field of Study
-                </label>
-                <input
-                  type="text"
-                  value={newEducation.field_of_study}
-                  onChange={(e) => setNewEducation({ ...newEducation, field_of_study: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Start Month
-                  </label>
-                  <select
-                    value={newEducation.start_month}
-                    onChange={(e) => setNewEducation({ ...newEducation, start_month: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    required
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => (
-                      <option key={month} value={month}>
-                        {formatMonth(month)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Start Year
-                  </label>
-                  <input
-                    type="number"
-                    value={newEducation.start_year}
-                    onChange={(e) => setNewEducation({ ...newEducation, start_year: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    End Month
-                  </label>
-                  <select
-                    value={newEducation.end_month ?? ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, end_month: e.target.value ? parseInt(e.target.value) : null })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="">Present</option>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => (
-                      <option key={month} value={month}>
-                        {formatMonth(month)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    End Year
-                  </label>
-                  <input
-                    type="number"
-                    value={newEducation.end_year ?? ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, end_year: e.target.value ? parseInt(e.target.value) : null })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Degree
-                </label>
-                <input
-                  type="text"
-                  value={newEducation.degree ?? ''}
-                  onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value || null })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Grade
-                </label>
-                <input
-                  type="text"
-                  value={newEducation.grade ?? ''}
-                  onChange={(e) => setNewEducation({ ...newEducation, grade: e.target.value || null })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Activities
-                </label>
-                <textarea
-                  value={newEducation.activities ?? ''}
-                  onChange={(e) => setNewEducation({ ...newEducation, activities: e.target.value || null })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={newEducation.description ?? ''}
-                  onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value || null })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  rows={3}
-                />
-              </div>
-
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Add Education
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 };

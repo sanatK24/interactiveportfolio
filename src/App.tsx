@@ -3,6 +3,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { CommandPaletteProvider } from './context/CommandPaletteContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './components/ui/ToastContext';
+import { createClient } from '@supabase/supabase-js';
 import Toast from './components/ui/Toast';
 import AdminRoute from './components/admin/AdminRoute';
 import AdminSidebar from './components/admin/AdminSidebar';
@@ -25,12 +26,18 @@ import AdminCertificates from './pages/admin/AdminCertifications';
 import Blog from './pages/Blog';
 import EducationExperience from './pages/EducationExperience';
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Initialize Supabase client
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <ThemeProvider>
-          <CommandPaletteProvider>
+      <ThemeProvider>
+        <CommandPaletteProvider>
+          <AuthProvider>
             <ToastProvider>
               <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
                 <Header />
@@ -72,11 +79,12 @@ function App() {
                 <CommandPalette />
               </div>
             </ToastProvider>
-          </CommandPaletteProvider>
-        </ThemeProvider>
-      </AuthProvider>
+          </AuthProvider>
+        </CommandPaletteProvider>
+      </ThemeProvider>
     </Router>
   );
 }
 
 export default App;
+export { supabase };

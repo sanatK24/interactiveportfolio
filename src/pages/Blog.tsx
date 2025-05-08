@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBlogPosts } from '../hooks/useBlogPosts';
 import ReactMarkdown from 'react-markdown';
@@ -43,56 +43,48 @@ const BlogPage: React.FC = () => {
   const { posts, loading, error, sortOrder, setSortOrder } = useBlogPosts();
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  // Function to count images in markdown content
+  const countImagesInPost = (content: string): number => {
+    const imageRegex = /!\[.*?\]\((.*?)\)/g;
+    return (content.match(imageRegex) || []).length;
+  };
 
   // Constants for pagination
   const POSTS_PER_PAGE = 10;
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    if (selectedPost || selectedImage) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [selectedPost, selectedImage]);
-
-  // Group posts by month
-  const groupPostsByMonth = (posts: BlogPost[]) => {
-    const groupedPosts = {} as { [key: string]: BlogPost[] };
-    posts.forEach(post => {
-      if (!post.created_at) return;
-      const date = new Date(post.created_at);
-      const monthKey = format(date, 'MMMM yyyy');
-      
-      if (!groupedPosts[monthKey]) {
-        groupedPosts[monthKey] = [];
-      }
-      groupedPosts[monthKey].push(post);
-    });
-
-    return Object.entries(groupedPosts)
-      .sort(([monthA], [monthB]) => {
-        return new Date(monthB).getTime() - new Date(monthA).getTime();
-      });
-  };
-
-  // Get current page posts
   const getCurrentPagePosts = (posts: BlogPost[]) => {
     const start = (currentPage - 1) * POSTS_PER_PAGE;
-    const end = start + POSTS_PER_PAGE;
-    return posts.slice(start, end);
+    return posts.slice(start, start + POSTS_PER_PAGE);
   };
 
-  // Count images in markdown content
-  const countImages = (content: string): number => {
-    const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
-    return (content.match(imageRegex) || []).length;
+  const groupPostsByMonth = (posts: BlogPost[]) => {
+    const grouped: [string, BlogPost[]][] = [];
+    const months = new Set<string>();
+
+    posts.forEach(post => {
+      if (post.created_at) {
+        const date = new Date(post.created_at);
+        const month = date.toLocaleString('default', { month: 'long' });
+        months.add(month);
+      }
+    });
+
+    Array.from(months).forEach(month => {
+      const monthPosts = posts.filter(post => {
+        if (!post.created_at) return false;
+        const date = new Date(post.created_at);
+        return date.toLocaleString('default', { month: 'long' }) === month;
+      });
+      if (monthPosts.length > 0) {
+        grouped.push([month, monthPosts]);
+      }
+    });
+
+    return grouped;
   };
 
   const openImage = (src: string) => {
@@ -101,6 +93,18 @@ const BlogPage: React.FC = () => {
 
   const closeImage = () => {
     setSelectedImage(null);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   const CustomImage: React.FC<CustomImageProps> = ({ src, alt, className = '' }) => {
@@ -160,7 +164,6 @@ const BlogPage: React.FC = () => {
         </div>
       </div>
 
-      {/* View Mode Toggle */}
       {viewMode === 'grid' ? (
         <div className="space-y-8">
           {groupedPosts.map(([month, posts]) => (
@@ -193,12 +196,20 @@ const BlogPage: React.FC = () => {
                     </div>
                     <div className="p-4">
                       <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          p: ({ children }) => (
+                            <p className="text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">{children}</p>
+                          ),
+                        }}
+                      >
                         {post.excerpt}
-                      </p>
+                      </ReactMarkdown>
                       <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                         <span>{format(new Date(post.created_at!), 'MMM d, yyyy')}</span>
-                        <span>{calculateReadTime(post.content, countImages(post.content))}</span>
+                        <span>{calculateReadTime(post.content, countImagesInPost(post.content))}</span>
                       </div>
                     </div>
                   </motion.div>
@@ -232,7 +243,7 @@ const BlogPage: React.FC = () => {
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-semibold">{post.title}</h3>
                         <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {calculateReadTime(post.content, countImages(post.content))}
+                          {calculateReadTime(post.content, countImagesInPost(post.content))}
                         </span>
                       </div>
                       {post.thumbnail_url && (
@@ -242,9 +253,17 @@ const BlogPage: React.FC = () => {
                           className="w-full h-48 object-cover rounded-lg mb-4"
                         />
                       )}
-                      <p className="text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]}
+                        components={{
+                          p: ({ children }) => (
+                            <p className="text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">{children}</p>
+                          ),
+                        }}
+                      >
                         {post.excerpt}
-                      </p>
+                      </ReactMarkdown>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
                         {format(new Date(post.created_at!), 'MMM d, yyyy')}
                       </div>
@@ -257,11 +276,10 @@ const BlogPage: React.FC = () => {
         </div>
       )}
 
-      {/* Pagination */}
       {totalPosts > POSTS_PER_PAGE && (
         <div className="flex justify-center items-center gap-2 mt-8">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            onClick={handlePrevPage}
             disabled={currentPage === 1}
             className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -270,7 +288,7 @@ const BlogPage: React.FC = () => {
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
-              onClick={() => setCurrentPage(page)}
+              onClick={() => handlePageChange(page)}
               className={`px-4 py-2 rounded-md ${
                 page === currentPage
                   ? 'bg-blue-600 text-white'
@@ -281,7 +299,7 @@ const BlogPage: React.FC = () => {
             </button>
           ))}
           <button
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            onClick={handleNextPage}
             disabled={currentPage === totalPages}
             className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -331,7 +349,7 @@ const BlogPage: React.FC = () => {
                 <div className="flex-1 overflow-y-auto">
                   <div className="p-6">
                     <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                      Published on {format(new Date(selectedPost.created_at!), 'MMM d, yyyy')} • {calculateReadTime(selectedPost.content, countImages(selectedPost.content))}
+                      Published on {format(new Date(selectedPost.created_at!), 'MMM d, yyyy')} • {calculateReadTime(selectedPost.content, countImagesInPost(selectedPost.content))}
                     </div>
 
                     <ReactMarkdown
@@ -346,32 +364,29 @@ const BlogPage: React.FC = () => {
             </motion.div>
           </motion.div>
         )}
-
-        {/* Image Lightbox */}
-        {selectedImage && (
-          <motion.div
-            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 md:p-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeImage}
-          >
-            <motion.div
-              className="max-w-6xl max-h-[90vh]"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-            >
-              <img
-                src={selectedImage}
-                alt="Full size"
-                className="max-w-full max-h-[90vh] object-contain"
-                ref={imageRef}
-              />
-            </motion.div>
-          </motion.div>
-        )}
       </AnimatePresence>
+
+      {/* Image Lightbox */}
+      {selectedImage && (
+        <motion.div
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeImage}
+        >
+          <motion.img
+            src={selectedImage}
+            alt=""
+            ref={imageRef}
+            className="max-w-full max-h-[90vh] object-contain"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </motion.div>
+      )}
     </div>
   );
 };

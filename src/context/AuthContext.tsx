@@ -1,7 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import { Session, User } from '@supabase/supabase-js';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import type { Database } from '../types/supabase';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Initialize Supabase client
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -19,7 +25,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const supabase = useSupabaseClient();
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -29,19 +34,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data: profileData, error } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user?.id)
-          .single<Profile>();
+          .single();
 
-        if (error) throw error;
+        if (profileError) throw profileError;
         setProfile(profileData);
         setIsAdmin(profileData?.role === 'admin');
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setProfile(null);
-        setIsAdmin(false);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -51,31 +56,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: initialSession }, error }) => {
-      if (error) {
-        console.error('Error getting initial session:', error);
-        setSession(null);
-        setUser(null);
-        return;
-      }
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      setUser(session?.user || null);
+      if (event === 'SIGNED_OUT') {
+        setProfile(null);
+        setIsAdmin(false);
+      }
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
-      setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -85,74 +79,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string, isAdmin = false) => {
     try {
-      setLoading(true);
-      const { data: { user: newUser }, error } = await supabase.auth.signUp({
+      const { data: { user }, error: authError } = await supabase.auth.signUp({
         email,
         password
       });
 
-      if (error) throw error;
-      if (!newUser) throw new Error('User not created');
+      if (authError) throw authError;
+      if (!user) throw new Error('User not created');
 
       // Create profile
-      const role = isAdmin ? 'admin' : 'user';
       const { error: profileError } = await supabase.from('profiles').insert([
         {
-          id: newUser.id,
-          role,
-          email
+          id: user.id,
+          email,
+          role: isAdmin ? 'admin' : 'user'
         }
       ]);
 
       if (profileError) throw profileError;
 
-      return { user: newUser, role };
+      return { user, role: isAdmin ? 'admin' : 'user' };
     } catch (error) {
       console.error('Error signing up:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      setLoading(true);
       const { error } = await supabase.auth.signOut();
-
       if (error) throw error;
-      setSession(null);
-      setUser(null);
-      setProfile(null);
-      setIsAdmin(false);
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
-  const value: AuthContextType = {
-    session,
-    user,
-    profile,
-    isAdmin,
-    signIn,
-    signUp,
-    signOut,
-    loading
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      session,
+      user,
+      profile,
+      isAdmin,
+      signIn,
+      signUp,
+      signOut,
+      loading
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -165,3 +143,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export { supabase };
