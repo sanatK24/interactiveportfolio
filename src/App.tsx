@@ -18,6 +18,7 @@ import AdminCreate from './pages/AdminCreate';
 import AdminProjects from './pages/admin/AdminProjects';
 import AdminBlog from './pages/admin/AdminBlog';
 import AdminContact from './pages/admin/AdminContact';
+import Blog from './pages/Blog';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                       <Route path="/" element={<Home />} />
                       <Route path="/skills" element={<Skills />} />
                       <Route path="/projects" element={<Projects />} />
+                      <Route path="/blog" element={<Blog />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/admin-create" element={<AdminCreate />} />
