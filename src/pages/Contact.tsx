@@ -1,6 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import type { Database } from '../types/supabase';
-import { toast } from 'react-toastify';
+import { useToast } from '../components/ui/ToastContext';
 import { motion } from 'framer-motion';
 import { Send, MapPin, Phone, Mail, Linkedin, Github, Twitter } from 'lucide-react';
 import { useState } from 'react';
@@ -9,6 +9,7 @@ type FormData = Database['public']['Tables']['messages']['Insert'];
 
 const Contact: React.FC = () => {
   const supabase = useSupabaseClient();
+  const { addToast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -22,17 +23,32 @@ const Contact: React.FC = () => {
     setLoading(true);
 
     try {
+      console.log('Attempting to insert message:', formData);
       const { error } = await supabase
         .from('messages')
-        .insert([formData]);
+        .insert([{
+          name: formData.name,
+          email: formData.email,
+          content: formData.content,
+          is_read: false
+        }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error details:', error);
+        throw error;
+      }
 
-      toast.success('Message sent successfully! I will get back to you soon.');
+      addToast({
+        type: 'success',
+        message: 'Message sent successfully! I will get back to you soon.'
+      });
       setFormData({ name: '', email: '', content: '', is_read: false });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('Failed to send message. Please try again.');
+    } catch (error: any) {
+      console.error('Error sending message:', error.message || error);
+      addToast({
+        type: 'error',
+        message: `Failed to send message. Error: ${error.message || 'Unknown error'}`
+      });
     } finally {
       setLoading(false);
     }
@@ -145,37 +161,37 @@ const Contact: React.FC = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="space-y-8"
             >
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+              {/* <div>
+                <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
                   Contact Information
-                </h2>
+                </h1>
                 
                 <ul className="space-y-4">
                   <li className="flex items-start">
                     <MapPin className="text-blue-600 dark:text-blue-400 mt-1 mr-3" size={20} />
                     <div>
-                      <h3 className="text-lg font-medium text-gray-800 dark:text-white">Location</h3>
-                      <p className="text-gray-600 dark:text-gray-300">City, State, Country</p>
+                      <h3 className="text-lg font-medium text-gray-800 dark:text-white"></h3>
+                      <p className="text-gray-600 dark:text-gray-300"></p>
                     </div>
                   </li>
                   
                   <li className="flex items-start">
                     <Phone className="text-blue-600 dark:text-blue-400 mt-1 mr-3" size={20} />
                     <div>
-                      <h3 className="text-lg font-medium text-gray-800 dark:text-white">Phone</h3>
-                      <p className="text-gray-600 dark:text-gray-300">+1 (123) 456-7890</p>
+                      <h3 className="text-lg font-medium text-gray-800 dark:text-white"></h3>
+                      <p className="text-gray-600 dark:text-gray-300"></p>
                     </div>
                   </li>
                   
                   <li className="flex items-start">
                     <Mail className="text-blue-600 dark:text-blue-400 mt-1 mr-3" size={20} />
                     <div>
-                      <h3 className="text-lg font-medium text-gray-800 dark:text-white">Email</h3>
-                      <p className="text-gray-600 dark:text-gray-300">your.email@example.com</p>
+                      <h3 className="text-lg font-medium text-gray-800 dark:text-white"></h3>
+                      <p className="text-gray-600 dark:text-gray-300"></p>
                     </div>
                   </li>
                 </ul>
-              </div>
+              </div> */}
               
               <div>
                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
@@ -186,7 +202,7 @@ const Contact: React.FC = () => {
                   <motion.a
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    href="https://linkedin.com/in/yourusername"
+                    href="https://www.linkedin.com/in/sanat-karkhanis-3255a7214/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
@@ -198,7 +214,7 @@ const Contact: React.FC = () => {
                   <motion.a
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    href="https://github.com/yourusername"
+                    href="https://github.com/sanatK24"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -210,11 +226,11 @@ const Contact: React.FC = () => {
                   <motion.a
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    href="https://twitter.com/yourusername"
+                    href="https://x.com/SanatKarkhanis"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                    aria-label="Twitter"
+                    aria-label="X"
                   >
                     <Twitter size={24} />
                   </motion.a>
