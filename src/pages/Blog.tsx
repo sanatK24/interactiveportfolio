@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useBlogPosts } from '../hooks/useBlogPosts';
 
 const BlogPage: React.FC = () => {
   const { posts, loading, error, sortOrder, setSortOrder, publishPost } = useBlogPosts();
+  const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -79,16 +80,16 @@ const BlogPage: React.FC = () => {
               )}
 
               <div className="prose prose-lg max-w-none dark:prose-invert">
-                {post.excerpt}
+                {expandedPostId === post.id ? post.content : post.excerpt}
               </div>
 
               <div className="mt-4">
-                <a
-                  href={`/blog/${post.id}`}
+                <button
+                  onClick={() => setExpandedPostId(expandedPostId === post.id ? null : post.id)}
                   className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                 >
-                  Read more →
-                </a>
+                  {expandedPostId === post.id ? 'Show less' : 'Read more'} →
+                </button>
               </div>
             </motion.div>
           ))
