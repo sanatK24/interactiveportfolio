@@ -1,11 +1,30 @@
 import React, { useState } from 'react';
 import { useProjects } from '../../hooks/useProjects';
 import { useFileUpload } from '../../hooks/useFileUpload';
-import { supabase } from '../../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { toast } from 'react-toastify';
-import { Database } from '../../types/database.types';
+import type { Database } from '../../types/supabase';
 
 type Project = Database['public']['Tables']['projects']['Row'];
+
+type ProjectForm = {
+  title:string;
+  description:string;
+  github_url: string;
+  technologies: string; // Stored as comma-separated string in form, converted to array for database
+  live_url: string;
+  thumbnail_url: string;
+  html_url: string;
+  language: string;
+  name: string;
+  display_order: number;
+  is_visible: boolean;
+  forks: number;
+  stars: number;
+  size: number;
+  license: string;
+  homepage: string;
+};
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -13,15 +32,55 @@ interface ProjectFormProps {
 }
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
-  const [formData, setFormData] = useState({
-    title: project?.title || '',
-    description: project?.description || '',
-    technologies: project?.technologies?.join(',') || '',
-    github_url: project?.github_url || '',
-    live_url: project?.live_url || '',
-    thumbnail: project?.thumbnail_url || ''
+  const [formData, setFormData] = useState<ProjectForm>(() => {
+    if (!project) {
+      return {
+        title: '',
+        description: '',
+        technologies: '',
+        github_url: '',
+        live_url: '',
+        thumbnail_url: '',
+        html_url: '',
+        language: '',
+        name: '',
+        display_order: 0,
+        is_visible: true,
+        forks: 0,
+        stars: 0,
+        size: 0,
+        license: '',
+        homepage: ''
+      };
+    }
+    return {
+      title: project.title || '',
+      description: project.description || '',
+      technologies: project.technologies?.join(',') || '',
+      github_url: project.github_url || '',
+      live_url: project.live_url || '',
+      thumbnail_url: project.thumbnail_url || '',
+      html_url: project.html_url || '',
+      language: project.language || '',
+      name: project.name || '',
+      display_order: project.display_order || 0,
+      is_visible: project.is_visible || true,
+      forks: project.forks || 0,
+      stars: project.stars || 0,
+      size: project.size || 0,
+      license: project.license || '',
+      homepage: project.homepage || ''
+    };
   });
+
   const { uploadFile } = useFileUpload();
+  const supabase = useSupabaseClient();
+
+  const handleChange = (field: keyof ProjectForm) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +89,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
       const thumbnailInput = e.currentTarget.querySelector('input[name="thumbnail"]') as HTMLInputElement;
       const thumbnailFile = thumbnailInput?.files?.[0];
       
-      let thumbnailUrl = formData.thumbnail;
+      let thumbnailUrl = formData.thumbnail_url;
       if (thumbnailFile) {
         const result = await uploadFile(thumbnailFile, 'projects');
         if (result.error) throw result.error;
@@ -45,10 +104,20 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
           id: project?.id,
           title: formData.title,
           description: formData.description,
-          technologies: technologies.map((tech: string) => ({ technology: tech })),
+          technologies,
           github_url: formData.github_url,
           live_url: formData.live_url,
-          thumbnail_url: thumbnailUrl
+          thumbnail_url: thumbnailUrl,
+          html_url: formData.html_url,
+          language: formData.language,
+          name: formData.name,
+          display_order: formData.display_order,
+          is_visible: formData.is_visible,
+          forks: formData.forks,
+          stars: formData.stars,
+          size: formData.size,
+          license: formData.license,
+          homepage: formData.homepage
         });
 
       if (error) throw error;
@@ -66,7 +135,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
         <input
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={handleChange('title')}
           className="w-full p-2 border rounded"
           required
         />
@@ -75,7 +144,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
         <label>Description</label>
         <textarea
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={handleChange('description')}
           className="w-full p-2 border rounded"
           required
         />
@@ -85,7 +154,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
         <input
           type="text"
           value={formData.technologies}
-          onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
+          onChange={handleChange('technologies')}
           className="w-full p-2 border rounded"
           required
         />
@@ -95,7 +164,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
         <input
           type="url"
           value={formData.github_url}
-          onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+          onChange={handleChange('github_url')}
           className="w-full p-2 border rounded"
           required
         />
@@ -105,8 +174,56 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
         <input
           type="url"
           value={formData.live_url}
-          onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
+          onChange={handleChange('live_url')}
           className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label>Language</label>
+        <input
+          type="text"
+          value={formData.language}
+          onChange={handleChange('language')}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+      <div>
+        <label>Project Name</label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={handleChange('name')}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+      <div>
+        <label>GitHub HTML URL</label>
+        <input
+          type="url"
+          value={formData.html_url}
+          onChange={handleChange('html_url')}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+      <div>
+        <label>Display Order</label>
+        <input
+          type="number"
+          value={formData.display_order}
+          onChange={(e) => setFormData((prev) => ({ ...prev, display_order: parseInt(e.target.value) }))}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+      <div>
+        <label>Visible</label>
+        <input
+          type="checkbox"
+          checked={formData.is_visible}
+          onChange={(e) => setFormData((prev) => ({ ...prev, is_visible: e.target.checked }))}
+          className="w-4 h-4"
         />
       </div>
       <div>
@@ -140,17 +257,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onClose }) => {
 const ProjectManagement = () => {
   const { projects, error } = useProjects();
   const [showForm, setShowForm] = useState(false);
-  const [editingProject, setEditingProject] = useState<{
-    id: string;
-    title: string;
-    description: string;
-    technologies: string[];
-    github_url: string;
-    live_url: string;
-    thumbnail_url: string;
-    created_at: string;
-    updated_at: string;
-  } | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const supabase = useSupabaseClient();
 
   if (error) return <div>Error loading projects</div>;
 
@@ -218,24 +326,34 @@ const ProjectManagement = () => {
                           {tech}
                         </span>
                       ))}
-                    </div>
+                    </div>||
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-sm">Language:</span>
+                    <span className="ml-2">{project.language}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-sm">Stars:</span>
+                    <span className="ml-2">{project.stars || 0}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-sm">Forks:</span>
+                    <span className="ml-2">{project.forks || 0}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-sm">Display Order:</span>
+                    <span className="ml-2">{project.display_order}</span>
+                  </div>
+                  <div className="mt-2">
+                    <span className="text-sm">Visible:</span>
+                    <span className="ml-2">{project.is_visible ? 'Yes' : 'No'}</span>
                   </div>
                 </div>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => {
                       setShowForm(true);
-                      setEditingProject({
-                        id: project.id,
-                        title: project.title,
-                        description: project.description,
-                        technologies: project.technologies || [],
-                        github_url: project.github_url,
-                        live_url: project.live_url || '',
-                        thumbnail_url: project.thumbnail_url || '',
-                        created_at: project.created_at,
-                        updated_at: project.updated_at
-                      });
+                      setEditingProject(project);
                     }}
                     className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                   >

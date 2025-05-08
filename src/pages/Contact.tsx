@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import type { Database } from '../types/supabase';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { Send, MapPin, Phone, Mail, Linkedin, Github, Twitter } from 'lucide-react';
+import { useState } from 'react';
+
+type FormData = Database['public']['Tables']['messages']['Insert'];
 
 const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const supabase = useSupabaseClient();
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    message: ''
+    content: '',
+    is_read: false
   });
   const [loading, setLoading] = useState(false);
 
@@ -18,18 +23,15 @@ const Contact: React.FC = () => {
 
     try {
       const { error } = await supabase
-        .from('contact_messages')
-        .insert({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message
-        });
+        .from('messages')
+        .insert([formData]);
 
       if (error) throw error;
 
       toast.success('Message sent successfully! I will get back to you soon.');
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', content: '', is_read: false });
     } catch (error) {
+      console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again.');
     } finally {
       setLoading(false);
@@ -103,8 +105,8 @@ const Contact: React.FC = () => {
                   <textarea
                     id="message"
                     name="message"
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                     required
                     rows={6}
                     className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"

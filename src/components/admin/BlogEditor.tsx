@@ -1,33 +1,32 @@
 import React, { useState, useRef } from 'react';
 import { useFileUpload } from '../../hooks/useFileUpload';
-import { supabase } from '../../lib/supabase';
 import { toast } from 'react-toastify';
 import { Editor } from '@tinymce/tinymce-react';
 import type { Editor as TinyMCEEditor } from 'tinymce';
+import type { Database } from '../../types/supabase';
 
-type BlogPost = {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: React.ReactNode;
-  thumbnail_url?: string;
-  published_at: string | number | Date;
-  created_at: string;
-  updated_at: string;
+type BlogPost = Database['public']['Tables']['blog_posts']['Row'];
+
+type BlogPostFormData = Omit<BlogPost, 'id' | 'created_at' | 'updated_at'> & {
+  thumbnail: string;
 };
 
 interface BlogFormProps {
   post?: BlogPost | null;
   onClose: () => void;
+  onUpdate: (post: BlogPost) => void;
 }
 
-const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
+const BlogForm: React.FC<BlogFormProps> = ({ post, onClose, onUpdate }) => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<BlogPostFormData>({
     title: post?.title || '',
     content: post?.content || '',
-    excerpt: post?.excerpt ? String(post.excerpt) : '',
-    thumbnail: post?.thumbnail_url || ''
+    excerpt: post?.excerpt || '',
+    thumbnail: post?.thumbnail_url || '',
+    is_published: post?.is_published ?? false,
+    slug: post?.slug || '',
+    thumbnail_url: post?.thumbnail_url || ''  
   });
   const { uploadFile } = useFileUpload();
 
@@ -45,36 +44,33 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
         thumbnailUrl = result.url!;
       }
 
-      const currentPost = post || {
-        id: null,
+      const updatedPost: BlogPost = {
+        id: post?.id || '',
         title: formData.title,
         content: formData.content,
         excerpt: formData.excerpt,
         thumbnail_url: thumbnailUrl,
-        published_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
+        is_published: formData.is_published,
+        slug: formData.slug,
+        created_at: post?.created_at || new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
-        .from('blog_posts')
-        .upsert(currentPost);
-
-      if (error) throw error;
-      toast.success(post ? 'Post updated successfully' : 'Post created successfully');
+      await onUpdate(updatedPost);
       onClose();
-      
-      // Notify parent component about the update
-      if (onClose instanceof Function) {
-        onClose();
-      }
+      toast.success(post ? 'Post updated successfully' : 'Post created successfully');
     } catch (error) {
       toast.error('Failed to save post');
+      console.error('Error saving post:', error);
     }
   };
 
   const handleEditorChange = (content: string) => {
     setFormData(prev => ({ ...prev, content }));
+  };
+
+  const handleExcerptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, excerpt: e.target.value }));
   };
 
   return (
@@ -86,6 +82,17 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
             type="text"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Slug</label>
+          <input
+            type="text"
+            value={formData.slug}
+            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             required
           />
@@ -129,7 +136,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Excerpt</label>
           <textarea
             value={formData.excerpt}
-            onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+            onChange={handleExcerptChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             rows={3}
             placeholder="Enter a brief excerpt..."
@@ -137,10 +144,17 @@ const BlogForm: React.FC<BlogFormProps> = ({ post, onClose }) => {
           />
         </div>
 
-        <div>
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+          >
+            Cancel
+          </button>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             {post ? 'Update' : 'Create'} Post
           </button>

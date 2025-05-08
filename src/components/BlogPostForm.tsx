@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { Editor } from '@tinymce/tinymce-react';
+import type { Database } from '../types/supabase';
+
+type BlogPostInsert = Database['public']['Tables']['blog_posts']['Insert'];
+
+type BlogPostFormData = Omit<BlogPostInsert, 'id' | 'created_at' | 'updated_at'> & {
+  thumbnail: File | null;
+  slug?: string;  // Make slug optional since it's generated during submission
+};
 
 const generateSlug = (title: string, timestamp = Date.now()): string => {
   return `${title
@@ -16,10 +24,14 @@ interface BlogPostFormProps {
 }
 
 export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [excerpt, setExcerpt] = useState('');
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [formData, setFormData] = useState<BlogPostFormData>({
+    title: '',
+    content: '',
+    excerpt: '',
+    thumbnail: null,
+    slug: '',
+    is_published: false
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { uploadFile } = useFileUpload();
@@ -31,18 +43,18 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
 
     try {
       // Check authentication
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await useSupabaseClient().auth.getUser();
       if (authError || !user) {
         throw new Error('You must be logged in to create a blog post');
       }
 
-      if (!title.trim()) {
+      if (!formData.title.trim()) {
         throw new Error('Title is required');
       }
 
       let thumbnailUrl = '';
-      if (thumbnail) {
-        const uploadResult = await uploadFile(thumbnail, 'blog');
+      if (formData.thumbnail) {
+        const uploadResult = await uploadFile(formData.thumbnail, 'blog');
         if (uploadResult.error) {
           throw new Error('Failed to upload thumbnail: ' + uploadResult.error.message);
         }
@@ -50,10 +62,10 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
       }
 
       // Generate a unique slug with timestamp
-      let slug = generateSlug(title);
+      let slug = generateSlug(formData.title);
 
       // First check if slug exists
-      const { data: existingPost, error: checkError } = await supabase
+      const { data: existingPost, error: checkError } = await useSupabaseClient()
         .from('blog_posts')
         .select('id')
         .eq('slug', slug)
@@ -63,7 +75,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         console.error('Check error:', checkError);
         if (checkError.code === 'PGRST116') {
           // Generate a new slug with timestamp
-          slug = generateSlug(title, Date.now());
+          slug = generateSlug(formData.title, Date.now());
           console.log('Generated new slug:', slug);
         } else {
           throw checkError;
@@ -71,20 +83,20 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
       }
       if (existingPost) {
         // Generate a new slug with timestamp
-        slug = generateSlug(title, Date.now());
+        slug = generateSlug(formData.title, Date.now());
         console.log('Generated new slug:', slug);
       }
 
       console.log('Final slug:', slug);
 
-      const { error: createError } = await supabase
+      const { error: createError } = await useSupabaseClient()
         .from('blog_posts')
         .insert({
-          title,
-          content,
+          title: formData.title,
+          content: formData.content,
           slug,
           is_published: false,  // Set to false by default
-          excerpt: excerpt || '',
+          excerpt: formData.excerpt || '',
           thumbnail_url: thumbnailUrl || null
         })
         .select();
@@ -93,18 +105,18 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         console.error('Create error:', createError);
         if (createError.code === '23505') {
           // Generate a new slug with timestamp
-          slug = generateSlug(title, Date.now());
+          slug = generateSlug(formData.title, Date.now());
           console.log('Generated new slug:', slug);
           
           // Try again with new slug
-          const { error: retryError } = await supabase
+          const { error: retryError } = await useSupabaseClient()
             .from('blog_posts')
             .insert({
-              title,
-              content,
+              title: formData.title,
+              content: formData.content,
               slug,
               is_published: false,  // Set to false by default
-              excerpt: excerpt || '',
+              excerpt: formData.excerpt || '',
               thumbnail_url: thumbnailUrl || null
             })
             .select();
@@ -136,8 +148,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
         </label>
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
@@ -148,8 +160,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           Excerpt
         </label>
         <textarea
-          value={excerpt}
-          onChange={(e) => setExcerpt(e.target.value)}
+          value={formData.excerpt}
+          onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           rows={3}
           required
@@ -174,8 +186,8 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
               alignleft aligncenter alignright alignjustify | \
               bullist numlist outdent indent | removeformat | help'
           }}
-          value={content}
-          onEditorChange={(content) => setContent(content)}
+          value={formData.content}
+          onEditorChange={(content) => setFormData({ ...formData, content })}
         />
       </div>
 
@@ -188,7 +200,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           accept="image/png,image/jpeg,image/webp"
           onChange={(e) => {
             if (e.target.files && e.target.files[0]) {
-              setThumbnail(e.target.files[0]);
+              setFormData({ ...formData, thumbnail: e.target.files[0] });
             }
           }}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"

@@ -1,12 +1,18 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import type { Database } from '../types/supabase';
 
 interface UploadResult {
   url: string | null;
   error: Error | null;
 }
 
-export const useFileUpload = (): { uploadFile: (file: File, folder: string) => Promise<UploadResult>, isLoading: boolean, error: Error | null } => {
+export const useFileUpload = (): {
+  uploadFile: (file: File, folder: string) => Promise<UploadResult>;
+  isLoading: boolean;
+  error: Error | null;
+} => {
+  const supabase = useSupabaseClient<Database>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -50,16 +56,16 @@ export const useFileUpload = (): { uploadFile: (file: File, folder: string) => P
       }
 
       // Get the public URL
-      const { data, error } = await supabase.storage
+      const { data: { publicUrl }, error: urlError } = await supabase.storage
         .from('uploads')
         .getPublicUrl(`${folder}/${fileName}`) as { data: { publicUrl: string }, error: any };
 
-      if (error) {
-        throw new Error(`URL error: ${error.message}`);
+      if (urlError) {
+        throw new Error(`URL error: ${urlError.message}`);
       }
 
       return {
-        url: data?.publicUrl,
+        url: publicUrl,
         error: null
       };
     } catch (err) {

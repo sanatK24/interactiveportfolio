@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import type { Database } from '../types/supabase';
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export function useAdmin() {
+  const supabase = useSupabaseClient();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -15,12 +19,13 @@ export function useAdmin() {
           return;
         }
 
-        const { data: profile } = await supabase
+        const { data: profile, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
-          .single();
+          .single<Profile>();
 
+        if (error) throw error;
         setIsAdmin(profile?.role === 'admin');
       } catch (error) {
         console.error('Error checking admin status:', error);

@@ -4,6 +4,13 @@ import { motion } from 'framer-motion';
 import { useToast } from '../../components/ui/ToastContext';
 import BlogEditor from '../../components/admin/BlogEditor';
 import { BlogPostForm } from '../../components/BlogPostForm';
+import type { Database } from '../../types/supabase';
+
+type AdminBlogPost = Database['public']['Tables']['blog_posts']['Row'];
+
+type BlogPost = Omit<AdminBlogPost, 'is_published'> & {
+  is_published: boolean;
+};
 
 enum SortOrder {
   Newest = 'newest',
@@ -12,36 +19,12 @@ enum SortOrder {
   TitleDesc = 'title_desc'
 }
 
-interface AdminBlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  thumbnail_url: string | undefined;
-  published_at: string | number | Date | null;
-  created_at: string;
-  updated_at: string;
-  is_published: boolean;
-};
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string;
-  thumbnail_url: string;
-  published_at: string | number | Date;
-  created_at: string;
-  updated_at: string;
-  is_published: boolean;
-}
-
 const convertToBlogPost = (post: AdminBlogPost): BlogPost => ({
   ...post,
-  published_at: post.published_at || '',
-  thumbnail_url: post.thumbnail_url || '',
+  is_published: post.is_published ?? false,
   excerpt: post.excerpt || '',
-  content: post.content || ''
+  content: post.content || '',
+  thumbnail_url: post.thumbnail_url || ''
 });
 
 const AdminBlog: React.FC = () => {
@@ -60,13 +43,13 @@ const AdminBlog: React.FC = () => {
 
   const fetchBlogPosts = async () => {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: sortOrder === SortOrder.Oldest });
 
       if (error) throw error;
-      
       setBlogPosts(data || []);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
@@ -86,6 +69,56 @@ const AdminBlog: React.FC = () => {
       type: 'success',
       message: 'Blog post created successfully'
     });
+  };
+
+  const deletePost = async (postId: string) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .delete()
+        .eq('id', postId);
+
+      if (error) throw error;
+
+      fetchBlogPosts();
+      addToast({
+        type: 'success',
+        message: 'Post deleted successfully'
+      });
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      addToast({
+        type: 'error',
+        message: 'Failed to delete post'
+      });
+    }
+  };
+
+  const updatePost = async (post: AdminBlogPost) => {
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .update(post)
+        .eq('id', post.id);
+
+      if (error) throw error;
+
+      fetchBlogPosts();
+      addToast({
+        type: 'success',
+        message: 'Post updated successfully'
+      });
+    } catch (error) {
+      console.error('Error updating post:', error);
+      addToast({
+        type: 'error',
+        message: 'Failed to update post'
+      });
+    }
   };
 
   return (
@@ -133,7 +166,15 @@ const AdminBlog: React.FC = () => {
                 className="bg-white p-6 rounded-lg shadow"
               >
                 <div className="flex justify-between items-start">
-                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <div>
+                    <h2 className="text-xl font-semibold">{post.title}</h2>
+                    <div className="mt-2 text-sm text-gray-500">
+                      <span>Created: {new Date(post.created_at || '').toLocaleDateString()}</span>
+                      {post.is_published && (
+                        <span className="ml-4">Published</span>
+                      )}
+                    </div>
+                  </div>
                   <div className="flex space-x-4">
                     <button
                       onClick={() => {
@@ -145,30 +186,7 @@ const AdminBlog: React.FC = () => {
                       Edit
                     </button>
                     <button
-                      onClick={async () => {
-                        if (window.confirm('Are you sure you want to delete this post?')) {
-                          try {
-                            const { error } = await supabase
-                              .from('blog_posts')
-                              .delete()
-                              .eq('id', post.id);
-
-                            if (error) throw error;
-
-                            fetchBlogPosts();
-                            addToast({
-                              type: 'success',
-                              message: 'Post deleted successfully'
-                            });
-                          } catch (error) {
-                            console.error('Error deleting post:', error);
-                            addToast({
-                              type: 'error',
-                              message: 'Failed to delete post'
-                            });
-                          }
-                        }
-                      }}
+                      onClick={() => deletePost(post.id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       Delete
@@ -176,7 +194,7 @@ const AdminBlog: React.FC = () => {
                   </div>
                 </div>
 
-                <p className="mt-2 text-gray-600">{post.excerpt}</p>
+                <p className="mt-4 text-gray-600">{post.excerpt || 'No excerpt available'}</p>
 
                 {post.thumbnail_url && (
                   <img
@@ -185,15 +203,6 @@ const AdminBlog: React.FC = () => {
                     className="mt-4 w-full h-48 object-cover rounded-lg"
                   />
                 )}
-
-                <div className="mt-4 text-sm text-gray-500">
-                  Created: {new Date(post.created_at).toLocaleDateString()}
-                  {post.published_at && (
-                    <span className="ml-4">
-                      Published: {new Date(post.published_at).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
               </motion.div>
             ))}
           </div>
@@ -208,6 +217,7 @@ const AdminBlog: React.FC = () => {
             setEditingPost(null);
             fetchBlogPosts();
           }}
+          onUpdate={updatePost}
         />
       )}
     </div>

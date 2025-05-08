@@ -1,21 +1,11 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import type { Database } from '../types/supabase';
 
-export interface Project {
-  updated_at: string;
-  technologies: string[];
-  id: string;
-  title: string;
-  description: string;
-  github_url: string;
-  live_url: string;
-  thumbnail_url: string;
-  is_visible: boolean;
-  display_order: number;
-  created_at: string;
-}
+type Project = Database['public']['Tables']['projects']['Row'];
 
 export function useProjects() {
+  const supabase = useSupabaseClient();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
