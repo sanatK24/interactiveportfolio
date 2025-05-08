@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Github, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -12,8 +12,20 @@ interface ProjectPreviewProps {
 }
 
 const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => {
-  const [previewMode, setPreviewMode] = useState<'readme' | 'live'>('readme');
+  const [previewMode, setPreviewMode] = useState<'readme' | 'live' | 'youtube'>('readme');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
+
+  // Extract YouTube URL from README content
+  useEffect(() => {
+    if (project?.readmeContent) {
+      const youtubeRegex = /https?:\/\/(?:www\.|)youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
+      const match = project.readmeContent.match(youtubeRegex);
+      if (match) {
+        setYoutubeUrl(`https://www.youtube.com/embed/${match[1]}`);
+      }
+    }
+  }, [project?.readmeContent]);
 
   if (!project) return null;
 
@@ -28,6 +40,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0 }}
         onClick={onClose}
       >
         <motion.div
@@ -37,6 +50,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ duration: 0 }}
           layoutId={`project-${project.id}`}
           onClick={(e) => e.stopPropagation()}
         >
@@ -110,9 +124,22 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
                 Live Preview
               </button>
             )}
+
+            {youtubeUrl && (
+              <button
+                className={`px-4 py-2 font-medium text-sm ${
+                  previewMode === 'youtube'
+                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                }`}
+                onClick={() => setPreviewMode('youtube')}
+              >
+                Video Preview
+              </button>
+            )}
           </div>
           
-          <div className={`overflow-auto ${isFullscreen ? 'h-[calc(100vh-112px)]' : 'max-h-[calc(90vh-112px)]'}`}>
+          <div className={`overflow-hidden ${isFullscreen ? 'h-[calc(100vh-112px)]' : 'max-h-[calc(90vh-112px)]'}`} style={{ height: '100%' }}>
             {previewMode === 'readme' ? (
               <div className="p-6 prose dark:prose-invert prose-blue max-w-none">
                 {project.readmeContent ? (
@@ -128,7 +155,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
                   </div>
                 )}
               </div>
-            ) : (
+            ) : previewMode === 'live' ? (
               <div className="w-full h-full min-h-[500px]">
                 {project.homepage && (
                   <iframe
@@ -140,7 +167,23 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
                   />
                 )}
               </div>
-            )}
+            ) : previewMode === 'youtube' && youtubeUrl ? (
+              <div className="w-full h-full min-h-[500px] p-6">
+                <iframe
+                  src={youtubeUrl}
+                  title={`${project.name} YouTube preview`}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  style={{
+                    height: 'calc(100% - 1rem)', // Subtract padding
+                    maxHeight: '100%',
+                    minHeight: '500px'
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
         </motion.div>
       </motion.div>

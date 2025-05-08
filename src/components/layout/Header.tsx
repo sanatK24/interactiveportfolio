@@ -16,15 +16,15 @@ const Header: React.FC = () => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Skills', href: '/skills' },
+    { name: 'Certifications', href: '/certifications' },
+    { name: 'Background', href: '/education' },
     { name: 'Blog', href: '/blog' },
     { name: 'Projects', href: '/projects' },
     { name: 'Contact', href: '/contact' },
   ];
 
   const adminNavigation = [
-    { name: 'Projects', href: '/admin/projects' },
-    { name: 'Blog', href: '/admin/blog' },
-    { name: 'Contact Messages', href: '/admin/contact' },
+    { name: 'Admin Dashboard', href: '/admin' }
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

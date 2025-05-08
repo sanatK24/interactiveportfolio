@@ -74,8 +74,8 @@ const Projects: React.FC = () => {
                 Please try again later or check the GitHub username in the configuration.
               </p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ) : projects.length > 0 ? (
+            <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
                 <motion.div
                   key={project.id}
@@ -86,19 +86,17 @@ const Projects: React.FC = () => {
                   <ProjectCard project={project} onPreview={handlePreview} />
                 </motion.div>
               ))}
-            </div>
-          )}
-          
-          {projects.length === 0 && !loading && !error && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">
+            </motion.div>
+          ) : (
+            <motion.div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              <p>
                 No projects found. Make sure to update the GitHub username in the configuration.
               </p>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
-      
+
       {/* Project Preview Modal */}
       <ProjectPreview project={selectedProject} onClose={handleClosePreview} />
     </div>

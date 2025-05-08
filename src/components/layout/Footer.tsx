@@ -2,8 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faLinkedin, faXTwitter } from '@fortawesome/free-brands-svg-icons';
+import { useAuth } from '../../context/AuthContext';
 
 const Footer: React.FC = () => {
+  const { isAdmin } = useAuth();
+
   const socialLinks = [
     { name: 'GitHub', icon: <FontAwesomeIcon icon={faGithub} size="lg" />, href: 'https://github.com/sanatK24' },
     { name: 'LinkedIn', icon: <FontAwesomeIcon icon={faLinkedin} size="lg" />, href: 'https://www.linkedin.com/in/sanat-karkhanis-3255a7214/' },
@@ -24,7 +27,15 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Quick Links</h3>
             <ul className="space-y-2">
-              {['Home', 'Skills', 'Projects', 'Blog', 'Contact'].map((item) => (
+              {[
+                'Home',
+                'Skills',
+                'Certifications',
+                'Background',
+                'Blog',
+                'Projects',
+                'Contact'
+              ].map((item) => (
                 <li key={item}>
                   <a 
                     href={`/${item.toLowerCase() === 'home' ? '' : item.toLowerCase()}`}
@@ -34,6 +45,16 @@ const Footer: React.FC = () => {
                   </a>
                 </li>
               ))}
+              {isAdmin && (
+                <li>
+                  <a 
+                    href="/admin"
+                    className="text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-300"
+                  >
+                    Admin Dashboard
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
           

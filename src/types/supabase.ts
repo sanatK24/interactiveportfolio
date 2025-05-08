@@ -71,6 +71,205 @@ export type Database = {
         }
         Relationships: []
       }
+      certifications: {
+        Row: {
+          created_at: string | null
+          credential_url: string | null
+          expiration_month: number | null
+          expiration_year: number | null
+          id: string
+          issue_month: number
+          issue_year: number
+          issuing_organization: string
+          name: string
+          skills: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credential_url?: string | null
+          expiration_month?: number | null
+          expiration_year?: number | null
+          id?: string
+          issue_month: number
+          issue_year: number
+          issuing_organization: string
+          name: string
+          skills?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credential_url?: string | null
+          expiration_month?: number | null
+          expiration_year?: number | null
+          id?: string
+          issue_month?: number
+          issue_year?: number
+          issuing_organization?: string
+          name?: string
+          skills?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      education: {
+        Row: {
+          activities: string | null
+          created_at: string | null
+          degree: string | null
+          description: string | null
+          end_month: number | null
+          end_year: number | null
+          field_of_study: string
+          grade: string | null
+          id: string
+          school: string
+          start_month: number
+          start_year: number
+          updated_at: string | null
+        }
+        Insert: {
+          activities?: string | null
+          created_at?: string | null
+          degree?: string | null
+          description?: string | null
+          end_month?: number | null
+          end_year?: number | null
+          field_of_study: string
+          grade?: string | null
+          id?: string
+          school: string
+          start_month: number
+          start_year: number
+          updated_at?: string | null
+        }
+        Update: {
+          activities?: string | null
+          created_at?: string | null
+          degree?: string | null
+          description?: string | null
+          end_month?: number | null
+          end_year?: number | null
+          field_of_study?: string
+          grade?: string | null
+          id?: string
+          school?: string
+          start_month?: number
+          start_year?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      experience: {
+        Row: {
+          company_name: string
+          created_at: string | null
+          description: string | null
+          employment_type: string
+          end_month: number | null
+          end_year: number | null
+          id: string
+          is_current: boolean | null
+          location: string | null
+          skills_used: string[] | null
+          start_month: number
+          start_year: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string | null
+          description?: string | null
+          employment_type: string
+          end_month?: number | null
+          end_year?: number | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          skills_used?: string[] | null
+          start_month: number
+          start_year: number
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string | null
+          description?: string | null
+          employment_type?: string
+          end_month?: number | null
+          end_year?: number | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          skills_used?: string[] | null
+          start_month?: number
+          start_year?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      media_attachments: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          reference_id: string
+          reference_type: string
+          title: string | null
+          type: string
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id: string
+          reference_type: string
+          title?: string | null
+          type: string
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string
+          reference_type?: string
+          title?: string | null
+          type?: string
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_certification"
+            columns: ["reference_id"]
+            isOneToOne: false
+            referencedRelation: "certifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_education"
+            columns: ["reference_id"]
+            isOneToOne: false
+            referencedRelation: "education"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_experience"
+            columns: ["reference_id"]
+            isOneToOne: false
+            referencedRelation: "experience"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string

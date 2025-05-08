@@ -11,7 +11,7 @@ const AdminDashboard: React.FC = () => {
     <div className="min-h-screen pt-16 pb-20">
       <div className="container mx-auto px-4">
         <div className="flex">
-          {/* Sidebar */}
+          {/* Sidebar
           <motion.div
             className="w-64 bg-gray-800 text-white fixed h-full pt-20"
             initial={{ x: -300 }}
@@ -53,9 +53,33 @@ const AdminDashboard: React.FC = () => {
                 >
                   Contact
                 </a>
+                <a
+                  href="/admin/education"
+                  className={`block px-4 py-2 text-gray-300 hover:bg-gray-700 ${
+                    location.pathname === '/admin/education' && 'bg-gray-700'
+                  }`}
+                >
+                  Education
+                </a>
+                <a
+                  href="/admin/experience"
+                  className={`block px-4 py-2 text-gray-300 hover:bg-gray-700 ${
+                    location.pathname === '/admin/experience' && 'bg-gray-700'
+                  }`}
+                >
+                  Experience
+                </a>
+                <a
+                  href="/admin/certifications"
+                  className={`block px-4 py-2 text-gray-300 hover:bg-gray-700 ${
+                    location.pathname === '/admin/certifications' && 'bg-gray-700'
+                  }`}
+                >
+                  Certifications
+                </a>
               </div>
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Main Content */}
           <div className="ml-64">
@@ -70,6 +94,9 @@ const AdminDashboard: React.FC = () => {
                 {location.pathname === '/admin/projects' && 'Projects'}
                 {location.pathname === '/admin/blog' && 'Blog'}
                 {location.pathname === '/admin/contact' && 'Contact Messages'}
+                {location.pathname === '/admin/education' && 'Education'}
+                {location.pathname === '/admin/experience' && 'Experience'}
+                {location.pathname === '/admin/certifications' && 'Certifications'}
               </motion.h1>
               <motion.p
                 className="text-lg text-gray-600 dark:text-gray-300"
