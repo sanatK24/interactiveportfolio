@@ -2,7 +2,9 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import type { Database } from '../types/supabase';
 import { useToast } from '../components/ui/ToastContext';
 import { motion } from 'framer-motion';
-import { Send, MapPin, Phone, Mail, Linkedin, Github, Twitter } from 'lucide-react';
+import { Send, MapPin, Phone, Mail, Linkedin, Github } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useState } from 'react';
 
 type FormData = Database['public']['Tables']['messages']['Insert'];
@@ -232,7 +234,7 @@ const Contact: React.FC = () => {
                     className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                     aria-label="X"
                   >
-                    <Twitter size={24} />
+                    <FontAwesomeIcon icon={faXTwitter} size="lg" />
                   </motion.a>
                 </div>
               </div>
