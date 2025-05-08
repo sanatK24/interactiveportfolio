@@ -30,7 +30,6 @@ const Footer: React.FC = () => {
               {[
                 'Home',
                 'Skills',
-                'Certifications',
                 'Background',
                 'Blog',
                 'Projects',
