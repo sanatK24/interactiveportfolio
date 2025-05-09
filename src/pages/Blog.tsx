@@ -87,10 +87,6 @@ const BlogPage: React.FC = () => {
     return grouped;
   };
 
-  const openImage = (src: string) => {
-    setSelectedImage(src);
-  };
-
   const closeImage = () => {
     setSelectedImage(null);
   };
@@ -113,7 +109,12 @@ const BlogPage: React.FC = () => {
         src={src}
         alt={alt}
         className={`${className} transition-transform duration-300 hover:scale-105 cursor-pointer`}
-        onClick={() => openImage(src)}
+        onClick={() => {
+          // Only open lightbox in preview modal
+          if (selectedPost) {
+            setSelectedImage(src);
+          }
+        }}
       />
     );
   };

@@ -7,8 +7,14 @@ interface UploadResult {
   error: Error | null;
 }
 
-export const useFileUpload = (): {
-  uploadFile: (file: File, folder: string) => Promise<UploadResult>;
+interface UseFileUploadConfig {
+  maxFileSize?: number;  // in bytes
+  allowedTypes?: string[];
+  defaultBucket?: string;
+}
+
+export const useFileUpload = (config: UseFileUploadConfig = {}): {
+  uploadFile: (file: File, folder: string, bucket?: string) => Promise<UploadResult>;
   isLoading: boolean;
   error: Error | null;
 } => {
@@ -16,27 +22,32 @@ export const useFileUpload = (): {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const uploadFile = async (file: File, folder: string): Promise<UploadResult> => {
+  const {
+    maxFileSize = 50 * 1024 * 1024, // 50MB default
+    allowedTypes = ['image/png', 'image/jpeg', 'image/webp'],
+    defaultBucket = 'experience'
+  } = config;
+
+  const uploadFile = async (file: File, folder: string, bucket = defaultBucket): Promise<UploadResult> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Validate file size (50MB limit)
-      if (file.size > 50 * 1024 * 1024) {
-        throw new Error('File size exceeds 50MB limit');
+      // Validate file size
+      if (file.size > maxFileSize) {
+        throw new Error(`File size exceeds ${maxFileSize / (1024 * 1024)}MB limit`);
       }
 
       // Validate file type
-      const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
-      if (!validTypes.includes(file.type)) {
-        throw new Error('Invalid file type. Only PNG, JPEG, and WEBP images are allowed');
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(`Invalid file type. Only ${allowedTypes.join(', ')} are allowed`);
       }
 
       const fileName = `${Date.now()}-${file.name}`;
       
-      // Upload the file to the certifications bucket
-      const { error: uploadError, data: uploadData } = await supabase.storage
-        .from('certifications')
+      // Upload the file to the specified bucket
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
         .upload(`${folder}/${fileName}`, file, {
           cacheControl: '3600',
           upsert: false
@@ -46,14 +57,17 @@ export const useFileUpload = (): {
         throw uploadError;
       }
 
-      // Extract UUID from the path
-      const uuid = uploadData.path.split('/').pop();
-      if (!uuid) {
-        throw new Error('Failed to extract UUID from uploaded file');
+      // Get the public URL for the uploaded file
+      const { data: publicUrlData } = await supabase.storage
+        .from(bucket)
+        .getPublicUrl(`${folder}/${fileName}`);
+
+      if (!publicUrlData?.publicUrl) {
+        throw new Error('Failed to get public URL for uploaded file');
       }
 
       return {
-        url: uuid,
+        url: publicUrlData.publicUrl,
         error: null
       };
     } catch (err) {

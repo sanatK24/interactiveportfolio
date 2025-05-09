@@ -32,13 +32,14 @@ export const useCertifications = () => {
         // Process each certification to get file URLs
         const certificationsWithUrls = await Promise.all(
           certificationsData.map(async (cert) => {
-            // Convert certificate image UUIDs to URLs
-            const certificateImages = cert.certificate_images?.map((imageId: string) => {
-              if (!imageId) return null;
-              return supabase.storage.from('certifications').getPublicUrl(imageId).data.publicUrl;
+            // Convert certificate image paths to URLs
+            const certificateImages = cert.certificate_images?.map((imagePath: string) => {
+              if (!imagePath) return null;
+              // Assuming the paths are relative to the certifications bucket
+              return supabase.storage.from('certifications').getPublicUrl(imagePath).data.publicUrl;
             }).filter((url: string | null): url is string => url !== null) || [];
 
-            // Convert organization logo UUID to URL
+            // Convert organization logo path to URL
             const organizationLogo = cert.organization_logo 
               ? supabase.storage.from('certifications').getPublicUrl(cert.organization_logo).data.publicUrl
               : null;
@@ -52,10 +53,10 @@ export const useCertifications = () => {
         );
 
         setCertifications(certificationsWithUrls);
-      } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
-        setError(errorMessage);
-      } finally {
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching certifications:', error);
+        setError('Failed to fetch certifications');
         setLoading(false);
       }
     };
@@ -65,3 +66,5 @@ export const useCertifications = () => {
 
   return { certifications, loading, error };
 };
+
+export default useCertifications;

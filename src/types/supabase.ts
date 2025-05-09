@@ -73,7 +73,9 @@ export type Database = {
       }
       certifications: {
         Row: {
-          certificate_images: string[] | null
+          category: string
+          certificate_original_names: string[] | null
+          certificate_urls: string[] | null
           created_at: string | null
           credential_url: string | null
           expiration_month: number | null
@@ -83,12 +85,15 @@ export type Database = {
           issue_year: number
           issuing_organization: string
           name: string
-          organization_logo: string | null
+          organization_logo_original_name: string | null
+          organization_logo_url: string | null
           skills: string[] | null
           updated_at: string | null
         }
         Insert: {
-          certificate_images?: string[] | null
+          category?: string
+          certificate_original_names?: string[] | null
+          certificate_urls?: string[] | null
           created_at?: string | null
           credential_url?: string | null
           expiration_month?: number | null
@@ -98,12 +103,15 @@ export type Database = {
           issue_year: number
           issuing_organization: string
           name: string
-          organization_logo?: string | null
+          organization_logo_original_name?: string | null
+          organization_logo_url?: string | null
           skills?: string[] | null
           updated_at?: string | null
         }
         Update: {
-          certificate_images?: string[] | null
+          category?: string
+          certificate_original_names?: string[] | null
+          certificate_urls?: string[] | null
           created_at?: string | null
           credential_url?: string | null
           expiration_month?: number | null
@@ -113,7 +121,8 @@ export type Database = {
           issue_year?: number
           issuing_organization?: string
           name?: string
-          organization_logo?: string | null
+          organization_logo_original_name?: string | null
+          organization_logo_url?: string | null
           skills?: string[] | null
           updated_at?: string | null
         }
@@ -122,51 +131,60 @@ export type Database = {
       education: {
         Row: {
           activities: string | null
+          category: string
           created_at: string | null
           degree: string | null
           description: string | null
+          education_id: string
+          education_photos: string[] | null
+          education_photos_original_names: string[] | null
           end_month: number | null
           end_year: number | null
           field_of_study: string
           grade: string | null
-          id: string
-          related_photos: string[] | null
           school: string
-          school_logo: string | null
+          school_logo_original_name: string | null
+          school_logo_url: string | null
           start_month: number
           start_year: number
           updated_at: string | null
         }
         Insert: {
           activities?: string | null
+          category?: string
           created_at?: string | null
           degree?: string | null
           description?: string | null
+          education_id?: string
+          education_photos?: string[] | null
+          education_photos_original_names?: string[] | null
           end_month?: number | null
           end_year?: number | null
           field_of_study: string
           grade?: string | null
-          id?: string
-          related_photos?: string[] | null
           school: string
-          school_logo?: string | null
+          school_logo_original_name?: string | null
+          school_logo_url?: string | null
           start_month: number
           start_year: number
           updated_at?: string | null
         }
         Update: {
           activities?: string | null
+          category?: string
           created_at?: string | null
           degree?: string | null
           description?: string | null
+          education_id?: string
+          education_photos?: string[] | null
+          education_photos_original_names?: string[] | null
           end_month?: number | null
           end_year?: number | null
           field_of_study?: string
           grade?: string | null
-          id?: string
-          related_photos?: string[] | null
           school?: string
-          school_logo?: string | null
+          school_logo_original_name?: string | null
+          school_logo_url?: string | null
           start_month?: number
           start_year?: number
           updated_at?: string | null
@@ -175,17 +193,20 @@ export type Database = {
       }
       experience: {
         Row: {
-          company_logo: string | null
+          category: string
+          company_logo_original_name: string | null
+          company_logo_url: string | null
           company_name: string
           created_at: string | null
           description: string | null
           employment_type: string
           end_month: number | null
           end_year: number | null
-          id: string
+          experience_id: string
+          experience_photos: string[] | null
+          experience_photos_original_names: string[] | null
           is_current: boolean | null
           location: string | null
-          related_photos: string[] | null
           skills_used: string[] | null
           start_month: number
           start_year: number
@@ -193,17 +214,20 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          company_logo?: string | null
+          category?: string
+          company_logo_original_name?: string | null
+          company_logo_url?: string | null
           company_name: string
           created_at?: string | null
           description?: string | null
           employment_type: string
           end_month?: number | null
           end_year?: number | null
-          id?: string
+          experience_id?: string
+          experience_photos?: string[] | null
+          experience_photos_original_names?: string[] | null
           is_current?: boolean | null
           location?: string | null
-          related_photos?: string[] | null
           skills_used?: string[] | null
           start_month: number
           start_year: number
@@ -211,17 +235,20 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          company_logo?: string | null
+          category?: string
+          company_logo_original_name?: string | null
+          company_logo_url?: string | null
           company_name?: string
           created_at?: string | null
           description?: string | null
           employment_type?: string
           end_month?: number | null
           end_year?: number | null
-          id?: string
+          experience_id?: string
+          experience_photos?: string[] | null
+          experience_photos_original_names?: string[] | null
           is_current?: boolean | null
           location?: string | null
-          related_photos?: string[] | null
           skills_used?: string[] | null
           start_month?: number
           start_year?: number
@@ -229,64 +256,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      media_attachments: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          id: string
-          reference_id: string
-          reference_type: string
-          title: string | null
-          type: string
-          updated_at: string | null
-          url: string
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          reference_id: string
-          reference_type: string
-          title?: string | null
-          type: string
-          updated_at?: string | null
-          url: string
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          reference_id?: string
-          reference_type?: string
-          title?: string | null
-          type?: string
-          updated_at?: string | null
-          url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_certification"
-            columns: ["reference_id"]
-            isOneToOne: false
-            referencedRelation: "certifications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_education"
-            columns: ["reference_id"]
-            isOneToOne: false
-            referencedRelation: "education"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_experience"
-            columns: ["reference_id"]
-            isOneToOne: false
-            referencedRelation: "experience"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       messages: {
         Row: {
@@ -543,3 +512,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+

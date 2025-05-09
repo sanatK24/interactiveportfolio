@@ -3,11 +3,15 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import type { Database } from '../types/supabase';
 
 type EducationRow = Database['public']['Tables']['education']['Row'];
-type MediaAttachment = Database['public']['Tables']['media_attachments']['Row'];
+
+type EducationWithMedia = EducationRow & {
+  education_photos_urls?: string[];
+  school_logo_url?: string | null;
+};
 
 export const useEducation = () => {
   const supabase = useSupabaseClient();
-  const [education, setEducation] = useState<EducationRow[]>([]);
+  const [education, setEducation] = useState<EducationWithMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,25 +30,27 @@ export const useEducation = () => {
 
         if (educationError) throw educationError;
 
-        // Fetch media attachments for each education entry
-        const educationWithMedia = await Promise.all(
+        // Process each education entry to get file URLs
+        const educationWithUrls = await Promise.all(
           educationData.map(async (edu) => {
-            const { data: mediaData, error: mediaError } = await supabase
-              .from('media_attachments')
-              .select('*')
-              .eq('reference_id', edu.id)
-              .eq('reference_type', 'education');
+            // Convert education photos URLs to display URLs
+            const educationPhotos = edu.education_photos?.map((url: string) => {
+              if (!url) return null;
+              return url;
+            }).filter((url: string | null): url is string => url !== null) || [];
 
-            if (mediaError) throw mediaError;
+            // Convert school logo URL to display URL
+            const schoolLogo = edu.school_logo_url || null;
 
             return {
               ...edu,
-              media: mediaData as MediaAttachment[]
+              education_photos_urls: educationPhotos,
+              school_logo_url: schoolLogo
             };
           })
         );
 
-        setEducation(educationWithMedia);
+        setEducation(educationWithUrls);
       } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
         setError(errorMessage);

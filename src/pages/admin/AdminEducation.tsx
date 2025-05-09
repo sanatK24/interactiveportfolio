@@ -6,18 +6,32 @@ import { useToast } from '../../components/ui/ToastContext';
 import { formatMonth } from '../../utils/dateUtils';
 import { useFileUpload } from '../../hooks/useFileUpload';
 
-type EducationRow = Database['public']['Tables']['education']['Row'];
-type EducationInsert = Database['public']['Tables']['education']['Insert'];
+// Extend the Supabase types to include our computed fields
+type EnhancedEducationRow = Database['public']['Tables']['education']['Row'] & {
+  education_photos_urls?: string[];
+  school_logo_url?: string | null;
+};
+
+type EnhancedEducationInsert = Database['public']['Tables']['education']['Insert'] & {
+  education_photos_urls?: string[];
+  school_logo_url?: string | null;
+};
+
+type PartialEnhancedEducationInsert = Partial<EnhancedEducationInsert>;
 
 const AdminEducation: React.FC = () => {
   const supabase = useSupabaseClient();
   const { addToast } = useToast();
-  const { uploadFile } = useFileUpload();
-  const [education, setEducation] = useState<EducationRow[]>([]);
+  const { uploadFile } = useFileUpload({
+    defaultBucket: 'education',
+    allowedTypes: ['image/png', 'image/jpeg', 'image/webp'],
+    maxFileSize: 50 * 1024 * 1024
+  });
+  const [education, setEducation] = useState<EnhancedEducationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newEducation, setNewEducation] = useState<EducationInsert>({
+  const [newEducation, setNewEducation] = useState<EnhancedEducationInsert>({
     school: '',
     field_of_study: '',
     start_month: new Date().getMonth() + 1,
@@ -28,12 +42,18 @@ const AdminEducation: React.FC = () => {
     grade: null,
     activities: null,
     description: null,
-    school_logo: null,
-    related_photos: []
+    education_photos: [],
+    education_photos_original_names: [],
+    school_logo_url: null,
+    school_logo_original_name: null,
+    category: 'Education'
   });
 
-  const [selectedSchoolLogo, setSelectedSchoolLogo] = useState<File | null>(null);
-  const [selectedRelatedPhotos, setSelectedRelatedPhotos] = useState<File[]>([]);
+  const [educationPhotoFiles, setEducationPhotoFiles] = useState<File[]>([]);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  const [editingEducation, setEditingEducation] = useState<string | null>(null);
+  const [editedEducation, setEditedEducation] = useState<EnhancedEducationInsert | null>(null);
 
   useEffect(() => {
     fetchEducation();
@@ -44,39 +64,139 @@ const AdminEducation: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const { data: educationData, error: educationError } = await supabase
-        .from('education')
-        .select('*')
-        .order('start_year', { ascending: false })
-        .order('start_month', { ascending: false });
+      // Create query
+      const query = supabase.from('education').select('*');
+
+      // Add ordering
+      query.order('start_year', { ascending: false });
+      query.order('start_month', { ascending: false });
+
+      // Execute query
+      const { data: educationData, error: educationError } = await query;
 
       if (educationError) throw educationError;
 
-      // Fetch media attachments for each education entry
-      const educationWithMedia = await Promise.all(
+      // Process each education entry to get file URLs
+      const educationWithUrls = await Promise.all(
         educationData.map(async (edu) => {
-          const { data: mediaData, error: mediaError } = await supabase
-            .from('media_attachments')
-            .select('*')
-            .eq('reference_id', edu.id)
-            .eq('reference_type', 'education');
+          // Convert education photos URLs to display URLs
+          const educationPhotos = edu.education_photos?.map((url: string) => {
+            if (!url) return null;
+            return url;
+          }).filter((url: string | null): url is string => url !== null) || [];
 
-          if (mediaError) throw mediaError;
+          // Convert school logo URL to display URL
+          const schoolLogo = edu.school_logo_url || null;
 
           return {
             ...edu,
-            media: mediaData
+            education_photos_urls: educationPhotos,
+            school_logo_url: schoolLogo
           };
         })
       );
 
-      setEducation(educationWithMedia);
+      setEducation(educationWithUrls);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
       addToast({
         type: 'error',
-        message: `Failed to fetch education: ${errorMessage}`
+        message: `Failed to fetch education entries: ${errorMessage}`
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditEducation = (educationId: string) => {
+    const educationToEdit = education.find(e => e.education_id === educationId);
+    if (educationToEdit) {
+      const initialEditState: EnhancedEducationInsert = {
+        ...educationToEdit,
+        education_photos: educationToEdit.education_photos || [],
+        education_photos_original_names: educationToEdit.education_photos_original_names || [],
+        school_logo_url: educationToEdit.school_logo_url,
+        school_logo_original_name: educationToEdit.school_logo_original_name
+      };
+      
+      setEditingEducation(educationId);
+      setEditedEducation(initialEditState);
+      setShowAddModal(true);
+    }
+  };
+
+  const handleUpdateEducation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingEducation || !editedEducation) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Upload education photos
+      const educationPhotos: string[] = [];
+      if (educationPhotoFiles.length > 0) {
+        for (const photo of educationPhotoFiles) {
+          const result = await uploadFile(photo, 'education');
+          if (result.error) throw result.error;
+          if (result.url) {
+            educationPhotos.push(result.url);
+          }
+        }
+      }
+
+      // Upload school logo
+      let schoolLogoUrl = null;
+      if (logoFile) {
+        const result = await uploadFile(logoFile, 'education');
+        if (result.error) throw result.error;
+        schoolLogoUrl = result.url;
+      }
+
+      // Create update object with only the fields we want to update
+      const updateData: PartialEnhancedEducationInsert = {
+        school: editedEducation.school,
+        field_of_study: editedEducation.field_of_study,
+        start_month: editedEducation.start_month,
+        start_year: editedEducation.start_year,
+        end_month: editedEducation.end_month,
+        end_year: editedEducation.end_year,
+        degree: editedEducation.degree,
+        grade: editedEducation.grade,
+        activities: editedEducation.activities,
+        description: editedEducation.description,
+        education_photos: educationPhotos.length > 0 ? educationPhotos : editedEducation.education_photos,
+        school_logo_url: schoolLogoUrl || editedEducation.school_logo_url,
+        updated_at: new Date().toISOString()
+      };
+
+      // Update education
+      const { error: updateError } = await supabase
+        .from('education')
+        .update(updateData)
+        .eq('education_id', editingEducation);
+
+      if (updateError) throw updateError;
+
+      addToast({
+        type: 'success',
+        message: 'Education entry updated successfully'
+      });
+
+      setShowAddModal(false);
+      setEditingEducation(null);
+      setEditedEducation(null);
+      setLogoFile(null);
+      setEducationPhotoFiles([]);
+      
+      await fetchEducation();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
+      addToast({
+        type: 'error',
+        message: `Failed to update education entry: ${errorMessage}`
       });
     } finally {
       setLoading(false);
@@ -88,43 +208,78 @@ const AdminEducation: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Upload related photos
-      const relatedPhotos: string[] = [];
-      if (selectedRelatedPhotos.length > 0) {
-        for (const photo of selectedRelatedPhotos) {
-          const result = await uploadFile(photo, 'education');
-          if (result.error) throw result.error;
+
+      // Validate required fields
+      if (!newEducation.school.trim()) {
+        throw new Error('School name is required');
+      }
+      if (!newEducation.field_of_study.trim()) {
+        throw new Error('Field of study is required');
+      }
+      if (!newEducation.start_year || newEducation.start_year < 1900) {
+        throw new Error('Valid start year is required');
+      }
+      if (!newEducation.start_month || newEducation.start_month < 1 || newEducation.start_month > 12) {
+        throw new Error('Valid start month is required');
+      }
+
+      // Upload education photos
+      const educationPhotos: string[] = [];
+      if (educationPhotoFiles.length > 0) {
+        for (const file of educationPhotoFiles) {
+          const result = await uploadFile(file, 'education');
+          if (result.error) {
+            throw new Error(`Failed to upload education photo: ${result.error.message}`);
+          }
           if (result.url) {
-            relatedPhotos.push(result.url);
+            educationPhotos.push(result.url);
           }
         }
       }
 
       // Upload school logo
-      let schoolLogoUrl = null;
-      if (selectedSchoolLogo) {
-        const result = await uploadFile(selectedSchoolLogo, 'education');
-        if (result.error) throw result.error;
-        schoolLogoUrl = result.url;
+      let schoolLogoUrl: string | null = null;
+      if (logoFile) {
+        const result = await uploadFile(logoFile, 'education');
+        if (result.error) {
+          throw new Error(`Failed to upload school logo: ${result.error.message}`);
+        }
+        if (result.url) {
+          schoolLogoUrl = result.url;
+        }
       }
 
       // Insert education
       const { error: insertError } = await supabase
         .from('education')
         .insert([{
-          ...newEducation,
-          related_photos: relatedPhotos,
-          school_logo: schoolLogoUrl
+          school: newEducation.school.trim(),
+          field_of_study: newEducation.field_of_study.trim(),
+          start_month: newEducation.start_month,
+          start_year: newEducation.start_year,
+          end_month: newEducation.end_month || null,
+          end_year: newEducation.end_year || null,
+          degree: newEducation.degree || null,
+          grade: newEducation.grade || null,
+          activities: newEducation.activities || null,
+          description: newEducation.description || null,
+          education_photos: educationPhotos,
+          education_photos_original_names: educationPhotos.map(url => url.split('/').pop() || ''),
+          school_logo_url: schoolLogoUrl,
+          school_logo_original_name: schoolLogoUrl ? schoolLogoUrl.split('/').pop() : null,
+          category: newEducation.category
         }]);
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        throw insertError;
+      }
 
       addToast({
         type: 'success',
         message: 'Education entry added successfully'
       });
 
+      // Reset form state
       setShowAddModal(false);
       setNewEducation({
         school: '',
@@ -137,11 +292,14 @@ const AdminEducation: React.FC = () => {
         grade: null,
         activities: null,
         description: null,
-        school_logo: null,
-        related_photos: []
+        education_photos: [],
+        education_photos_original_names: [],
+        school_logo_url: null,
+        school_logo_original_name: null,
+        category: 'Education'
       });
-      setSelectedSchoolLogo(null);
-      setSelectedRelatedPhotos([]);
+      setEducationPhotoFiles([]);
+      setLogoFile(null);
       
       await fetchEducation();
     } catch (err: unknown) {
@@ -165,7 +323,7 @@ const AdminEducation: React.FC = () => {
       const { error } = await supabase
         .from('education')
         .delete()
-        .eq('id', id);
+        .eq('education_id', id);
 
       if (error) throw error;
 
@@ -224,15 +382,27 @@ const AdminEducation: React.FC = () => {
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
         >
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
-            <h3 className="text-xl font-bold mb-4">Add Education Entry</h3>
-            <form onSubmit={handleAddEducation} className="space-y-4">
+            <h3 className="text-xl font-bold mb-4">{editingEducation ? 'Edit' : 'Add'} Education Entry</h3>
+            <form onSubmit={editingEducation ? handleUpdateEducation : handleAddEducation} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">School/College</label>
                   <input
                     type="text"
-                    value={newEducation.school}
-                    onChange={(e) => setNewEducation({ ...newEducation, school: e.target.value })}
+                    value={editingEducation ? editedEducation?.school || '' : newEducation.school}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          school: e.target.value
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          school: e.target.value
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded"
                     required
                   />
@@ -241,8 +411,20 @@ const AdminEducation: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Field of Study</label>
                   <input
                     type="text"
-                    value={newEducation.field_of_study}
-                    onChange={(e) => setNewEducation({ ...newEducation, field_of_study: e.target.value })}
+                    value={editingEducation ? editedEducation?.field_of_study || '' : newEducation.field_of_study}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          field_of_study: e.target.value
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          field_of_study: e.target.value
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded"
                     required
                   />
@@ -254,8 +436,20 @@ const AdminEducation: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Start Date</label>
                   <div className="flex gap-2">
                     <select
-                      value={newEducation.start_month}
-                      onChange={(e) => setNewEducation({ ...newEducation, start_month: parseInt(e.target.value) })}
+                      value={editingEducation ? editedEducation?.start_month || new Date().getMonth() + 1 : newEducation.start_month}
+                      onChange={(e) => {
+                        if (editingEducation) {
+                          setEditedEducation(prev => prev && {
+                            ...prev,
+                            start_month: parseInt(e.target.value)
+                          });
+                        } else {
+                          setNewEducation(prev => ({
+                            ...prev,
+                            start_month: parseInt(e.target.value)
+                          }));
+                        }
+                      }}
                       className="w-1/2 p-2 border rounded"
                     >
                       {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
@@ -265,8 +459,20 @@ const AdminEducation: React.FC = () => {
                       ))}
                     </select>
                     <select
-                      value={newEducation.start_year}
-                      onChange={(e) => setNewEducation({ ...newEducation, start_year: parseInt(e.target.value) })}
+                      value={editingEducation ? editedEducation?.start_year || new Date().getFullYear() : newEducation.start_year}
+                      onChange={(e) => {
+                        if (editingEducation) {
+                          setEditedEducation(prev => prev && {
+                            ...prev,
+                            start_year: parseInt(e.target.value)
+                          });
+                        } else {
+                          setNewEducation(prev => ({
+                            ...prev,
+                            start_year: parseInt(e.target.value)
+                          }));
+                        }
+                      }}
                       className="w-1/2 p-2 border rounded"
                     >
                       {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(year => (
@@ -281,8 +487,20 @@ const AdminEducation: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">End Date (Optional)</label>
                   <div className="flex gap-2">
                     <select
-                      value={newEducation.end_month || ''}
-                      onChange={(e) => setNewEducation({ ...newEducation, end_month: e.target.value ? parseInt(e.target.value) : null })}
+                      value={editingEducation ? editedEducation?.end_month || '' : newEducation.end_month || ''}
+                      onChange={(e) => {
+                        if (editingEducation) {
+                          setEditedEducation(prev => prev && {
+                            ...prev,
+                            end_month: e.target.value ? parseInt(e.target.value) : null
+                          });
+                        } else {
+                          setNewEducation(prev => ({
+                            ...prev,
+                            end_month: e.target.value ? parseInt(e.target.value) : null
+                          }));
+                        }
+                      }}
                       className="w-1/2 p-2 border rounded"
                     >
                       <option value="">None</option>
@@ -293,8 +511,20 @@ const AdminEducation: React.FC = () => {
                       ))}
                     </select>
                     <select
-                      value={newEducation.end_year || ''}
-                      onChange={(e) => setNewEducation({ ...newEducation, end_year: e.target.value ? parseInt(e.target.value) : null })}
+                      value={editingEducation ? editedEducation?.end_year || '' : newEducation.end_year || ''}
+                      onChange={(e) => {
+                        if (editingEducation) {
+                          setEditedEducation(prev => prev && {
+                            ...prev,
+                            end_year: e.target.value ? parseInt(e.target.value) : null
+                          });
+                        } else {
+                          setNewEducation(prev => ({
+                            ...prev,
+                            end_year: e.target.value ? parseInt(e.target.value) : null
+                          }));
+                        }
+                      }}
                       className="w-1/2 p-2 border rounded"
                     >
                       <option value="">None</option>
@@ -313,8 +543,20 @@ const AdminEducation: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Degree</label>
                   <input
                     type="text"
-                    value={newEducation.degree || ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, degree: e.target.value || null })}
+                    value={editingEducation ? editedEducation?.degree || '' : newEducation.degree || ''}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          degree: e.target.value || null
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          degree: e.target.value || null
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -322,8 +564,20 @@ const AdminEducation: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Grade</label>
                   <input
                     type="text"
-                    value={newEducation.grade || ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, grade: e.target.value || null })}
+                    value={editingEducation ? editedEducation?.grade || '' : newEducation.grade || ''}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          grade: e.target.value || null
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          grade: e.target.value || null
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -333,8 +587,20 @@ const AdminEducation: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Activities</label>
                   <textarea
-                    value={newEducation.activities || ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, activities: e.target.value || null })}
+                    value={editingEducation ? editedEducation?.activities || '' : newEducation.activities || ''}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          activities: e.target.value || null
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          activities: e.target.value || null
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded h-24"
                     placeholder="Enter activities and societies..."
                   />
@@ -342,8 +608,20 @@ const AdminEducation: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Description</label>
                   <textarea
-                    value={newEducation.description || ''}
-                    onChange={(e) => setNewEducation({ ...newEducation, description: e.target.value || null })}
+                    value={editingEducation ? editedEducation?.description || '' : newEducation.description || ''}
+                    onChange={(e) => {
+                      if (editingEducation) {
+                        setEditedEducation(prev => prev && {
+                          ...prev,
+                          description: e.target.value || null
+                        });
+                      } else {
+                        setNewEducation(prev => ({
+                          ...prev,
+                          description: e.target.value || null
+                        }));
+                      }
+                    }}
                     className="w-full p-2 border rounded h-24"
                     placeholder="Enter a description..."
                   />
@@ -352,25 +630,25 @@ const AdminEducation: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">School/College Logo</label>
+                  <label className="block text-sm font-medium mb-1">School Logo</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
-                        setSelectedSchoolLogo(e.target.files[0]);
+                        setLogoFile(e.target.files[0]);
                       }
                     }}
                     className="w-full p-2 border rounded"
                   />
-                  {selectedSchoolLogo && (
+                  {logoFile && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected: {selectedSchoolLogo.name}
+                      Selected: {logoFile.name}
                     </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Related Photos (up to 5)</label>
+                  <label className="block text-sm font-medium mb-1">Education Photos (up to 5)</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -378,14 +656,14 @@ const AdminEducation: React.FC = () => {
                     onChange={(e) => {
                       if (e.target.files) {
                         const files = Array.from(e.target.files).slice(0, 5);
-                        setSelectedRelatedPhotos(files);
+                        setEducationPhotoFiles(files);
                       }
                     }}
                     className="w-full p-2 border rounded"
                   />
-                  {selectedRelatedPhotos.length > 0 && (
+                  {educationPhotoFiles.length > 0 && (
                     <div className="mt-2 space-y-1">
-                      {selectedRelatedPhotos.map((file, index) => (
+                      {educationPhotoFiles.map((file, index) => (
                         <p key={index} className="text-sm text-gray-600">
                           {file.name}
                         </p>
@@ -411,13 +689,18 @@ const AdminEducation: React.FC = () => {
                       grade: null,
                       activities: null,
                       description: null,
-                      school_logo: null,
-                      related_photos: []
+                      education_photos: [],
+                      education_photos_original_names: [],
+                      school_logo_url: null,
+                      school_logo_original_name: null,
+                      category: 'Education'
                     });
-                    setSelectedSchoolLogo(null);
-                    setSelectedRelatedPhotos([]);
+                    setEditingEducation(null);
+                    setEditedEducation(null);
+                    setLogoFile(null);
+                    setEducationPhotoFiles([]);
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
@@ -426,17 +709,18 @@ const AdminEducation: React.FC = () => {
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                   disabled={loading}
                 >
-                  {loading ? 'Adding...' : 'Add Education'}
+                  {loading ? (editingEducation ? 'Updating...' : 'Adding...') : editingEducation ? 'Update Education' : 'Add Education'}
                 </button>
               </div>
             </form>
           </div>
         </motion.div>
       )}
+
       <div className="space-y-4">
         {education.map((edu) => (
           <motion.div
-            key={edu.id}
+            key={edu.education_id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-4 bg-white rounded-lg border border-gray-200"
@@ -473,15 +757,43 @@ const AdminEducation: React.FC = () => {
                     </div>
                   </div>
                 )}
+                {edu.education_photos_urls && edu.education_photos_urls.length > 0 && (
+                  <div className="mt-2">
+                    <span className="font-medium">Education Photos:</span>
+                    <div className="mt-1 flex gap-2">
+                      {edu.education_photos_urls.map((url, index) => (
+                        <img
+                          key={index}
+                          src={url}
+                          alt={`Education photo ${index + 1}`}
+                          className="w-20 h-20 object-cover rounded"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {edu.school_logo_url && (
+                  <div className="mt-2">
+                    <span className="font-medium">School Logo:</span>
+                    <div className="mt-1">
+                      <img
+                        src={edu.school_logo_url}
+                        alt={edu.school}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex space-x-2">
                 <button
+                  onClick={() => handleEditEducation(edu.education_id)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDeleteEducation(edu.id)}
+                  onClick={() => handleDeleteEducation(edu.education_id)}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                 >
                   Delete
