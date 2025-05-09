@@ -1,0 +1,9 @@
+# All Rights Reserved
+
+Copyright (c) 2025 SanatK24
+
+All rights reserved.
+
+This repository and its contents are the exclusive property of the author. No part of this repository may be reproduced, distributed, or transmitted in any form or by any means, including but not limited to photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the author.
+
+For permission requests, please contact [https://github.com/sanatK24].
