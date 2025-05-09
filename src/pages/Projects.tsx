@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Loader } from 'lucide-react';
 import ProjectCard from '../components/ui/ProjectCard';
@@ -9,16 +9,35 @@ import { Project } from '../types';
 const Projects: React.FC = () => {
   const { projects, loading, error } = useGitHubProjects();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
   // Handle project preview
   const handlePreview = (project: Project) => {
+    setIsPreviewOpen(true);
     setSelectedProject(project);
   };
   
   // Close project preview
   const handleClosePreview = () => {
+    setIsPreviewOpen(false);
     setSelectedProject(null);
   };
+
+  // Prevent background scrolling when preview is open
+  useEffect(() => {
+    const body = document.body;
+    if (isPreviewOpen) {
+      body.style.overflow = 'hidden';
+      body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
+    } else {
+      body.style.overflow = '';
+      body.style.paddingRight = '';
+    }
+    return () => {
+      body.style.overflow = '';
+      body.style.paddingRight = '';
+    };
+  }, [isPreviewOpen]);
 
   return (
     <div className="min-h-screen pt-16 pb-20">

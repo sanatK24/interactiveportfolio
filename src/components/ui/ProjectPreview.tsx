@@ -16,21 +16,32 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
 
-  // Extract YouTube URL from README content
+  // Extract YouTube URL from README content only if it exists
   useEffect(() => {
     if (project?.readmeContent) {
       const youtubeRegex = /https?:\/\/(?:www\.|)youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
       const match = project.readmeContent.match(youtubeRegex);
       if (match) {
         setYoutubeUrl(`https://www.youtube.com/embed/${match[1]}`);
+      } else {
+        setYoutubeUrl(null);
       }
+    } else {
+      setYoutubeUrl(null);
     }
   }, [project?.readmeContent]);
 
   if (!project) return null;
 
+  // Only show video preview tab if there's a valid YouTube URL
+  const hasVideoPreview = youtubeUrl !== null;
+
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   return (
@@ -41,7 +52,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0 }}
-        onClick={onClose}
+        onClick={handleClose}
       >
         <motion.div
           className={`bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-hidden w-full ${
@@ -91,7 +102,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
               </button>
               
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="p-2 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors"
                 aria-label="Close preview"
               >
@@ -125,7 +136,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
               </button>
             )}
 
-            {youtubeUrl && (
+            {hasVideoPreview && (
               <button
                 className={`px-4 py-2 font-medium text-sm ${
                   previewMode === 'youtube'
@@ -142,21 +153,23 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
           <div className={`overflow-hidden ${isFullscreen ? 'h-[calc(100vh-112px)]' : 'max-h-[calc(90vh-112px)]'}`} style={{ height: '100%' }}>
             {previewMode === 'readme' ? (
               <div className="p-6 prose dark:prose-invert prose-blue max-w-none">
-                {project.readmeContent ? (
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                  >
-                    {project.readmeContent}
-                  </ReactMarkdown>
-                ) : (
-                  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                    <p>No README content available</p>
-                  </div>
-                )}
+                <div className="overflow-y-auto h-full max-h-[calc(100vh-200px)]">
+                  {project.readmeContent ? (
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw]}
+                    >
+                      {project.readmeContent}
+                    </ReactMarkdown>
+                  ) : (
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                      <p>No README content available</p>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : previewMode === 'live' ? (
-              <div className="w-full h-full min-h-[500px]">
+              <div className="w-full h-full min-h-[500px] overflow-hidden">
                 {project.homepage && (
                   <iframe
                     src={project.homepage}
@@ -167,8 +180,8 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
                   />
                 )}
               </div>
-            ) : previewMode === 'youtube' && youtubeUrl ? (
-              <div className="w-full h-full min-h-[500px] p-6">
+            ) : previewMode === 'youtube' && hasVideoPreview ? (
+              <div className="w-full h-full min-h-[500px] p-6 overflow-hidden">
                 <iframe
                   src={youtubeUrl}
                   title={`${project.name} YouTube preview`}

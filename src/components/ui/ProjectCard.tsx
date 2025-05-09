@@ -10,7 +10,7 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onPreview }) => {
   // Generate a random gradient for project card if no language is specified
-  const getLanguageColor = (language: string | undefined) => {
+  const getLanguageColor = (language: string | undefined | null) => {
     const colors: Record<string, string> = {
       TypeScript: 'from-blue-500 to-blue-600',
       JavaScript: 'from-yellow-400 to-yellow-500',
