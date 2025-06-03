@@ -1,0 +1,1 @@
+INSERT INTO "public"."profiles" ("id", "email", "is_admin", "github_token", "github_username", "created_at", "updated_at") VALUES ('fcc1cdba-b117-42dc-b874-010c72ab014f', 'admin@example.com', 'false', null, null, '2025-06-03 18:41:14.784952+00', '2025-06-03 18:41:14.784952+00');
