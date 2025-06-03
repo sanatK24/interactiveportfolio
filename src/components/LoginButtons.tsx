@@ -1,24 +1,27 @@
 import React from 'react';
-import { useAuth, AccountType } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LoginButtons: React.FC = () => {
   const { directLogin, loading } = useAuth();
+  const navigate = useNavigate();
 
-  const handleDirectLogin = async (accountType: AccountType) => {
+  const handleAdminLogin = async () => {
     try {
-      await directLogin(accountType);
+      await directLogin('admin');
+      navigate('/admin');
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Admin login failed:', error);
       // You can add toast notifications here if needed
     }
   };
 
   return (
     <div className="flex flex-col space-y-4 w-full max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center mb-6">Quick Login</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
       
       <button
-        onClick={() => handleDirectLogin('admin')}
+        onClick={handleAdminLogin}
         disabled={loading}
         className={`px-4 py-3 rounded-md font-medium text-white transition-colors ${
           loading 
@@ -28,31 +31,10 @@ const LoginButtons: React.FC = () => {
       >
         {loading ? 'Signing in...' : 'Login as Admin'}
       </button>
-      
-      <button
-        onClick={() => handleDirectLogin('user')}
-        disabled={loading}
-        className={`px-4 py-3 rounded-md font-medium text-white transition-colors ${
-          loading 
-            ? 'bg-gray-400 cursor-not-allowed' 
-            : 'bg-green-600 hover:bg-green-700'
-        }`}
-      >
-        {loading ? 'Signing in...' : 'Login as User'}
-      </button>
 
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">Or continue with</span>
-        </div>
-      </div>
-
-      <div className="mt-2">
+      <div className="mt-4">
         <p className="text-sm text-gray-600 text-center">
-          Using test accounts for demo purposes. In production, implement proper authentication.
+          Use admin credentials to access the dashboard
         </p>
       </div>
     </div>
