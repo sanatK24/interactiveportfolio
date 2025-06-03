@@ -34,17 +34,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        setLoading(true);
+        
+        if (!user?.id) {
+          setLoading(false);
+          return;
+        }
+    
+        // 1. Try to fetch the profile
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', user?.id)
-          .single();
-
+          .eq('id', user.id)
+          .maybeSingle();  // Changed from .single()
+    
         if (profileError) throw profileError;
-        setProfile(profileData);
-        setIsAdmin(profileData?.role === 'admin');
+        
+        // 2. If profile exists, update state
+        if (profileData) {
+          setProfile(profileData);
+          setIsAdmin(profileData.is_admin === true);  // Changed from role to is_admin
+          return;
+        }
+    
+        // 3. If no profile exists, create one
+        if (user?.email) {
+          const { error: createError } = await supabase
+            .from('profiles')
+            .upsert({
+              id: user.id,
+              email: user.email,
+              is_admin: false,  // Default to non-admin
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+    
+          if (createError) throw createError;
+    
+          // 4. Fetch the newly created profile
+          const { data: newProfile, error: fetchError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+    
+          if (fetchError) throw fetchError;
+    
+          if (newProfile) {
+            setProfile(newProfile);
+            setIsAdmin(newProfile.is_admin === true);
+          }
+        }
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error in fetchProfile:', error);
       } finally {
         setLoading(false);
       }
