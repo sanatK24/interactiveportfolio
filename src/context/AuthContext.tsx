@@ -17,6 +17,8 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
+export type AccountType = 'admin' | 'user';
+
 interface AuthContextType {
   session: Session | null;
   user: User | null;
@@ -25,6 +27,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, isAdmin?: boolean) => Promise<{ user: User; role: string }>;
   signOut: () => Promise<void>;
+  directLogin: (accountType: AccountType) => Promise<void>;
   loading: boolean;
 }
 
@@ -199,6 +202,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const directLogin = async (accountType: AccountType = 'user'): Promise<void> => {
+    const testAccounts = {
+      admin: {
+        email: 'admin@example.com',
+        password: 'admin123',
+        isAdmin: true
+      },
+      user: {
+        email: 'user@example.com',
+        password: 'user123',
+        isAdmin: false
+      }
+    };
+
+    const account = testAccounts[accountType];
+    
+    try {
+      setLoading(true);
+      console.log(`Attempting direct login as ${accountType}...`);
+
+      // Try to sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: account.email,
+        password: account.password,
+      });
+
+      if (signInError) {
+        // If sign in fails, try to sign up
+        console.log('Account not found, attempting sign up...');
+        await signUp(account.email, account.password, account.isAdmin);
+      }
+
+      // Get the session after successful login/signup
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setUser(session?.user ?? null);
+
+    } catch (error) {
+      console.error(`Error in direct login as ${accountType}:`, error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -209,6 +257,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signIn,
         signUp,
         signOut,
+        directLogin,
         loading
       }}
     >
