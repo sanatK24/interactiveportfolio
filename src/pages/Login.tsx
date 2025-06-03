@@ -34,9 +34,12 @@ const LoginForm: React.FC<LoginProps> = ({ mode, onModeChange }) => {
         await signUp(email, password, true); // Always create admin accounts for now
       }
       
-      // The auth state change will handle the redirection
-      const from = location.state?.from?.pathname || '/admin';
-      navigate(from, { replace: true });
+      // Get redirect URL from query params or default to '/admin'
+      const searchParams = new URLSearchParams(location.search);
+      const redirectTo = searchParams.get('redirect') || '/admin';
+      
+      // Use replace: true to prevent going back to login page with browser back button
+      navigate(redirectTo, { replace: true });
     } catch (err: any) {
       console.error('Authentication error:', err);
       setError(mode === 'login' ? 'Invalid email or password' : 'Failed to create account');
