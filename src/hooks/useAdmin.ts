@@ -21,12 +21,12 @@ export function useAdmin() {
 
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('role')
+          .select('is_admin')
           .eq('id', session.user.id)
           .single<Profile>();
 
         if (error) throw error;
-        setIsAdmin(profile?.role === 'admin');
+        setIsAdmin(!!profile?.is_admin);
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
