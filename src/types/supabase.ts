@@ -1,4 +1,3 @@
-// downloaded from supabase's feature to generate types from your database 
 export type Json =
   | string
   | number
@@ -286,33 +285,30 @@ export type Database = {
       }
       profiles: {
         Row: {
+          created_at: string
           email: string
           github_token: string | null
           github_username: string | null
           id: string
           is_admin: boolean | null
-          password: string
-          role: string | null
           updated_at: string
         }
         Insert: {
+          created_at?: string
           email: string
           github_token?: string | null
           github_username?: string | null
           id: string
           is_admin?: boolean | null
-          password: string
-          role?: string | null
           updated_at?: string
         }
         Update: {
+          created_at?: string
           email?: string
           github_token?: string | null
           github_username?: string | null
           id?: string
           is_admin?: boolean | null
-          password?: string
-          role?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -388,7 +384,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      apply_standard_policies: {
+        Args: { table_name: string }
+        Returns: undefined
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
@@ -512,4 +515,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
