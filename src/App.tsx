@@ -4,6 +4,7 @@ import { CommandPaletteProvider } from './context/CommandPaletteContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './components/ui/ToastContext';
 import { createClient } from '@supabase/supabase-js';
+import { Toaster } from 'react-hot-toast';
 import Toast from './components/ui/Toast';
 import AdminRoute from './components/admin/AdminRoute';
 import AdminSidebar from './components/admin/AdminSidebar';
@@ -40,6 +41,7 @@ function App() {
           <AuthProvider>
             <ToastProvider>
               <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+                <Toaster position="top-right" />
                 <Header />
                 <main className="flex-grow pt-16">
                   <Routes>

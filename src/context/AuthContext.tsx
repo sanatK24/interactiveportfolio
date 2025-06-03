@@ -21,7 +21,11 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ user: User; session: Session }>;
   signUp: (email: string, password: string, isAdmin?: boolean) => Promise<{ user: User; isAdmin: boolean }>;
   signOut: () => Promise<void>;
-  directLogin: (accountType: AccountType) => Promise<{ user: User | null; session: Session | null }>;
+  directLogin: (accountType: AccountType) => Promise<{ 
+    user: User | null; 
+    session: Session | null;
+    error?: Error | null;
+  }>;
   loading: boolean;
 }
 
@@ -154,7 +158,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const directLogin = async (accountType: AccountType = 'user'): Promise<{ user: User | null; session: Session | null }> => {
+  const directLogin = async (accountType: AccountType = 'user'): Promise<{ 
+    user: User | null; 
+    session: Session | null; 
+    error?: Error | null 
+  }> => {
     const testAccounts = {
       admin: {
         email: 'admin@example.com',
@@ -206,43 +214,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (profileError) throw profileError;
 
             // Sign in after successful sign up
-            const { data } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabase.auth.signInWithPassword({
               email: account.email,
               password: account.password,
             });
-            return data;
+            
+            if (error) {
+              return { user: null, session: null, error };
+            }
+            
+            if (!data) {
+              return { user: null, session: null, error: new Error('No data returned from sign in') };
+            }
+            
+            return { user: data.user, session: data.session, error: null };
           } catch (signUpError: any) {
             // If sign up fails with unique constraint, it means the user exists in auth but not in profiles
             if (signUpError.code === '23505') {
               console.log('User exists in auth but not in profiles, creating profile...');
-              // Create profile and sign in
-              const { data: signInData } = await supabase.auth.signInWithPassword({
+              // Sign in to get the user
+              const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
                 email: account.email,
                 password: account.password,
               });
               
-              if (signInData.user) {
-                await supabase.from('profiles').insert([
-                  {
-                    id: signInData.user.id,
-                    email: account.email,
-                    is_admin: account.isAdmin
-                  }
-                ]);
+              if (signInError) {
+                return { user: null, session: null, error: signInError };
               }
               
-              return signInData;
+              if (!signInData?.user) {
+                return { user: null, session: null, error: new Error('User not found after sign in') };
+              }
+              
+              // Create the profile
+              const { error: profileError } = await supabase.from('profiles').insert([
+                {
+                  id: signInData.user.id,
+                  email: account.email,
+                  is_admin: account.isAdmin
+                }
+              ]);
+              
+              if (profileError) {
+                return { user: null, session: null, error: profileError };
+              }
+              
+              return { user: signInData.user, session: signInData.session, error: null };
             } else {
-              throw signUpError;
+              return { user: null, session: null, error: signUpError };
             }
           }
         } else {
-          throw signInError;
+          return { user: null, session: null, error: signInError };
         }
       }
       
       // If we get here, sign in was successful
-      return signInData;
+      if (!signInData) {
+        return { user: null, session: null, error: new Error('No data returned from sign in') };
+      }
+      
+      return { user: signInData.user, session: signInData.session, error: null };
     } catch (error) {
       console.error(`Error in direct login as ${accountType}:`, error);
       throw error;
