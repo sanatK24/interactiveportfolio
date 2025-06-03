@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfile = async (_forceRefresh = false) => {
       if (!user) {
         setProfile(null);
         setIsAdmin(false);
@@ -49,44 +49,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       try {
         setLoading(true);
+        console.log('Fetching profile for user:', user.id);
+        
+        // Force a fresh fetch from the database
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (profileError) {
-          // If profile doesn't exist, create it
-          if (profileError.code === 'PGRST116') {
-            const { error: insertError } = await supabase
-              .from('profiles')
-              .insert([{ 
-                id: user.id, 
-                email: user.email, 
-                is_admin: false 
-              }])
-              .select()
-              .single();
-              
-            if (insertError) throw insertError;
-            
-            const newProfile = { 
+        if (profileError) throw profileError;
+        
+        console.log('Fetched profile data:', profileData);
+
+        if (!profileData) {
+          // If profile doesn't exist, create it with is_admin: false by default
+          console.log('Profile does not exist, creating new profile...');
+          const { data: newProfile, error: insertError } = await supabase
+            .from('profiles')
+            .insert([{ 
               id: user.id, 
-              email: user.email || '',
-              is_admin: false,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              github_username: null,
-              github_token: null
-            };
-            setProfile(newProfile);
-            setIsAdmin(false);
-          } else {
-            throw profileError;
-          }
+              email: user.email, 
+              is_admin: false 
+            }])
+            .select()
+            .single();
+            
+          if (insertError) throw insertError;
+          
+          console.log('Created new profile:', newProfile);
+          setProfile(newProfile);
+          setIsAdmin(!!newProfile?.is_admin);
         } else {
+          // Profile exists, update the state
+          console.log('Setting profile data:', profileData);
           setProfile(profileData);
-          setIsAdmin(!!profileData?.is_admin);
+          setIsAdmin(!!profileData.is_admin);
         }
       } catch (error) {
         console.error('Error in fetchProfile:', error);
