@@ -40,9 +40,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
+      if (!user) {
+        setProfile(null);
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
       
       try {
+        setLoading(true);
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -54,9 +60,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (profileError.code === 'PGRST116') {
             const { error: insertError } = await supabase
               .from('profiles')
-              .insert([{ id: user.id, email: user.email, is_admin: false }]);
+              .insert([{ 
+                id: user.id, 
+                email: user.email, 
+                is_admin: false 
+              }])
+              .select()
+              .single();
               
             if (insertError) throw insertError;
+            
+            const newProfile = { 
+              id: user.id, 
+              email: user.email || '',
+              is_admin: false,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              github_username: null,
+              github_token: null
+            };
+            setProfile(newProfile);
             setIsAdmin(false);
           } else {
             throw profileError;
@@ -67,6 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } catch (error) {
         console.error('Error in fetchProfile:', error);
+        setProfile(null);
         setIsAdmin(false);
       } finally {
         setLoading(false);
@@ -74,19 +98,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user?.id]); // Only depend on user.id to prevent unnecessary re-renders
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setUser(session?.user || null);
+    let isMounted = true;
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (!isMounted) return;
+      
+      // Only update state if session has actually changed
+      if (JSON.stringify(newSession) !== JSON.stringify(session)) {
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+      }
+      
       if (event === 'SIGNED_OUT') {
         setProfile(null);
         setIsAdmin(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
+      setSession(session);
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

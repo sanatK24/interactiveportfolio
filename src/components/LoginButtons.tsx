@@ -14,22 +14,23 @@ const LoginButtons: React.FC = () => {
     if (isLoggingIn) return;
     
     setIsLoggingIn(true);
+    const toastId = toast.loading('Signing in...');
     
     try {
       const { session, error } = await directLogin('admin');
       
-      if (error) {
+      if (error || !session) {
         console.error('Login error:', error);
-        toast.error(error.message || 'Failed to sign in. Please try again.');
+        toast.error(error?.message || 'Failed to sign in. Please try again.', {
+          id: toastId,
+          duration: 4000,
+        });
         return;
       }
       
-      if (!session) {
-        toast.error('No active session. Please try again.');
-        return;
-      }
-      
-      toast.success('Login successful!', {
+      // Show success message
+      toast.success('Login successful! Redirecting...', {
+        id: toastId,
         duration: 2000,
         icon: '👋',
         style: {
@@ -40,11 +41,12 @@ const LoginButtons: React.FC = () => {
       // Small delay before navigation to show the success message
       setTimeout(() => {
         navigate('/admin');
-      }, 500);
+      }, 1500);
       
     } catch (error: any) {
       console.error('Login failed:', error);
       toast.error(error?.message || 'An unexpected error occurred. Please try again.', {
+        id: toastId,
         duration: 4000,
       });
     } finally {
