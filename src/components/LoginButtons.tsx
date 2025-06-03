@@ -8,8 +8,12 @@ const LoginButtons: React.FC = () => {
 
   const handleAdminLogin = async () => {
     try {
-      await directLogin('admin');
-      navigate('/admin');
+      const { session } = await directLogin('admin');
+      if (session) {
+        navigate('/admin');
+      } else {
+        throw new Error('No session after login');
+      }
     } catch (error) {
       console.error('Admin login failed:', error);
       // You can add toast notifications here if needed

@@ -26,13 +26,18 @@ const LoginForm: React.FC<LoginProps> = ({ mode, onModeChange }) => {
 
     try {
       if (mode === 'login') {
-        await signIn(email, password);
+        const { session } = await signIn(email, password);
+        if (!session) {
+          throw new Error('No session after login');
+        }
       } else {
-        await signUp(email, password);
+        await signUp(email, password, true); // Always create admin accounts for now
       }
+      
+      // The auth state change will handle the redirection
       const from = location.state?.from?.pathname || '/admin';
       navigate(from, { replace: true });
-    } catch (err) {
+    } catch (err: any) {
       console.error('Authentication error:', err);
       setError(mode === 'login' ? 'Invalid email or password' : 'Failed to create account');
     } finally {
