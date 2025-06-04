@@ -38,63 +38,63 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProfile = async (_forceRefresh = false) => {
-      if (!user) {
-        setProfile(null);
-        setIsAdmin(false);
-        setLoading(false);
-        return;
-      }
+  const fetchProfile = async () => {
+    if (!user) {
+      setProfile(null);
+      setIsAdmin(false);
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      console.log('Fetching profile for user:', user.id);
       
-      try {
-        setLoading(true);
-        console.log('Fetching profile for user:', user.id);
-        
-        // Force a fresh fetch from the database
-        const { data: profileData, error: profileError } = await supabase
+      // Force a fresh fetch from the database
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+      
+      console.log('Fetched profile data:', profileData);
+
+      if (!profileData) {
+        // If profile doesn't exist, create it with is_admin: false by default
+        console.log('Profile does not exist, creating new profile...');
+        const { data: newProfile, error: insertError } = await supabase
           .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (profileError) throw profileError;
-        
-        console.log('Fetched profile data:', profileData);
-
-        if (!profileData) {
-          // If profile doesn't exist, create it with is_admin: false by default
-          console.log('Profile does not exist, creating new profile...');
-          const { data: newProfile, error: insertError } = await supabase
-            .from('profiles')
-            .insert([{ 
-              id: user.id, 
-              email: user.email, 
-              is_admin: false 
-            }])
-            .select()
-            .single();
-            
-          if (insertError) throw insertError;
+          .insert([{ 
+            id: user.id, 
+            email: user.email, 
+            is_admin: false 
+          }])
+          .select()
+          .single();
           
-          console.log('Created new profile:', newProfile);
-          setProfile(newProfile);
-          setIsAdmin(!!newProfile?.is_admin);
-        } else {
-          // Profile exists, update the state
-          console.log('Setting profile data:', profileData);
-          setProfile(profileData);
-          setIsAdmin(!!profileData.is_admin);
-        }
-      } catch (error) {
-        console.error('Error in fetchProfile:', error);
-        setProfile(null);
-        setIsAdmin(false);
-      } finally {
-        setLoading(false);
+        if (insertError) throw insertError;
+        
+        console.log('Created new profile:', newProfile);
+        setProfile(newProfile);
+        setIsAdmin(!!newProfile?.is_admin);
+      } else {
+        // Profile exists, update the state
+        console.log('Setting profile data:', profileData);
+        setProfile(profileData);
+        setIsAdmin(!!profileData.is_admin);
       }
-    };
+    } catch (error) {
+      console.error('Error in fetchProfile:', error);
+      setProfile(null);
+      setIsAdmin(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProfile();
   }, [user?.id]); // Only depend on user.id to prevent unnecessary re-renders
 
@@ -267,6 +267,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               return { user: null, session: null, error: new Error('No data returned from sign in') };
             }
             
+            // Update the local state
+            setUser(data.user);
+            setSession(data.session);
+            setIsAdmin(account.isAdmin);
+            
+            // Refresh profile data
+            await fetchProfile();
+            
             return { user: data.user, session: data.session, error: null };
           } catch (signUpError: any) {
             // If sign up fails with unique constraint, it means the user exists in auth but not in profiles
@@ -298,6 +306,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               if (profileError) {
                 return { user: null, session: null, error: profileError };
               }
+              
+              // Update the local state
+              setUser(signInData.user);
+              setSession(signInData.session);
+              setIsAdmin(account.isAdmin);
+              
+              // Refresh profile data
+              await fetchProfile();
               
               return { user: signInData.user, session: signInData.session, error: null };
             } else {
