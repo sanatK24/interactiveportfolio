@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -16,8 +15,6 @@ const LoginForm: React.FC<LoginProps> = ({ mode, onModeChange }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,20 +27,16 @@ const LoginForm: React.FC<LoginProps> = ({ mode, onModeChange }) => {
         if (!session) {
           throw new Error('No session after login');
         }
+        // The auth state change will handle the redirect
+        console.log('Login successful, waiting for auth state update...');
       } else {
-        await signUp(email, password, true); // Always create admin accounts for now
+        const { user, isAdmin } = await signUp(email, password, true); // Always create admin accounts for now
+        console.log('Signup successful, user:', { id: user.id, isAdmin });
+        // The auth state change will handle the redirect
       }
-      
-      // Get redirect URL from query params or default to '/admin'
-      const searchParams = new URLSearchParams(location.search);
-      const redirectTo = searchParams.get('redirect') || '/admin';
-      
-      // Use replace: true to prevent going back to login page with browser back button
-      navigate(redirectTo, { replace: true });
     } catch (err: any) {
       console.error('Authentication error:', err);
       setError(mode === 'login' ? 'Invalid email or password' : 'Failed to create account');
-    } finally {
       setLoading(false);
     }
   };

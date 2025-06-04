@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 
 const LoginButtons: React.FC = () => {
-  const { directLogin } = useAuth();
+  const { directLogin, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  // Check for redirect URL from query params
+  const searchParams = new URLSearchParams(location.search);
+  const redirectTo = searchParams.get('redirect') || '/admin';
+
+  // Redirect if already logged in as admin
+  useEffect(() => {
+    if (isAdmin) {
+      console.log('Already logged in as admin, redirecting to:', redirectTo);
+      // Use replace: true to prevent going back to login page with browser back button
+      navigate(redirectTo, { replace: true });
+    }
+  }, [isAdmin, navigate, redirectTo]);
+
   const handleAdminLogin = async () => {
-    if (isLoggingIn) return;
+    if (isLoggingIn || authLoading) return;
     
     setIsLoggingIn(true);
     const toastId = toast.loading('Signing in...');
@@ -28,20 +41,8 @@ const LoginButtons: React.FC = () => {
         return;
       }
       
-      // Show success message
-      toast.success('Login successful! Redirecting...', {
-        id: toastId,
-        duration: 2000,
-        icon: '👋',
-        style: {
-          minWidth: '250px',
-        },
-      });
-      
-      // Small delay before navigation to show the success message
-      setTimeout(() => {
-        navigate('/admin');
-      }, 1500);
+      // The auth state change will be handled by the useEffect above
+      console.log('Login successful, waiting for auth state update...');
       
     } catch (error: any) {
       console.error('Login failed:', error);

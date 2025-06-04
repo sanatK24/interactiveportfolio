@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useAdmin } from '../../hooks/useAdmin';
+import { Loader2 } from 'lucide-react';
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -9,25 +9,36 @@ interface AdminRouteProps {
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const location = useLocation();
-  const { session, loading: authLoading } = useAuth();
-  const { isAdmin, loading: adminLoading } = useAdmin();
+  const { session, isAdmin, loading: authLoading } = useAuth();
+  const [initialCheck, setInitialCheck] = useState(false);
+
+  // Set initial check to true after first render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialCheck(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Show loading state while we're checking auth status
-  if (authLoading || adminLoading) {
+  if (authLoading || !initialCheck) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
       </div>
     );
   }
 
   // If no session, redirect to login with return URL
   if (!session) {
-    return <Navigate to={`/login?redirect=${encodeURIComponent(location.pathname)}`} replace />;
+    const redirectTo = encodeURIComponent(location.pathname + location.search);
+    console.log('No session, redirecting to login with return URL:', redirectTo);
+    return <Navigate to={`/login?redirect=${redirectTo}`} replace />;
   }
 
   // If not admin, show unauthorized message
   if (!isAdmin) {
+    console.log('User is not an admin, showing access denied');
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center p-6 max-w-md w-full">
@@ -45,6 +56,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   }
 
   // User is authenticated and is an admin
+  console.log('User is admin, rendering children');
   return <>{children}</>;
 };
 

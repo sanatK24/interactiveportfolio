@@ -7,7 +7,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Initialize Supabase client
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -347,5 +347,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
-export { supabase };

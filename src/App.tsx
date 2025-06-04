@@ -3,7 +3,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import { CommandPaletteProvider } from './context/CommandPaletteContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './components/ui/ToastContext';
-import { createClient } from '@supabase/supabase-js';
 import { Toaster } from 'react-hot-toast';
 import Toast from './components/ui/Toast';
 import AdminRoute from './components/admin/AdminRoute';
@@ -26,12 +25,6 @@ import AdminExperience from './pages/admin/AdminExperience';
 import AdminCertificates from './pages/admin/AdminCertifications';
 import Blog from './pages/Blog';
 import EducationExperience from './pages/EducationExperience';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Initialize Supabase client
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 function App() {
   return (
@@ -89,4 +82,3 @@ function App() {
 }
 
 export default App;
-export { supabase };
