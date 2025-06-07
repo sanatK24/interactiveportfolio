@@ -1,18 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createClient } from '@supabase/supabase-js';
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import App from './App.tsx';
 import './index.css';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+import './lib/supabase'; // Initialize Supabase client
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <SessionContextProvider supabaseClient={supabaseClient}>
-      <App />
-    </SessionContextProvider>
+    <App />
   </StrictMode>
 );

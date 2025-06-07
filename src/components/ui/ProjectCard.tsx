@@ -9,8 +9,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onPreview }) => {
-  // Generate a random gradient for project card if no language is specified
-  const getLanguageColor = (language: string | undefined | null) => {
+  // Generate a gradient for project card based on language
+  const getLanguageColor = (language: string | null) => {
     const colors: Record<string, string> = {
       TypeScript: 'from-blue-500 to-blue-600',
       JavaScript: 'from-yellow-400 to-yellow-500',
@@ -29,54 +29,58 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onPreview }) => {
       Kotlin: 'from-purple-500 to-purple-600',
     };
     
-    return colors[language || ''] || 'from-gray-600 to-gray-700';
+    return language && colors[language] ? colors[language] : 'from-gray-600 to-gray-700';
   };
 
-  const languageColor = getLanguageColor(project.language);
+  // Use title if name is not available
+  const displayName = project.name || project.title || 'Untitled Project';
+  const languageColor = getLanguageColor(project.language || null);
+  const stars = project.stars || project.stargazers_count || 0;
+  const forks = project.forks || project.forks_count || 0;
+  const topics = project.topics || project.technologies || [];
 
   return (
     <motion.div
-      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl h-full flex flex-col"
       whileHover={{ scale: 1.02, y: -5 }}
       layoutId={`project-${project.id}`}
     >
       <div className={`h-2 bg-gradient-to-r ${languageColor}`}></div>
       
-      <div className="p-6">
+      <div className="p-6 flex-1 flex flex-col">
         <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-          {project.name}
+          {displayName}
         </h3>
         
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
-          {project.description}
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 flex-1">
+          {project.description || 'No description available'}
         </p>
         
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.topics.slice(0, 3).map((topic) => (
-            <span
-              key={topic}
-              className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full"
-            >
-              {topic}
-            </span>
-          ))}
-          {project.topics.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
-              +{project.topics.length - 3} more
-            </span>
-          )}
-        </div>
+        {topics.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {topics.slice(0, 3).map((topic: string) => (
+              <span 
+                key={topic} 
+                className="px-2 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-full"
+              >
+                {topic}
+              </span>
+            ))}
+            {topics.length > 3 && (
+              <span className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-full">
+                +{topics.length - 3} more
+              </span>
+            )}
+          </div>
+        )}
         
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center text-yellow-500">
-              <Star size={16} className="mr-1" />
-              <span className="text-sm">{project.stargazers_count}</span>
-            </div>
-            
-            <div className="flex items-center text-blue-500">
-              <GitFork size={16} className="mr-1" />
-              <span className="text-sm">{project.forks_count}</span>
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+              <Star className="w-4 h-4 mr-1" />
+              <span>{stars}</span>
+              <GitFork className="w-4 h-4 ml-3 mr-1" />
+              <span>{forks}</span>
             </div>
           </div>
           

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useEffect, useState, useRef } from 'react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 
 export type BlogPost = Database['public']['Tables']['blog_posts']['Row'];
@@ -7,12 +7,12 @@ export type BlogPost = Database['public']['Tables']['blog_posts']['Row'];
 export type SortOrder = 'newest' | 'oldest' | 'title_asc' | 'title_desc';
 
 export function useBlogPosts() {
-  const supabase = useSupabaseClient();
+  // Using centralized supabase client
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
-  const [subscription, setSubscription] = useState<any>(null);
+  const subscriptionRef = useRef<any>(null);
 
   const publishPost = async (postId: string) => {
     try {
@@ -40,11 +40,11 @@ export function useBlogPosts() {
       })
       .subscribe();
 
-    setSubscription(channel);
+    subscriptionRef.current = channel;
 
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
       }
     };
   }, []);

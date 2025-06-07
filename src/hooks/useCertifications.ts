@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 
 type Tables = Database['public']['Tables'];
 type CertificationsRow = Tables['certifications']['Row'];
 
 export const useCertifications = () => {
-  const supabase = useSupabaseClient();
+  // Using centralized supabase client
   const [certifications, setCertifications] = useState<CertificationsRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 
 type Project = Database['public']['Tables']['projects']['Row'];
 
 export function useProjects() {
-  const supabase = useSupabaseClient();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +22,7 @@ export function useProjects() {
         setProjects(data || []);
       } catch (err) {
         console.error('Error fetching projects:', err);
-        setError('Failed to fetch projects');
+        setError('Failed to fetch projects. Please try again later.');
       } finally {
         setLoading(false);
       }

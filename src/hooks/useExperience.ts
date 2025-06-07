@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 
 type ExperienceRow = Database['public']['Tables']['experience']['Row'];
 
 export const useExperience = () => {
-  const supabase = useSupabaseClient();
   const [experience, setExperience] = useState<ExperienceRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import type { Database } from '../types/supabase';
+import { supabase } from '../lib/supabase';
 
 interface UploadResult {
   url: string | null;
@@ -18,7 +17,7 @@ export const useFileUpload = (config: UseFileUploadConfig = {}): {
   isLoading: boolean;
   error: Error | null;
 } => {
-  const supabase = useSupabaseClient<Database>();
+  // Using centralized supabase client<Database>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 

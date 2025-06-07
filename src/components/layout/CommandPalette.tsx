@@ -20,9 +20,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
     { name: 'Blog', href: '/blog' },
     { name: 'Projects', href: '/projects' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Admin Projects', href: '/admin/projects' },
-    { name: 'Admin Blog', href: '/admin/blog' },
-    { name: 'Admin Contact', href: '/admin/contact' },
   ];
 
   useEffect(() => {

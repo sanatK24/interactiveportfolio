@@ -285,30 +285,33 @@ export type Database = {
       }
       profiles: {
         Row: {
-          created_at: string
           email: string
           github_token: string | null
           github_username: string | null
           id: string
           is_admin: boolean | null
+          password: string
+          role: string | null
           updated_at: string
         }
         Insert: {
-          created_at?: string
           email: string
           github_token?: string | null
           github_username?: string | null
           id: string
           is_admin?: boolean | null
+          password: string
+          role?: string | null
           updated_at?: string
         }
         Update: {
-          created_at?: string
           email?: string
           github_token?: string | null
           github_username?: string | null
           id?: string
           is_admin?: boolean | null
+          password?: string
+          role?: string | null
           updated_at?: string
         }
         Relationships: []

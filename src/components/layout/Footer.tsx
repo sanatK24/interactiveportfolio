@@ -2,10 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faLinkedin, faXTwitter } from '@fortawesome/free-brands-svg-icons';
-import { useAuth } from '../../context/AuthContext';
 
 const Footer: React.FC = () => {
-  const { isAdmin } = useAuth();
 
   const socialLinks = [
     { name: 'GitHub', icon: <FontAwesomeIcon icon={faGithub} size="lg" />, href: 'https://github.com/sanatK24' },
@@ -44,16 +42,6 @@ const Footer: React.FC = () => {
                   </a>
                 </li>
               ))}
-              {isAdmin && (
-                <li>
-                  <a 
-                    href="/admin"
-                    className="text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-300"
-                  >
-                    Admin Dashboard
-                  </a>
-                </li>
-              )}
             </ul>
           </div>
           

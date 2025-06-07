@@ -4,14 +4,12 @@ import { motion } from 'framer-motion';
 import { Menu, X, Moon, Sun, Command } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useCommandPalette } from '../../context/CommandPaletteContext';
-import { useAuth } from '../../context/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { theme, toggleTheme } = useTheme();
   const { toggleCommandPalette } = useCommandPalette();
   const location = useLocation();
-  const { isAdmin } = useAuth();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -20,10 +18,6 @@ const Header: React.FC = () => {
     { name: 'Blog', href: '/blog' },
     { name: 'Projects', href: '/projects' },
     { name: 'Contact', href: '/contact' },
-  ];
-
-  const adminNavigation = [
-    { name: 'Admin Dashboard', href: '/admin' }
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -60,22 +54,6 @@ const Header: React.FC = () => {
               {item.name}
             </Link>
           ))}
-
-          {/* Admin Navigation */}
-          {isAdmin && (
-            <div className="hidden md:flex items-center space-x-4">
-              {adminNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="text-sm font-medium text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          )}
-
           <div className="flex items-center space-x-4">
             <motion.button
               whileTap={{ scale: 0.9 }}
@@ -131,20 +109,7 @@ const Header: React.FC = () => {
                   {item.name}
                 </Link>
               ))}
-              {isAdmin && (
-                <div className="flex flex-col space-y-2">
-                  {adminNavigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-sm font-medium py-2 text-gray-500 dark:text-gray-400"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+
               <button 
                 onClick={toggleCommandPalette}
                 className="flex items-center text-sm px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 w-full"

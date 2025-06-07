@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 
 type EducationRow = Database['public']['Tables']['education']['Row'];
@@ -10,7 +10,7 @@ type EducationWithMedia = EducationRow & {
 };
 
 export const useEducation = () => {
-  const supabase = useSupabaseClient();
+  // Using centralized supabase client
   const [education, setEducation] = useState<EducationWithMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

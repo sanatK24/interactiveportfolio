@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Github, ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
+import { X, Github, ExternalLink, Maximize2, Minimize2, Loader2 } from 'lucide-react';
+import { loadAndRenderReadme } from '../../utils/readmeViewer';
 import { Project } from '../../types';
 
 interface ProjectPreviewProps {
@@ -15,12 +13,13 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
   const [previewMode, setPreviewMode] = useState<'readme' | 'live' | 'youtube'>('readme');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
+  const readmeContainerRef = useRef<HTMLDivElement>(null);
 
   // Extract YouTube URL from README content only if it exists
   useEffect(() => {
-    if (project?.readmeContent) {
+    if (project?.readme_content) {
       const youtubeRegex = /https?:\/\/(?:www\.|)youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
-      const match = project.readmeContent.match(youtubeRegex);
+      const match = project.readme_content.match(youtubeRegex);
       if (match) {
         setYoutubeUrl(`https://www.youtube.com/embed/${match[1]}`);
       } else {
@@ -29,9 +28,25 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
     } else {
       setYoutubeUrl(null);
     }
-  }, [project?.readmeContent]);
+  }, [project?.readme_content]);
+
+  // Handle README rendering when tab changes or project changes
+  useEffect(() => {
+    if (previewMode === 'readme' && project?.readme_content && readmeContainerRef.current) {
+      const container = readmeContainerRef.current;
+      container.innerHTML = ''; // Clear previous content
+      container.id = `readme-${project.id}`;
+      loadAndRenderReadme(project.readme_content, container.id);
+    }
+  }, [previewMode, project?.id, project?.readme_content]);
 
   if (!project) return null;
+
+  // Get display values with fallbacks
+  const displayName = project.name || project.title || 'Untitled Project';
+  const topics = project.topics || project.technologies || [];
+  const homepage = project.homepage || project.live_url || null;
+  const githubUrl = project.html_url || project.github_url || null;
 
   // Only show video preview tab if there's a valid YouTube URL
   const hasVideoPreview = youtubeUrl !== null;
@@ -66,32 +81,37 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-              {project.name}
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+              {displayName}
             </h2>
             
             <div className="flex items-center space-x-2">
-              <a
-                href={project.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors"
-                aria-label="View repository"
-              >
-                <Github size={20} />
-              </a>
+              <div className="flex items-center space-x-2">
+                {githubUrl && (
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center px-3 py-1.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    <Github size={16} className="mr-1.5" />
+                    GitHub
+                  </a>
+                )}
+                {homepage && (
+                  <a
+                    href={homepage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <ExternalLink size={16} className="mr-1.5" />
+                    Live Demo
+                  </a>
+                )}
+              </div>
               
-              {project.homepage && (
-                <a
-                  href={project.homepage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors"
-                  aria-label="Visit live site"
-                >
-                  <ExternalLink size={20} />
-                </a>
-              )}
+              <div className="h-6 border-l border-gray-300 dark:border-gray-600 mx-1"></div>
               
               <button
                 onClick={toggleFullscreen}
@@ -154,16 +174,32 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ project, onClose }) => 
             {previewMode === 'readme' ? (
               <div className="p-6 prose dark:prose-invert prose-blue max-w-none">
                 <div className="overflow-y-auto h-full max-h-[calc(100vh-200px)]">
-                  {project.readmeContent ? (
-                    <ReactMarkdown 
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeRaw]}
-                    >
-                      {project.readmeContent}
-                    </ReactMarkdown>
+                  {project.readme_content ? (
+                    <>
+                      {topics.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {topics.map((topic: string) => (
+                            <span
+                              key={topic}
+                              className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full"
+                            >
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div 
+                        ref={readmeContainerRef}
+                        className="prose dark:prose-invert max-w-none"
+                      >
+                        <div className="flex items-center justify-center py-12">
+                          <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
+                        </div>
+                      </div>
+                    </>
                   ) : (
-                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                      <p>No README content available</p>
+                    <div className="text-gray-500 dark:text-gray-400 text-center py-12">
+                      No README available for this project.
                     </div>
                   )}
                 </div>

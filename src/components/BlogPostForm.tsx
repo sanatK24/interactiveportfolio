@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useState } from 'react';
+import { supabase } from '../lib/supabase';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { Editor } from '@tinymce/tinymce-react';
 import type { Database } from '../types/supabase';
@@ -43,7 +43,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
 
     try {
       // Check authentication
-      const { data: { user }, error: authError } = await useSupabaseClient().auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
       if (authError || !user) {
         throw new Error('You must be logged in to create a blog post');
       }
@@ -65,7 +65,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
       let slug = generateSlug(formData.title);
 
       // First check if slug exists
-      const { data: existingPost, error: checkError } = await useSupabaseClient()
+      const { data: existingPost, error: checkError } = await supabase
         .from('blog_posts')
         .select('id')
         .eq('slug', slug)
@@ -89,7 +89,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
 
       console.log('Final slug:', slug);
 
-      const { error: createError } = await useSupabaseClient()
+      const { error: createError } = await supabase
         .from('blog_posts')
         .insert({
           title: formData.title,
@@ -109,7 +109,7 @@ export const BlogPostForm: React.FC<BlogPostFormProps> = ({ onSuccess }) => {
           console.log('Generated new slug:', slug);
           
           // Try again with new slug
-          const { error: retryError } = await useSupabaseClient()
+          const { error: retryError } = await supabase
             .from('blog_posts')
             .insert({
               title: formData.title,

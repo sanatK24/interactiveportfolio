@@ -1,8 +1,8 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { supabase } from '../lib/supabase';
 import type { Database } from '../types/supabase';
 import { useToast } from '../components/ui/ToastContext';
 import { motion } from 'framer-motion';
-import { Send, MapPin, Phone, Mail, Linkedin, Github } from 'lucide-react';
+import { Send, Linkedin, Github } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useState } from 'react';
@@ -10,7 +10,7 @@ import { useState } from 'react';
 type FormData = Database['public']['Tables']['messages']['Insert'];
 
 const Contact: React.FC = () => {
-  const supabase = useSupabaseClient();
+  // Using centralized supabase client
   const { addToast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: '',
