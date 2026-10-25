@@ -13,6 +13,7 @@ Then open http://localhost:5173
 Drag the folder onto Netlify / Vercel / Cloudflare Pages, or push it to a GitHub repo and turn on GitHub Pages.
 
 ## Personalise
+- **Link previews:** set to https://sanatkarkhanisportfolio-cha8.vercel.app — if the domain changes, update it in the og/twitter tags in `index.html`. The preview image is `assets/og-image.jpg` (1200×630). Test it with LinkedIn's Post Inspector (linkedin.com/post-inspector) or opengraph.xyz; LinkedIn and WhatsApp cache previews, so re-run the inspector after changes.
 - **Portrait:** add `assets/portrait.jpg` (3:4, ideally a moody, high-contrast photo). Until then the site uses the GitHub avatar, and falls back to an "SK" monogram.
 - **Resume:** replace `assets/Sanat_Karkhanis_Resume.pdf`.
 - **Projects:** each `<article class="file">` in `index.html` is one project file (tab label, copy, metric, visual).
