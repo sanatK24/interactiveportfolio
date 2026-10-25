@@ -87,6 +87,138 @@
     });
   }
 
+  /* =========================================================
+     SOUND — everything synthesised with Web Audio, no files.
+     Off by default; browsers only allow audio after a gesture.
+     ========================================================= */
+  const sfx = (() => {
+    const KEY = "sk-sound";
+    let ctx = null, master, wet, on = false, wanted = false;
+    try { wanted = localStorage.getItem(KEY) === "1"; } catch (_) {}
+    const btn = $(".nav__sound");
+    const label = btn && $(".nav__sound-label", btn);
+
+    // Calm by design: sine tones only, gentle pitches, soft attacks,
+    // and a low-pass on the master so nothing sounds sharp.
+    const boot = () => {
+      if (ctx) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ctx = new AC();
+      const soften = ctx.createBiquadFilter();
+      soften.type = "lowpass"; soften.frequency.value = 2400; soften.Q.value = 0.5;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -24; comp.ratio.value = 3; comp.attack.value = 0.01;
+      master = ctx.createGain(); master.gain.value = 0;
+      master.connect(soften).connect(comp).connect(ctx.destination);
+      // faint, short echo that gives the notes some air
+      const delay = ctx.createDelay(1), fb = ctx.createGain(), lp = ctx.createBiquadFilter();
+      delay.delayTime.value = 0.22; fb.gain.value = 0.2; lp.type = "lowpass"; lp.frequency.value = 1500;
+      wet = ctx.createGain(); wet.gain.value = 0.12;
+      wet.connect(delay); delay.connect(lp).connect(fb).connect(delay); lp.connect(master);
+    };
+    // fade the whole mix in, so turning sound on never starts abruptly
+    const fadeMaster = (to, time) => {
+      const t = ctx.currentTime;
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(master.gain.value, t);
+      master.gain.linearRampToValueAtTime(to, t + time);
+    };
+    const env = (g, t, peak, a, d) => {
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(peak, t + a);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+    };
+    const tone = ({ f0, f1 = f0, peak = 0.03, a = 0.015, d = 0.2, send = false, at = 0 }) => {
+      if (!on) return;
+      const t = ctx.currentTime + at, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.setValueAtTime(f0, t);
+      if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + a + d);
+      env(g, t, peak, a, d);
+      o.connect(g).connect(master); if (send) g.connect(wet);
+      o.start(t); o.stop(t + a + d + 0.05);
+    };
+    let noiseBuf = null;
+    const breath = ({ f0, f1, peak = 0.015, a = 0.12, d = 0.3 }) => {
+      if (!on) return;
+      if (!noiseBuf) {
+        noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+        const ch = noiseBuf.getChannelData(0);
+        for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+      }
+      const t = ctx.currentTime, src = ctx.createBufferSource(), flt = ctx.createBiquadFilter(), g = ctx.createGain();
+      src.buffer = noiseBuf; flt.type = "lowpass"; flt.Q.value = 0.4;
+      flt.frequency.setValueAtTime(f0, t); flt.frequency.exponentialRampToValueAtTime(f1, t + a + d);
+      env(g, t, peak, a, d);
+      src.connect(flt).connect(g).connect(master);
+      src.start(t); src.stop(t + a + d + 0.05);
+    };
+
+    const paint = () => {
+      if (!btn) return;
+      btn.classList.toggle("is-on", wanted);
+      btn.setAttribute("aria-pressed", String(wanted));
+      label.textContent = wanted ? "SOUND ON" : "SOUND OFF";
+    };
+    const enable = () => {
+      boot(); if (!ctx) return;
+      ctx.resume(); on = true;
+      fadeMaster(0.55, 0.6);
+    };
+    const disable = () => { if (ctx) { fadeMaster(0, 0.25); setTimeout(() => { if (!wanted) on = false; }, 300); } };
+    const toggle = () => {
+      wanted = !wanted;
+      try { localStorage.setItem(KEY, wanted ? "1" : "0"); } catch (_) {}
+      paint(); wanted ? enable() : disable();
+    };
+
+    // C-major pentatonic, one note per hero letter
+    const SCALE = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33];
+    let lastChime = 0;
+    const api = {
+      get on() { return on; },
+      toggle,
+      tick: () => tone({ f0: 740, f1: 660, peak: 0.012, a: 0.01, d: 0.08 }),
+      click: () => tone({ f0: 392, f1: 294, peak: 0.03, a: 0.008, d: 0.14 }),
+      note: (i) => tone({ f0: SCALE[i % SCALE.length], peak: 0.028, a: 0.025, d: 0.9, send: true }),
+      chime: (n = 0) => {
+        const now = performance.now(); if (now - lastChime < 700) return; lastChime = now;
+        const f = SCALE[(n + 2) % SCALE.length];
+        tone({ f0: f, peak: 0.02, a: 0.03, d: 0.8, send: true });
+        tone({ f0: f * 1.5, peak: 0.014, a: 0.03, d: 0.8, send: true, at: 0.1 });
+      },
+      swoosh: () => breath({ f0: 700, f1: 380, peak: 0.016, a: 0.12, d: 0.28 }),
+      whoosh: () => breath({ f0: 900, f1: 300, peak: 0.02, a: 0.18, d: 0.45 }),
+      thud: () => tone({ f0: 196, f1: 131, peak: 0.035, a: 0.01, d: 0.18 }),
+      lift: () => tone({ f0: 330, f1: 392, peak: 0.018, a: 0.02, d: 0.14 }),
+      ding: () => { tone({ f0: 784, peak: 0.02, a: 0.01, d: 0.7, send: true }); tone({ f0: 1047, peak: 0.01, a: 0.01, d: 0.5, send: true, at: 0.08 }); },
+      blip: () => tone({ f0: 523, f1: 587, peak: 0.016, a: 0.01, d: 0.08 }),
+      velocity: () => {},
+    };
+
+    paint();
+    btn && btn.addEventListener("click", (e) => { e.stopPropagation(); toggle(); });
+    // a remembered "on" preference starts at the first gesture (autoplay rules)
+    const firstGesture = () => { if (wanted && !on) enable(); };
+    addEventListener("pointerdown", firstGesture, { once: true });
+    addEventListener("keydown", firstGesture, { once: true });
+    document.addEventListener("visibilitychange", () => { if (ctx && on) document.hidden ? ctx.suspend() : ctx.resume(); });
+
+    // interaction sounds: a faint tick on hovering links/buttons, a soft tap on click
+    let lastHover = null, lastT = 0;
+    document.addEventListener("pointerover", (e) => {
+      if (!on || e.pointerType !== "mouse") return;
+      const t = e.target.closest("a, button");
+      if (!t || t === lastHover) return;
+      lastHover = t;
+      const now = performance.now(); if (now - lastT < 120) return; lastT = now;
+      api.tick();
+    });
+    document.addEventListener("pointerout", (e) => { if (lastHover && !lastHover.contains(e.relatedTarget)) lastHover = null; });
+    document.addEventListener("pointerdown", (e) => { if (on && e.target.closest("a, button, .file, .idcol")) api.click(); });
+    return api;
+  })();
+
   /* ---------- Scramble on hover ---------- */
   $$("[data-scramble]").forEach((el) => {
     const text = el.textContent;
@@ -182,7 +314,7 @@
   function initHeroLetters() {
     const letters = $$(".hw");
     if (!finePointer || reduced) return;
-    const state = letters.map(() => ({ w: 800, s: 112 }));
+    const state = letters.map(() => ({ w: 800, s: 112, hot: false }));
     let active = false;
     const hero = $(".hero");
     hero.addEventListener("pointerenter", () => (active = true));
@@ -196,7 +328,10 @@
           const k = clamp(1 - d / (r.height * 1.6), 0, 1);
           tw = lerp(650, 900, k);
           ts = lerp(100, 125, k);
-        }
+          const hot = k > 0.55;
+          if (hot && !state[i].hot) sfx.note(i);
+          state[i].hot = hot;
+        } else state[i].hot = false;
         const st = state[i];
         st.w = lerp(st.w, tw, 0.12); st.s = lerp(st.s, ts, 0.12);
         el.style.fontVariationSettings = `"wght" ${st.w.toFixed(1)}, "wdth" ${st.s.toFixed(1)}`;
@@ -261,6 +396,7 @@
           const n = sec.dataset.section;
           if (pillCur.textContent !== n) {
             window.ScrambleTextPlugin ? gsap.to(pillCur, { duration: 0.5, scrambleText: { text: n, chars: "0123456789" } }) : (pillCur.textContent = n);
+            sfx.chime(+n);
           }
           navLinks.forEach((a) => a.classList.toggle("is-active", a.getAttribute("href") === "#" + sec.id));
         },
@@ -392,7 +528,7 @@
     let current = -1;
     const setActive = (i) => {
       if (i === current) return;
-      if (current >= 0) fileHooks[current]?.off?.();
+      if (current >= 0) { fileHooks[current]?.off?.(); sfx.swoosh(); }
       current = i;
       files.forEach((f, k) => f.classList.toggle("is-active", k === i));
       fileHooks[i]?.on?.();
@@ -474,6 +610,7 @@
         kSprd.textContent = (spreads.reduce((a, b) => a + b, 0) / spreads.length * 100).toFixed(1) + "bp";
         kRisk.textContent = Math.random() > 0.8 ? "MED" : "LOW";
         holding = 2.2;
+        sfx.ding();
       }
       time.textContent = t.toFixed(1);
       fg.style.strokeDashoffset = (C * (1 - t / 15)).toFixed(1);
@@ -665,8 +802,8 @@
     cards.forEach((c) => {
       Draggable.create(c, {
         bounds: board, inertia: !!window.InertiaPlugin, edgeResistance: 0.7,
-        onPress() { c.style.zIndex = ++z; gsap.to(c, { scale: 1.06, rotate: 0, duration: 0.3 }); c.classList.add("is-dragging"); },
-        onRelease() { gsap.to(c, { scale: 1, rotate: gsap.utils.random(-9, 9), duration: 0.6, ease: "elastic.out(1, 0.5)" }); c.classList.remove("is-dragging"); },
+        onPress() { sfx.lift(); c.style.zIndex = ++z; gsap.to(c, { scale: 1.06, rotate: 0, duration: 0.3 }); c.classList.add("is-dragging"); },
+        onRelease() { sfx.thud(); gsap.to(c, { scale: 1, rotate: gsap.utils.random(-9, 9), duration: 0.6, ease: "elastic.out(1, 0.5)" }); c.classList.remove("is-dragging"); },
       });
     });
     if (!reduced) gsap.from(cards, { y: 200, rotate: () => gsap.utils.random(-30, 30), opacity: 0, stagger: 0.1, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: board, start: "top 80%" } });
@@ -690,7 +827,7 @@
     $$(".file__visual--switch").forEach((vis) => {
       const btns = $$(".vswitch button", vis);
       btns.forEach((b) => b.addEventListener("click", (e) => {
-        e.stopPropagation();
+        e.stopPropagation(); sfx.blip();
         btns.forEach((x) => x.classList.toggle("is-on", x === b));
         $$(".vpane", vis).forEach((p) => (p.hidden = !p.classList.contains("vpane--" + b.dataset.v)));
       }));
@@ -728,7 +865,7 @@
       $(".lmodal__url", modal).textContent = url.replace(/^https?:\/\//, "");
       $(".lmodal__open", modal).href = url;
       mFrame.src = url;
-      modal.hidden = false; lenis?.stop();
+      modal.hidden = false; lenis?.stop(); sfx.whoosh();
       gsap.fromTo(".lmodal__win", { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" });
     };
     const closeModal = () => { modal.hidden = true; mFrame.src = "about:blank"; lenis?.start(); };
@@ -738,7 +875,7 @@
 
     cards.forEach((card) => {
       const go = $(".lcard__go", card), x = $(".lcard__x", card);
-      go.addEventListener("click", () => { load(card); card.classList.add("is-live"); x.hidden = false; });
+      go.addEventListener("click", () => { sfx.chime(4); load(card); card.classList.add("is-live"); x.hidden = false; });
       x.addEventListener("click", () => {
         card.classList.remove("is-live"); x.hidden = true;
         if (!card.hasAttribute("data-autoload")) { $(".lcard__frame", card).innerHTML = ""; card.classList.remove("is-ready"); }
@@ -846,6 +983,7 @@
       { t: "Go to · LinkedIn posts", k: "06", run: () => scrollTo("#posts") },
       { t: "Go to · After hours", k: "07", run: () => scrollTo("#after") },
       { t: "Go to · Contact", k: "08", run: () => scrollTo("#contact") },
+      { t: "Toggle sound", k: "♪", run: () => sfx.toggle() },
       { t: "Copy email address", k: "⧉", run: () => navigator.clipboard?.writeText("sanat.karkhanis2@gmail.com") },
       { t: "Open GitHub", k: "↗", run: () => open("https://github.com/sanatK24", "_blank", "noopener") },
       { t: "Open LinkedIn", k: "↗", run: () => open("https://linkedin.com/in/sanat-karkhanis/", "_blank", "noopener") },
@@ -855,7 +993,7 @@
     const render = () => {
       list.innerHTML = shown.map((it, i) => `<li class="${i === sel ? "is-sel" : ""}" data-i="${i}"><span>${it.t}</span><small>${it.k}</small></li>`).join("") || `<li><span>no matches</span></li>`;
     };
-    const openP = () => { root.hidden = false; input.value = ""; shown = items; sel = 0; render(); lenis?.stop(); setTimeout(() => input.focus(), 10); gsap.fromTo(".cmd__panel", { y: -20, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }); };
+    const openP = () => { sfx.blip(); root.hidden = false; input.value = ""; shown = items; sel = 0; render(); lenis?.stop(); setTimeout(() => input.focus(), 10); gsap.fromTo(".cmd__panel", { y: -20, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }); };
     const closeP = () => { root.hidden = true; lenis?.start(); };
     const runSel = () => { const it = shown[sel]; if (!it) return; closeP(); it.run(); };
     input.addEventListener("input", () => { const q = input.value.toLowerCase(); shown = items.filter((i) => i.t.toLowerCase().includes(q)); sel = 0; render(); });

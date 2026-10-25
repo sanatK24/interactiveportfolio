@@ -20,6 +20,7 @@ Drag the folder onto Netlify / Vercel / Cloudflare Pages, or push it to a GitHub
 - **LinkedIn posts:** LinkedIn has no public API for a profile's posts, so the feed reads from the `POSTS` list in `main.js`. To add a post, copy the number from its URL (`linkedin.com/feed/update/urn:li:activity:<id>`) and add a row at the top with date, tag, title, a one-line summary and the reaction count.
 - **Live builds:** each `<article class="lcard">` in the `#live` section shows one deployed site. Screenshots live in `assets/live/`; a card with `data-autoload` and no screenshot loads the real site when it scrolls into view.
 - **Logos:** `assets/logos/`. Organisations without a usable logo get a burgundy monogram badge (`<span class="lg lg--mono">ACM</span>`).
+- **Sound:** all audio is synthesised in `main.js` (the `sfx` module, Web Audio API) — no audio files. It is off by default, toggled from the nav or ⌘K, and the visitor's choice is remembered. Calm, interaction-only sine tones with soft attacks and no background audio; tweak volumes via the `peak` values.
 - **Cache:** after editing `style.css` or `main.js`, bump the `?v=` number on their links in `index.html` so browsers load the new version.
 - **GitHub feed:** the CODE_005 file pulls the latest public repos from `api.github.com/users/sanatK24` and falls back to the four resume projects.
 
