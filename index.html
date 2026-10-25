@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=14" />
 </head>
 <body class="is-loading">
 
@@ -57,6 +57,8 @@
       <a href="#about" data-scramble>[ABOUT]</a>
       <a href="#work" data-scramble>[WORK]</a>
       <a href="#journey" data-scramble>[JOURNEY]</a>
+      <a href="#field" data-scramble>[HACKS]</a>
+      <a href="#lead" data-scramble>[LEAD]</a>
       <a href="#posts" data-scramble>[POSTS]</a>
       <a href="#contact" data-scramble>[CONTACT]</a>
     </nav>
@@ -68,7 +70,7 @@
   </header>
 
   <!-- Section counter pill (inspo: "04 OF 07") -->
-  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 08</div>
+  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 10</div>
 
   <main>
 
@@ -99,7 +101,9 @@
     </section>
 
     <!-- ============ 02 · ABOUT (big-type portfolio) ============ -->
-    <section id="about" class="about" data-section="02">
+    <section id="about" class="about about--field" data-section="02">
+      <canvas class="about__wall" aria-hidden="true"></canvas>
+      <div class="about__glow" aria-hidden="true"></div>
       <div class="about__big" aria-hidden="true">
         <span>P</span><span>O</span><span>R</span><span>T</span><span>F</span><span>O</span><span>L</span><span>I</span><span>O</span>
       </div>
@@ -113,15 +117,18 @@
           <p class="about__loc"><i></i>Based in Navi Mumbai · Open to remote</p>
         </div>
 
-        <figure class="about__portrait" data-cursor="Hi!">
+        <figure class="about__portrait about__portrait--field" data-cursor="Hi!">
+          <span class="fbr fbr--tl"></span><span class="fbr fbr--tr"></span><span class="fbr fbr--bl"></span><span class="fbr fbr--br"></span>
           <div class="portrait__img">
-            <img src="assets/portrait.jpg" alt="Portrait of Sanat Karkhanis" data-fallback="https://github.com/sanatK24.png?size=640" />
+            <img src="assets/portrait.jpg" alt="Sanat at AWS Future Builders Connect, pointing at his builder passport" width="720" height="1280" />
+            <i class="portrait__ghost portrait__ghost--r" aria-hidden="true"></i>
+            <i class="portrait__ghost portrait__ghost--g" aria-hidden="true"></i>
             <div class="portrait__mono" aria-hidden="true">SK</div>
           </div>
-          <div class="portrait__tint" aria-hidden="true"></div>
-          <div class="portrait__dots" aria-hidden="true"></div>
-          <div class="portrait__glitch" aria-hidden="true"></div>
-          <figcaption><span>FIG. 01</span><span>SANAT_K.JPG</span></figcaption>
+          <div class="portrait__scan" aria-hidden="true"></div>
+          <span class="hud hud--sys"><i></i>SYS_01 · ONLINE</span>
+          <span class="hud hud--tag">FUTURE BUILDERS PASSPORT <b>✓</b></span>
+          <figcaption><span>FIG. 01 // AWS FUTURE BUILDERS CONNECT</span><span>MUMBAI · 11.09.2026</span></figcaption>
         </figure>
 
         <div class="about__right">
@@ -506,27 +513,27 @@
               <p>Built a modern, responsive UI for an AI vibecoding platform used by 25K+ users, and wired the front end to GPU-hosted LLM inference over secure SSH tunnels.</p>
             </li>
             <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/serviceio.png" alt="ServiceIO logo" loading="lazy" /></span><b>Trainee Intern</b><span>May — Jul 2026</span></div>
+              <div class="tl__row"><span class="lg lg--wide"><img src="assets/logos/serviceio-wide.png" alt="ServiceIO logo" loading="lazy" /></span><b>Trainee Intern</b><span>May — Jul 2026</span></div>
               <p class="tl__org">ServiceIO Consultancy Services · Thane</p>
               <p>Built a bidirectional Jira ↔ ServiceNow integration with Scripted REST APIs and webhooks — incident sync, data mapping and correlation tracking.</p>
             </li>
             <li data-reveal>
-              <div class="tl__row"><span class="lg lg--mono">ACM</span><b>Webmaster · Tech Lead</b><span>Sep 2025 — Jul 2026</span></div>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><b>Webmaster · Tech Lead</b><span>Sep 2025 — Jul 2026</span></div>
               <p class="tl__org">RAIT ACM SIGAI Student Chapter</p>
               <p>Tech lead for national hackathons with 2,000+ participants; Editor-in-Chief of <em>Synara 2026</em>. Mentored the next Webmaster through the handover.</p>
             </li>
             <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/samsung.png" alt="Samsung logo" loading="lazy" /></span><b>Innovation Campus Trainee</b><span>Nov 2025 — 2026</span></div>
+              <div class="tl__row"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Innovation Campus Trainee</b><span>Nov 2025 — 2026</span></div>
               <p class="tl__org">Samsung India Innovation Campus · RAIT</p>
               <p>Selected for Samsung's industry-aligned programme — DSA and problem-solving track; built EmpathI at the SIC hackathon.</p>
             </li>
             <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/microsoft.png" alt="Microsoft logo" loading="lazy" /></span><b>TechSaksham Intern</b><span>Dec 2024 — Jan 2025</span></div>
+              <div class="tl__row"><span class="lg lg--wide"><img src="assets/logos/techsaksham-wide.png" alt="TechSaksham logo" loading="lazy" /></span><b>TechSaksham Intern</b><span>Dec 2024 — Jan 2025</span></div>
               <p class="tl__org">Microsoft &amp; SAP · Edunet Foundation</p>
               <p>One-month internship focused on core fundamentals and practical industry exposure.</p>
             </li>
             <li data-reveal>
-              <div class="tl__row"><span class="lg lg--mono">AC</span><b>Data Science Intern</b><span>Nov 2023 — Jan 2024</span></div>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/academor.png" alt="Academor logo" loading="lazy" /></span><b>Data Science Intern</b><span>Nov 2023 — Jan 2024</span></div>
               <p class="tl__org">Academor</p>
               <p>Data science course and internship — awarded an Outstanding Performance certificate as a first-year student.</p>
             </li>
@@ -534,8 +541,8 @@
           <p class="jlabel">Education</p>
           <ul class="edu">
             <li data-reveal><span class="lg"><img src="assets/logos/dypatil.png" alt="D. Y. Patil University logo" loading="lazy" /></span><div><b>B.Tech, Computer Engineering</b><span>Major: Data Science · RAIT, D. Y. Patil University</span></div><em>9.00<small>/10</small></em></li>
-            <li data-reveal><span class="lg lg--mono">JS</span><div><b>Class XII</b><span>Jaipuriar School</span></div><em>70.8<small>%</small></em></li>
-            <li data-reveal><span class="lg lg--mono">AH</span><div><b>Class X</b><span>Avalon Heights International</span></div><em>91<small>%</small></em></li>
+            <li data-reveal><span class="lg"><img src="assets/logos/jaipuriar.png" alt="Jaipuriar School logo" loading="lazy" /></span><div><b>Class XII</b><span>Jaipuriar School</span></div><em>70.8<small>%</small></em></li>
+            <li data-reveal><span class="lg"><img src="assets/logos/avalon.png" alt="Avalon Heights International School logo" loading="lazy" /></span><div><b>Class X</b><span>Avalon Heights International</span></div><em>91<small>%</small></em></li>
           </ul>
         </div>
 
@@ -567,8 +574,8 @@
             <li data-cursor="✦"><span class="ach__n">02</span><span class="lg"><img src="assets/logos/dypatil.png" alt="Winter Internship Program logo" loading="lazy" /></span><b>Winter Internship Program</b><span class="ach__d">1st place · malariaCARE LLM chatbot</span><span class="ach__y">2025</span></li>
             <li data-cursor="✦"><span class="ach__n">03</span><span class="lg"><img src="assets/logos/flipkart.png" alt="Flipkart Gridlock 2.0 logo" loading="lazy" /></span><b>Flipkart Gridlock 2.0</b><span class="ach__d">Round 2 · Prototype phase</span><span class="ach__y">2026</span></li>
             <li data-cursor="✦"><span class="ach__n">04</span><span class="lg"><img src="assets/logos/adobe.png" alt="Adobe University Hackathon logo" loading="lazy" /></span><b>Adobe University Hackathon</b><span class="ach__d">Online assessment · Qualified</span><span class="ach__y">2026</span></li>
-            <li data-cursor="✦"><span class="ach__n">05</span><span class="lg"><img src="assets/logos/samsung.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Samsung Innovation Campus</b><span class="ach__d">Hackathon build · EmpathI</span><span class="ach__y">2026</span></li>
-            <li data-cursor="✦"><span class="ach__n">06</span><span class="lg lg--mono">ACM</span><b>KAINOS 2024 AI Hackathon</b><span class="ach__d">F1 race-data analysis · OpenF1</span><span class="ach__y">2024</span></li>
+            <li data-cursor="✦"><span class="ach__n">05</span><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Samsung Innovation Campus</b><span class="ach__d">Hackathon build · EmpathI</span><span class="ach__y">2026</span></li>
+            <li data-cursor="✦"><span class="ach__n">06</span><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><b>KAINOS 2024 AI Hackathon</b><span class="ach__d">F1 race-data analysis · OpenF1</span><span class="ach__y">2024</span></li>
           </ul>
         </div>
         <div class="certs">
@@ -579,10 +586,10 @@
             <li><span class="lg"><img src="assets/logos/mckinsey.png" alt="McKinsey.org Forward Program logo" loading="lazy" /></span><div><b>MCKINSEY_FORWARD.CERT</b><span>McKinsey.org Forward Program</span></div><em>DEC 2025</em></li>
             <li><span class="lg"><img src="assets/logos/aspire.png" alt="Aspire Leaders Program logo" loading="lazy" /></span><div><b>ASPIRE_LEADERS.CERT</b><span>Aspire Leaders Program</span></div><em>DEC 2025</em></li>
             <li><span class="lg"><img src="assets/logos/google.png" alt="Google logo" loading="lazy" /></span><div><b>GEMINI_UNIVERSITY.CERT</b><span>Google · Gemini Certified University Student</span></div><em>NOV 2025</em></li>
-            <li><span class="lg"><img src="assets/logos/kaggle.png" alt="Google × Kaggle logo" loading="lazy" /></span><div><b>AI_AGENTS_INTENSIVE.CERT</b><span>Google × Kaggle · 5-Day AI Agents Intensive</span></div><em>NOV 2025</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/ibm.png" alt="CSRBOX × IBM SkillsBuild logo" loading="lazy" /></span><div><b>PBL_2025.CERT</b><span>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></div><em>AUG 2025</em></li>
+            <li><span class="lg lg--wide"><img src="assets/logos/kaggle-wide.png" alt="Kaggle logo" loading="lazy" /></span><div><b>AI_AGENTS_INTENSIVE.CERT</b><span>Google × Kaggle · 5-Day AI Agents Intensive</span></div><em>NOV 2025</em></li>
+            <li class="is-extra"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>PBL_2025.CERT</b><span>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></div><em>AUG 2025</em></li>
             <li class="is-extra"><span class="lg"><img src="assets/logos/deloitte.png" alt="Deloitte Australia logo" loading="lazy" /></span><div><b>DELOITTE_DATA.CERT</b><span>Deloitte Australia · Data Analytics</span></div><em>JUL 2025</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/ibm.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>AI_AGENT_ARCHITECT.CERT</b><span>IBM SkillsBuild · From Learner to Builder</span></div><em>JUL 2025</em></li>
+            <li class="is-extra"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>AI_AGENT_ARCHITECT.CERT</b><span>IBM SkillsBuild · From Learner to Builder</span></div><em>JUL 2025</em></li>
             <li class="is-extra"><span class="lg"><img src="assets/logos/google.png" alt="Google Cloud logo" loading="lazy" /></span><div><b>VERTEX_PROMPT.BADGE</b><span>Google Cloud · Prompt Design in Vertex AI</span></div><em>MAY 2025</em></li>
             <li class="is-extra"><span class="lg"><img src="assets/logos/harvard.png" alt="Harvard CS50 logo" loading="lazy" /></span><div><b>CS50X.CERT</b><span>Harvard CS50 · Intro to Computer Science (edX)</span></div><em>MAY 2024</em></li>
             <li class="is-extra"><span class="lg"><img src="assets/logos/aws.png" alt="AWS logo" loading="lazy" /></span><div><b>AWS_DATA_ANALYTICS.CERT</b><span>AWS · Getting Started with Data Analytics (edX)</span></div><em>MAY 2024</em></li>
@@ -597,8 +604,274 @@
     </section>
 
 
-    <!-- ============ 06 · SIGNAL (LinkedIn posts) ============ -->
-    <section id="posts" class="posts" data-section="06">
+
+    <!-- ============ 06 · FIELD LOG (hackathons + events) ============ -->
+    <section id="field" class="field" data-section="06">
+      <div class="sec-head"><span>_FIELD_LOG // HACKATHONS &amp; EVENTS</span><i></i><span>2024 → NOW</span></div>
+      <div class="field__head">
+        <h2 class="field__title" data-split>In the room,<br />on the clock.</h2>
+        <ul class="field__stats">
+          <li><b data-count="6" data-pad="2">0</b><span>Hackathons &amp;<br />competitions</span></li>
+          <li><b data-count="1" data-pad="2">0</b><span>First-place<br />finish</span></li>
+          <li><b>~10%</b><span>Global rank at<br />NASA Space Apps</span></li>
+          <li><b data-count="2000" data-suffix="+" data-comma>0</b><span>Hackers I helped<br />host as organiser</span></li>
+        </ul>
+      </div>
+
+      <div class="field__bar">
+        <p class="jlabel">Hackathons — admit one</p>
+        <div class="field__filters" role="tablist" aria-label="Filter hackathons">
+          <button type="button" class="is-on" data-filter="all">ALL</button>
+          <button type="button" data-filter="result">RESULTS</button>
+          <button type="button" data-filter="build">BUILDS</button>
+          <button type="button" data-filter="org">ORGANISED</button>
+        </div>
+      </div>
+      <div class="tickets">
+          <article class="ticket ticket--white" data-cat="result">
+            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 001</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/adobe.png" alt="Adobe logo" loading="lazy" /></span><span>Adobe University Hackathon</span></div>
+              <h3 class="ticket__title">Online Assessment</h3>
+              <p class="ticket__desc">15 multiple-choice questions and 2 coding challenges inside one hour — cleared to qualify.</p>
+              <dl class="ticket__meta"><div><dt>Format</dt><dd>Timed OA</dd></div><div><dt>When</dt><dd>Aug 2026</dd></div><div><dt>Where</dt><dd>India · Online</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">QUALIFIED</span>
+              
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="3" height="28"/><rect x="4" y="0" width="1" height="28"/><rect x="10" y="0" width="2" height="28"/><rect x="16" y="0" width="1" height="28"/><rect x="24" y="0" width="1" height="28"/><rect x="28" y="0" width="1" height="28"/><rect x="30" y="0" width="1" height="28"/><rect x="35" y="0" width="2" height="28"/><rect x="38" y="0" width="3" height="28"/><rect x="47" y="0" width="4" height="28"/><rect x="52" y="0" width="3" height="28"/><rect x="60" y="0" width="2" height="28"/><rect x="63" y="0" width="2" height="28"/><rect x="66" y="0" width="2" height="28"/><rect x="75" y="0" width="1" height="28"/><rect x="77" y="0" width="3" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="85" y="0" width="3" height="28"/><rect x="89" y="0" width="2" height="28"/><rect x="96" y="0" width="3" height="28"/><rect x="100" y="0" width="1" height="28"/><rect x="107" y="0" width="2" height="28"/><rect x="110" y="0" width="1" height="28"/><rect x="112" y="0" width="2" height="28"/><rect x="115" y="0" width="2" height="28"/><rect x="118" y="0" width="1" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--slate" data-cat="result">
+            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 002</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/flipkart.png" alt="Flipkart logo" loading="lazy" /></span><span>Flipkart Gridlock Hackathon 2.0</span></div>
+              <h3 class="ticket__title">StreetSync · Traffic Forecasting</h3>
+              <p class="ticket__desc">Round 1: traffic-demand prediction from geohash, time and weather — a stacked LightGBM / XGBoost / CatBoost ensemble scoring 91.2. Round 2: an event-impact forecaster recommending manpower, barricades and diversions.</p>
+              <dl class="ticket__meta"><div><dt>Team</dt><dd>4 · with Omkar, Rohit, Sanjeta</dd></div><div><dt>When</dt><dd>May — Sep 2026</dd></div><div><dt>Host</dt><dd>Flipkart × HackerEarth</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">ROUND 2</span>
+              <a class="ticket__link" href="https://github.com/sanatK24/StreetSync2.0_GridLock_Round2" target="_blank" rel="noopener" data-cursor="Open">REPO ↗</a>
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="12" y="0" width="2" height="28"/><rect x="15" y="0" width="1" height="28"/><rect x="17" y="0" width="1" height="28"/><rect x="19" y="0" width="1" height="28"/><rect x="29" y="0" width="1" height="28"/><rect x="34" y="0" width="3" height="28"/><rect x="38" y="0" width="2" height="28"/><rect x="41" y="0" width="2" height="28"/><rect x="47" y="0" width="3" height="28"/><rect x="51" y="0" width="1" height="28"/><rect x="53" y="0" width="1" height="28"/><rect x="55" y="0" width="2" height="28"/><rect x="58" y="0" width="2" height="28"/><rect x="67" y="0" width="2" height="28"/><rect x="70" y="0" width="2" height="28"/><rect x="73" y="0" width="2" height="28"/><rect x="76" y="0" width="1" height="28"/><rect x="84" y="0" width="3" height="28"/><rect x="88" y="0" width="1" height="28"/><rect x="90" y="0" width="1" height="28"/><rect x="92" y="0" width="2" height="28"/><rect x="95" y="0" width="2" height="28"/><rect x="98" y="0" width="3" height="28"/><rect x="102" y="0" width="1" height="28"/><rect x="108" y="0" width="2" height="28"/><rect x="115" y="0" width="3" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--burg" data-cat="build">
+            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 003</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><span>Samsung Innovation Campus Hackathon</span></div>
+              <h3 class="ticket__title">EmpathI</h3>
+              <p class="ticket__desc">A platform for getting campaigns supported — transparent fundraising backed by Bitcoin-inspired document verification, with 90%+ fraud detection.</p>
+              <dl class="ticket__meta"><div><dt>Team</dt><dd>2 · with Sanyukta Deshmukh</dd></div><div><dt>When</dt><dd>Jan 2026</dd></div><div><dt>Where</dt><dd>RAIT, Navi Mumbai</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">SHIPPED LIVE</span>
+              <a class="ticket__link" href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener" data-cursor="Open">LIVE ↗</a>
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="2" height="28"/><rect x="3" y="0" width="2" height="28"/><rect x="9" y="0" width="1" height="28"/><rect x="14" y="0" width="1" height="28"/><rect x="25" y="0" width="2" height="28"/><rect x="40" y="0" width="2" height="28"/><rect x="45" y="0" width="3" height="28"/><rect x="49" y="0" width="1" height="28"/><rect x="51" y="0" width="1" height="28"/><rect x="53" y="0" width="3" height="28"/><rect x="57" y="0" width="3" height="28"/><rect x="68" y="0" width="2" height="28"/><rect x="71" y="0" width="3" height="28"/><rect x="75" y="0" width="1" height="28"/><rect x="77" y="0" width="2" height="28"/><rect x="86" y="0" width="2" height="28"/><rect x="93" y="0" width="1" height="28"/><rect x="97" y="0" width="2" height="28"/><rect x="100" y="0" width="3" height="28"/><rect x="108" y="0" width="3" height="28"/><rect x="112" y="0" width="3" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--black" data-cat="result">
+            <div class="ticket__stub"><span class="ticket__yr">2025</span><span class="ticket__no">ADMIT · 004</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/spaceapps.png" alt="NASA Space Apps logo" loading="lazy" /></span><span>NASA International Space Apps Challenge</span></div>
+              <h3 class="ticket__title">Messier Deep Sky Navigator</h3>
+              <p class="ticket__desc">10,000+ astronomical tiles turned into a deep-zoom sky catalogue. Won the Amritsar local event, then named a Global Nominee — top ~10% of 11,500+ submissions.</p>
+              <dl class="ticket__meta"><div><dt>Team</dt><dd>DataDrift · 5</dd></div><div><dt>When</dt><dd>Oct 2025</dd></div><div><dt>Where</dt><dd>Amritsar → Global</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">GLOBAL NOMINEE</span>
+              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7393579755943407616/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="2" height="28"/><rect x="3" y="0" width="1" height="28"/><rect x="9" y="0" width="2" height="28"/><rect x="12" y="0" width="2" height="28"/><rect x="15" y="0" width="2" height="28"/><rect x="18" y="0" width="3" height="28"/><rect x="22" y="0" width="2" height="28"/><rect x="25" y="0" width="2" height="28"/><rect x="28" y="0" width="2" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="1" height="28"/><rect x="35" y="0" width="1" height="28"/><rect x="37" y="0" width="2" height="28"/><rect x="40" y="0" width="3" height="28"/><rect x="44" y="0" width="3" height="28"/><rect x="52" y="0" width="1" height="28"/><rect x="54" y="0" width="1" height="28"/><rect x="58" y="0" width="1" height="28"/><rect x="60" y="0" width="2" height="28"/><rect x="63" y="0" width="2" height="28"/><rect x="66" y="0" width="1" height="28"/><rect x="73" y="0" width="3" height="28"/><rect x="77" y="0" width="1" height="28"/><rect x="79" y="0" width="1" height="28"/><rect x="81" y="0" width="4" height="28"/><rect x="86" y="0" width="3" height="28"/><rect x="90" y="0" width="2" height="28"/><rect x="98" y="0" width="2" height="28"/><rect x="103" y="0" width="3" height="28"/><rect x="107" y="0" width="1" height="28"/><rect x="109" y="0" width="3" height="28"/><rect x="115" y="0" width="1" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--bone" data-cat="result">
+            <div class="ticket__stub"><span class="ticket__yr">2025</span><span class="ticket__no">ADMIT · 005</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/dypatil.png" alt="RAIT logo" loading="lazy" /></span><span>Winter Internship Program · RAIT</span></div>
+              <h3 class="ticket__title">malariaCARE</h3>
+              <p class="ticket__desc">An LLM-powered healthcare chatbot for malaria awareness and care, built with Nishtha Sharma under Prof. Rajashree Shedge.</p>
+              <dl class="ticket__meta"><div><dt>Team</dt><dd>2 · with Nishtha Sharma</dd></div><div><dt>When</dt><dd>Feb 2025</dd></div><div><dt>Field</dt><dd>LLM · NLP · Health</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">1ST PLACE</span>
+              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7296551543208579073/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="3" height="28"/><rect x="8" y="0" width="1" height="28"/><rect x="10" y="0" width="4" height="28"/><rect x="15" y="0" width="1" height="28"/><rect x="17" y="0" width="2" height="28"/><rect x="20" y="0" width="2" height="28"/><rect x="25" y="0" width="1" height="28"/><rect x="27" y="0" width="3" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="1" height="28"/><rect x="38" y="0" width="2" height="28"/><rect x="44" y="0" width="1" height="28"/><rect x="48" y="0" width="1" height="28"/><rect x="54" y="0" width="2" height="28"/><rect x="59" y="0" width="2" height="28"/><rect x="62" y="0" width="2" height="28"/><rect x="76" y="0" width="4" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="90" y="0" width="1" height="28"/><rect x="92" y="0" width="3" height="28"/><rect x="101" y="0" width="2" height="28"/><rect x="114" y="0" width="1" height="28"/><rect x="116" y="0" width="3" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--ash" data-cat="build">
+            <div class="ticket__stub"><span class="ticket__yr">2024</span><span class="ticket__no">ADMIT · 006</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>KAINOS 2024 · AI National Hackathon</span></div>
+              <h3 class="ticket__title">F1 Race-Data Deep Dive</h3>
+              <p class="ticket__desc">Pulled live Formula 1 data from the OpenF1 API — lap times, pit stops, weather — cleaned it and charted max speed by team to read race strategy.</p>
+              <dl class="ticket__meta"><div><dt>Host</dt><dd>ACM SIGAI × Zero True</dd></div><div><dt>When</dt><dd>26 — 29 Sep 2024</dd></div><div><dt>Stack</dt><dd>Python · OpenF1</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">BUILT</span>
+              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7268676756125962240/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="2" y="0" width="2" height="28"/><rect x="5" y="0" width="2" height="28"/><rect x="11" y="0" width="1" height="28"/><rect x="19" y="0" width="4" height="28"/><rect x="24" y="0" width="3" height="28"/><rect x="28" y="0" width="1" height="28"/><rect x="32" y="0" width="2" height="28"/><rect x="35" y="0" width="2" height="28"/><rect x="38" y="0" width="1" height="28"/><rect x="40" y="0" width="1" height="28"/><rect x="42" y="0" width="2" height="28"/><rect x="45" y="0" width="2" height="28"/><rect x="48" y="0" width="1" height="28"/><rect x="53" y="0" width="1" height="28"/><rect x="55" y="0" width="2" height="28"/><rect x="65" y="0" width="3" height="28"/><rect x="69" y="0" width="2" height="28"/><rect x="78" y="0" width="2" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="87" y="0" width="3" height="28"/><rect x="91" y="0" width="2" height="28"/><rect x="96" y="0" width="2" height="28"/><rect x="99" y="0" width="1" height="28"/><rect x="101" y="0" width="2" height="28"/><rect x="104" y="0" width="2" height="28"/><rect x="110" y="0" width="1" height="28"/><rect x="112" y="0" width="3" height="28"/><rect x="116" y="0" width="2" height="28"/></svg>
+            </div>
+          </article>
+          <article class="ticket ticket--burg" data-cat="org">
+            <div class="ticket__stub"><span class="ticket__yr">25/26</span><span class="ticket__no">ADMIT · 007</span></div>
+            <div class="ticket__main">
+              <div class="ticket__org"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>RAIT ACM SIGAI Student Chapter</span></div>
+              <h3 class="ticket__title">Running the Hackathons</h3>
+              <p class="ticket__desc">Tech lead and Webmaster for the chapter's national-level hackathons — platform, website and tech for 2,000+ participants.</p>
+              <dl class="ticket__meta"><div><dt>Role</dt><dd>Tech Lead · Webmaster</dd></div><div><dt>When</dt><dd>Sep 2025 — Jul 2026</dd></div><div><dt>Scale</dt><dd>2,000+ hackers</dd></div></dl>
+            </div>
+            <div class="ticket__end">
+              <span class="stamp">ORGANISER</span>
+              
+              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="2" y="0" width="1" height="28"/><rect x="4" y="0" width="3" height="28"/><rect x="8" y="0" width="3" height="28"/><rect x="12" y="0" width="1" height="28"/><rect x="14" y="0" width="3" height="28"/><rect x="18" y="0" width="1" height="28"/><rect x="20" y="0" width="3" height="28"/><rect x="27" y="0" width="3" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="3" height="28"/><rect x="41" y="0" width="1" height="28"/><rect x="43" y="0" width="3" height="28"/><rect x="47" y="0" width="3" height="28"/><rect x="51" y="0" width="3" height="28"/><rect x="55" y="0" width="1" height="28"/><rect x="57" y="0" width="4" height="28"/><rect x="65" y="0" width="3" height="28"/><rect x="69" y="0" width="3" height="28"/><rect x="73" y="0" width="2" height="28"/><rect x="76" y="0" width="1" height="28"/><rect x="78" y="0" width="2" height="28"/><rect x="83" y="0" width="2" height="28"/><rect x="88" y="0" width="2" height="28"/><rect x="91" y="0" width="2" height="28"/><rect x="94" y="0" width="2" height="28"/><rect x="97" y="0" width="2" height="28"/><rect x="100" y="0" width="1" height="28"/><rect x="102" y="0" width="3" height="28"/><rect x="106" y="0" width="1" height="28"/><rect x="108" y="0" width="3" height="28"/><rect x="112" y="0" width="2" height="28"/><rect x="115" y="0" width="2" height="28"/><rect x="118" y="0" width="1" height="28"/></svg>
+            </div>
+          </article>
+      </div>
+
+      <div class="dep">
+        <div class="dep__top">
+          <span class="dep__title"><i></i>EVENTS &amp; WORKSHOPS — DEPARTURES</span>
+          <span class="dep__clock">IST <b class="clock2">--:--</b></span>
+        </div>
+        <div class="dep__cols" aria-hidden="true"><span>DATE</span><span>EVENT</span><span class="dep__city">CITY</span><span class="dep__kind">TYPE</span><span>STATUS</span></div>
+        <ul class="dep__list">
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7504406055377043456/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>11 SEP 2026</span>
+              <span class="dep__ev"><span class="lg"><img src="assets/logos/aws.png" alt="AWS logo" loading="lazy" /></span><span class="flap" data-flap>AWS Builder Center · Future Builders Connect</span></span>
+              <span class="flap dep__city" data-flap>MUMBAI</span>
+              <span class="flap dep__kind" data-flap>SUMMIT</span>
+              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7417212926199160832/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>14 JAN 2026</span>
+              <span class="dep__ev"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><span class="flap" data-flap>Samsung Innovation Campus · Selection &amp; kit</span></span>
+              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
+              <span class="flap dep__kind" data-flap>PROGRAMME</span>
+              <span class="dep__st"><span class="flap" data-flap>SELECTED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7395154259320745985/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>10–14 NOV 2025</span>
+              <span class="dep__ev"><span class="lg lg--wide"><img src="assets/logos/kaggle-wide.png" alt="Kaggle logo" loading="lazy" /></span><span class="flap" data-flap>Google × Kaggle · 5-Day AI Agents Intensive</span></span>
+              <span class="flap dep__city" data-flap>ONLINE</span>
+              <span class="flap dep__kind" data-flap>INTENSIVE</span>
+              <span class="dep__st"><span class="flap" data-flap>COMPLETED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7366779478846431232/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>AUG 2025</span>
+              <span class="dep__ev"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><span class="flap" data-flap>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></span>
+              <span class="flap dep__city" data-flap>NATIONAL</span>
+              <span class="flap dep__kind" data-flap>PROGRAMME</span>
+              <span class="dep__st"><span class="flap" data-flap>COMPLETED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7355268215138140160/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>24 JUL 2025</span>
+              <span class="dep__ev"><span class="lg"><img src="assets/logos/aspire.png" alt="Aspire Institute logo" loading="lazy" /></span><span class="flap" data-flap>Aspire Leaders Program · Graduation</span></span>
+              <span class="flap dep__city" data-flap>MUMBAI</span>
+              <span class="flap dep__kind" data-flap>CEREMONY</span>
+              <span class="dep__st"><span class="flap" data-flap>GRADUATED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7317537783550533635/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>APR 2025</span>
+              <span class="dep__ev"><span class="lg"><img src="assets/logos/csi.png" alt="Computer Society of India logo" loading="lazy" /></span><span class="flap" data-flap>CSI RAIT × TCS · Design Thinking Workshop</span></span>
+              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
+              <span class="flap dep__kind" data-flap>WORKSHOP</span>
+              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
+            </a></li>
+            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7295644816229453825/" target="_blank" rel="noopener" data-cursor="Post">
+              <span class="flap" data-flap>07–08 FEB 2025</span>
+              <span class="dep__ev"><span class="lg lg--fill"><img src="assets/logos/ieee-rait.png" alt="IEEE RAIT logo" loading="lazy" /></span><span class="flap" data-flap>IEEE RAIT · Engineering the Future: LLMs</span></span>
+              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
+              <span class="flap dep__kind" data-flap>WORKSHOP</span>
+              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
+            </a></li>
+            <li><div class="dep__row">
+              <span class="flap" data-flap>03–04 AUG 2024</span>
+              <span class="dep__ev"><span class="lg lg--fill"><img src="assets/logos/ieee-rait.png" alt="IEEE RAIT logo" loading="lazy" /></span><span class="flap" data-flap>IEEE RAIT · Image Processing with IoT &amp; OpenCV</span></span>
+              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
+              <span class="flap dep__kind" data-flap>WORKSHOP</span>
+              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>·</i></span>
+            </div></li>
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ============ 07 · LEADERSHIP ============ -->
+    <section id="lead" class="lead" data-section="07">
+      <div class="sec-head"><span>_LEADERSHIP</span><i></i><span>ROLES HELD · 01</span></div>
+
+      <!-- one <article class="role"> per leadership role -->
+      <article class="role">
+        <div class="role__badge-col">
+          <div class="pendulum" data-cursor="Swing">
+            <div class="strap" aria-hidden="true"><span>ACM SIGAI ✦ RAIT ✦ ACM SIGAI ✦ RAIT ✦ ACM SIGAI ✦ RAIT ✦</span></div>
+            <div class="clip" aria-hidden="true"><i></i></div>
+            <div class="badge">
+              <div class="badge__face badge__front">
+                <div class="badge__hole" aria-hidden="true"></div>
+                <div class="badge__band"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>RAIT ACM SIGAI<br />STUDENT CHAPTER</span></div>
+                <div class="badge__photo"><img src="assets/portrait-badge.jpg" alt="Sanat Karkhanis" width="300" height="300" loading="lazy" /></div>
+                <p class="badge__name">Sanat Karkhanis</p>
+                <p class="badge__role">Webmaster</p>
+                <p class="badge__sub">Tech Lead · Editor-in-Chief</p>
+                <div class="badge__foot">
+                  <span>ID · SIGAI-25-WM<br />VALID SEP 2025 — JUL 2026</span>
+                  <svg viewBox="0 0 150 30" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="4" height="30"/><rect x="13" y="0" width="3" height="30"/><rect x="20" y="0" width="4" height="30"/><rect x="29" y="0" width="3" height="30"/><rect x="33" y="0" width="4" height="30"/><rect x="38" y="0" width="4" height="30"/><rect x="43" y="0" width="2" height="30"/><rect x="46" y="0" width="1" height="30"/><rect x="48" y="0" width="1" height="30"/><rect x="50" y="0" width="1" height="30"/><rect x="52" y="0" width="1" height="30"/><rect x="56" y="0" width="1" height="30"/><rect x="60" y="0" width="3" height="30"/><rect x="64" y="0" width="2" height="30"/><rect x="67" y="0" width="2" height="30"/><rect x="70" y="0" width="1" height="30"/><rect x="72" y="0" width="4" height="30"/><rect x="77" y="0" width="2" height="30"/><rect x="84" y="0" width="2" height="30"/><rect x="87" y="0" width="2" height="30"/><rect x="90" y="0" width="3" height="30"/><rect x="97" y="0" width="3" height="30"/><rect x="101" y="0" width="2" height="30"/><rect x="104" y="0" width="2" height="30"/><rect x="112" y="0" width="3" height="30"/><rect x="116" y="0" width="2" height="30"/><rect x="125" y="0" width="3" height="30"/><rect x="129" y="0" width="2" height="30"/><rect x="132" y="0" width="1" height="30"/><rect x="134" y="0" width="3" height="30"/><rect x="138" y="0" width="2" height="30"/><rect x="141" y="0" width="3" height="30"/><rect x="145" y="0" width="2" height="30"/></svg>
+                </div>
+              </div>
+              <div class="badge__face badge__back">
+                <div class="badge__hole" aria-hidden="true"></div>
+                <p class="badge__access">ACCESS<br />ALL AREAS</p>
+                <ul class="badge__perms">
+                  <li><i>✓</i>Chapter website</li>
+                  <li><i>✓</i>Hackathon tech</li>
+                  <li><i>✓</i>Synara 2026 desk</li>
+                  <li><i>✓</i>Handover keys</li>
+                </ul>
+                <p class="badge__note">If found, return to the<br />RAIT ACM SIGAI chapter.</p>
+                <svg viewBox="0 0 150 30" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="2" height="30"/><rect x="5" y="0" width="2" height="30"/><rect x="8" y="0" width="1" height="30"/><rect x="10" y="0" width="2" height="30"/><rect x="13" y="0" width="1" height="30"/><rect x="26" y="0" width="2" height="30"/><rect x="31" y="0" width="4" height="30"/><rect x="36" y="0" width="1" height="30"/><rect x="43" y="0" width="2" height="30"/><rect x="50" y="0" width="1" height="30"/><rect x="58" y="0" width="1" height="30"/><rect x="60" y="0" width="2" height="30"/><rect x="63" y="0" width="1" height="30"/><rect x="65" y="0" width="1" height="30"/><rect x="70" y="0" width="2" height="30"/><rect x="73" y="0" width="3" height="30"/><rect x="82" y="0" width="1" height="30"/><rect x="84" y="0" width="3" height="30"/><rect x="93" y="0" width="2" height="30"/><rect x="96" y="0" width="2" height="30"/><rect x="99" y="0" width="2" height="30"/><rect x="108" y="0" width="1" height="30"/><rect x="110" y="0" width="3" height="30"/><rect x="114" y="0" width="3" height="30"/><rect x="118" y="0" width="3" height="30"/><rect x="125" y="0" width="2" height="30"/><rect x="128" y="0" width="1" height="30"/><rect x="130" y="0" width="3" height="30"/><rect x="134" y="0" width="1" height="30"/><rect x="136" y="0" width="1" height="30"/><rect x="138" y="0" width="2" height="30"/><rect x="141" y="0" width="1" height="30"/><rect x="143" y="0" width="2" height="30"/><rect x="146" y="0" width="2" height="30"/><rect x="149" y="0" width="1" height="30"/></svg>
+              </div>
+            </div>
+          </div>
+          <p class="role__hint">[ DRAG TO SWING · CLICK TO FLIP ]</p>
+        </div>
+
+        <div class="role__body">
+          <p class="role__kicker">ROLE_01 // SEP 2025 — JUL 2026</p>
+          <h2 class="role__title" data-split>Webmaster.</h2>
+          <p class="role__org"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span>RAIT ACM SIGAI Student Chapter · Ramrao Adik Institute of Technology</p>
+          <p class="role__lead">Ran the chapter's digital side end to end — the website, the tech behind its national hackathons and its annual publication — then handed it over properly, so the next team could build on it.</p>
+
+          <ul class="duties">
+            <li><span class="duties__n">01</span><b>Tech lead, national hackathons</b><p>Owned the tech for national-level hackathons with 2,000+ participants.</p></li>
+            <li><span class="duties__n">02</span><b>Chapter website</b><p>Built, ran and maintained the chapter's website as Webmaster.</p></li>
+            <li><span class="duties__n">03</span><b>Editor-in-Chief, Synara 2026</b><p>Coordinated the technical content and publication of Synara 2026.</p></li>
+            <li><span class="duties__n">04</span><b>Handover &amp; mentorship</b><p>Guided the next Webmaster, who went on to ship the chapter's new site.</p></li>
+          </ul>
+
+          <ul class="role__stats">
+            <li><b data-count="2000" data-suffix="+" data-comma>0</b><span>Hackathon participants</span></li>
+            <li><b data-count="11" data-pad="2">0</b><span>Months in office</span></li>
+            <li><b data-count="1" data-pad="2">0</b><span>Publication edited</span></li>
+            <li><b data-count="1" data-pad="2">0</b><span>Successor mentored</span></li>
+          </ul>
+
+          <div class="tenure">
+            <div class="tenure__line"><i></i></div>
+            <ol>
+              <li><a href="https://www.linkedin.com/feed/update/urn:li:activity:7359078041781702656/" target="_blank" rel="noopener" data-cursor="Post"><em>AUG 2025</em><b>Appointed Webmaster</b></a></li>
+              <li><div><em>2025 — 26</em><b>National hackathons, 2,000+ hackers</b></div></li>
+              <li><div><em>2026</em><b>Synara 2026 published</b></div></li>
+              <li><div><em>JUL 2026</em><b>Term ends · handover</b></div></li>
+              <li><a href="https://www.linkedin.com/feed/update/urn:li:activity:7518307857755344896/" target="_blank" rel="noopener" data-cursor="Post"><em>OCT 2026</em><b>Successor ships new site</b></a></li>
+            </ol>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ 08 · SIGNAL (LinkedIn posts) ============ -->
+    <section id="posts" class="posts" data-section="08">
       <div class="sec-head"><span>_SIGNAL // LINKEDIN</span><i></i><span>910 FOLLOWERS</span></div>
       <div class="posts__head">
         <h2 class="posts__title" data-split>Latest from<br />LinkedIn.</h2>
@@ -614,8 +887,8 @@
       <div class="posts__progress"><i></i></div>
     </section>
 
-    <!-- ============ 07 · AFTER HOURS ============ -->
-    <section id="after" class="after" data-section="07">
+    <!-- ============ 09 · AFTER HOURS ============ -->
+    <section id="after" class="after" data-section="09">
       <div class="after__glow" aria-hidden="true"></div>
       <div class="after__head">
         <h2 class="after__title">After<span>hours</span></h2>
@@ -649,8 +922,8 @@
       </div>
     </section>
 
-    <!-- ============ 08 · CONTACT ============ -->
-    <section id="contact" class="contact" data-section="08">
+    <!-- ============ 10 · CONTACT ============ -->
+    <section id="contact" class="contact" data-section="10">
       <div class="contact__grid">
         <div class="contact__left">
           <h2 class="contact__title" data-split>Let's work<br />together<span class="star">✦</span></h2>
@@ -705,8 +978,9 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="main.js?v=5"></script>
+  <script src="main.js?v=11"></script>
 </body>
 </html>

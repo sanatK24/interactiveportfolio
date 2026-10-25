@@ -20,7 +20,7 @@
     return;
   }
 
-  const plugins = [window.ScrollTrigger, window.SplitText, window.ScrambleTextPlugin, window.Draggable, window.InertiaPlugin].filter(Boolean);
+  const plugins = [window.ScrollTrigger, window.SplitText, window.ScrambleTextPlugin, window.Draggable, window.InertiaPlugin, window.Flip].filter(Boolean);
   gsap.registerPlugin(...plugins);
   const ST = window.ScrollTrigger;
 
@@ -418,7 +418,8 @@
       scrollTrigger: { trigger: ".about", start: "top 85%", end: "top 25%", scrub: 1 },
     });
     gsap.to(".about__big", { xPercent: -8, ease: "none", scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.from(".about__portrait", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "expo.inOut", scrollTrigger: { trigger: ".about__portrait", start: "top 85%" } });
+    gsap.from(".about__portrait .portrait__img", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "expo.inOut", clearProps: "clipPath", scrollTrigger: { trigger: ".about__portrait", start: "top 85%" } });
+    gsap.from(".about__portrait .fbr, .about__portrait .hud", { scale: 0, opacity: 0, duration: 0.7, stagger: 0.06, delay: 0.6, ease: "back.out(2)", scrollTrigger: { trigger: ".about__portrait", start: "top 85%" } });
     gsap.fromTo(".portrait__img img", { yPercent: -10 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: ".about__portrait", start: "top bottom", end: "bottom top", scrub: true } });
     gsap.from(".about__script, .about__name, .about__role", { y: 60, opacity: 0, stagger: 0.1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".about__left", start: "top 80%" } });
     gsap.from(".about__claim, .stats li", { x: 40, opacity: 0, stagger: 0.08, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".about__right", start: "top 85%" } });
@@ -776,6 +777,71 @@
       .catch(() => {});
   }
 
+  /* ---------- About: crimson grid wall continuing the photo's backdrop ---------- */
+  function initWall() {
+    const sec = $(".about--field"), cv = sec && $(".about__wall", sec), fig = sec && $(".about__portrait--field", sec);
+    if (!cv || !fig) return;
+    const ctx = cv.getContext("2d");
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    let W = 0, H = 0, visible = false, raf = 0;
+    const ptr = { x: -9999, y: -9999 }, sm = { x: -9999, y: -9999 };
+
+    const resize = () => {
+      W = sec.clientWidth; H = sec.clientHeight;
+      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    // the wall in the photo shows ~4.8 cells across; match its scale and phase
+    const geometry = () => {
+      const fr = fig.getBoundingClientRect(), sr = sec.getBoundingClientRect();
+      const cell = fr.width * 0.205;
+      return {
+        cell,
+        ox: fr.left - sr.left + fr.width * 0.14,
+        oy: fr.top - sr.top + fr.height * 0.02,
+        cx: fr.left - sr.left + fr.width / 2,
+        cy: fr.top - sr.top + fr.height * 0.45,
+      };
+    };
+    const bend = (x, y, t, vertical) => {
+      const dx = x - sm.x, dy = y - sm.y, d = Math.hypot(dx, dy) || 1;
+      const f = 34 * Math.exp(-(d * d) / (180 * 180));
+      const wave = reduced ? 0 : Math.sin((vertical ? y : x) * 0.012 + t * 0.7) * 1.4;
+      return vertical ? x + (dx / d) * f + wave : y + (dy / d) * f + wave;
+    };
+    const draw = (time = 0) => {
+      const t = time / 1000;
+      sm.x = sm.x < -9000 ? ptr.x : lerp(sm.x, ptr.x, 0.1);
+      sm.y = sm.y < -9000 ? ptr.y : lerp(sm.y, ptr.y, 0.1);
+      const { cell, ox, oy, cx, cy } = geometry();
+      ctx.clearRect(0, 0, W, H);
+      ctx.beginPath();
+      for (let x0 = ox - Math.ceil(ox / cell) * cell; x0 < W + cell; x0 += cell) {
+        for (let y = 0; y <= H; y += 18) { const x = bend(x0, y, t, true); y ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      }
+      for (let y0 = oy - Math.ceil(oy / cell) * cell; y0 < H + cell; y0 += cell) {
+        for (let x = 0; x <= W; x += 18) { const y = bend(x, y0, t, false); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      }
+      ctx.strokeStyle = "rgba(227,36,59,.08)"; ctx.lineWidth = 7; ctx.stroke();   // soft glow
+      ctx.strokeStyle = "rgba(214,30,56,.6)"; ctx.lineWidth = 1.4; ctx.stroke(); // the line itself
+      // fade the wall out away from the photo so the text stays readable
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.55);
+      g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(0.45, "rgba(0,0,0,.55)"); g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.globalCompositeOperation = "destination-in"; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "source-over";
+      if (visible && !reduced) raf = requestAnimationFrame(draw);
+    };
+
+    sec.addEventListener("pointermove", (e) => { const r = sec.getBoundingClientRect(); ptr.x = e.clientX - r.left; ptr.y = e.clientY - r.top; });
+    sec.addEventListener("pointerleave", () => { ptr.x = ptr.y = -9999; sm.x = sm.y = -9999; });
+    addEventListener("resize", () => { resize(); draw(); });
+    new IntersectionObserver(([en]) => {
+      visible = en.isIntersecting;
+      cancelAnimationFrame(raf);
+      if (visible) { resize(); raf = requestAnimationFrame(draw); }
+    }).observe(sec);
+    resize(); draw();
+  }
+
   /* ---------- Portrait fallback chain ---------- */
   function initPortrait() {
     const fig = $(".about__portrait"), img = fig && $("img", fig);
@@ -957,6 +1023,136 @@
     if (!reduced) gsap.from(".pcard", { x: 140, opacity: 0, stagger: 0.05, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: rail, start: "top 85%" } });
   }
 
+  /* ---------- Field log: hackathon tickets + events board ---------- */
+  function initField() {
+    const field = $(".field");
+    if (!field) return;
+    const tickets = $$(".ticket", field);
+
+    // stamps press down onto each ticket as it scrolls in
+    if (!reduced) {
+      gsap.set(".stamp", { scale: 2.4, opacity: 0, rotate: -24 });
+      ST.batch(tickets, {
+        start: "top 85%", once: true,
+        onEnter: (batch) => {
+          gsap.from(batch, { y: 70, rotateX: -12, opacity: 0, duration: 1.1, stagger: 0.1, ease: "expo.out" });
+          batch.forEach((t, i) => {
+            gsap.to($(".stamp", t), { scale: 1, opacity: 0.92, rotate: -11, duration: 0.45, delay: 0.45 + i * 0.12, ease: "back.out(2.6)", onStart: i === 0 ? sfx.thud : null });
+          });
+        },
+      });
+    }
+
+    // 3D tilt + light sweep following the cursor
+    if (finePointer && !reduced) {
+      tickets.forEach((t) => {
+        const rx = gsap.quickTo(t, "rotationX", { duration: 0.5, ease: "power3" });
+        const ry = gsap.quickTo(t, "rotationY", { duration: 0.5, ease: "power3" });
+        t.addEventListener("pointermove", (e) => {
+          const r = t.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+          ry((x - 0.5) * 9); rx(-(y - 0.5) * 7);
+          t.style.setProperty("--mx", x * 100 + "%"); t.style.setProperty("--my", y * 100 + "%");
+        });
+        t.addEventListener("pointerleave", () => { rx(0); ry(0); });
+      });
+    }
+
+    // filters (animated with Flip when available)
+    const btns = $$(".field__filters button", field);
+    btns.forEach((b) => b.addEventListener("click", () => {
+      if (b.classList.contains("is-on")) return;
+      sfx.blip();
+      btns.forEach((x) => x.classList.toggle("is-on", x === b));
+      const f = b.dataset.filter;
+      const state = window.Flip && !reduced ? Flip.getState(tickets) : null;
+      tickets.forEach((t) => t.classList.toggle("is-hidden", f !== "all" && t.dataset.cat !== f));
+      gsap.set(".stamp", { scale: 1, opacity: 0.92, rotate: -11 });
+      if (state) {
+        Flip.from(state, {
+          duration: 0.7, ease: "expo.inOut", absolute: true, nested: true,
+          onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.6 }),
+          onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.92, duration: 0.4 }),
+          onComplete: () => ST.refresh(),
+        });
+      } else ST.refresh();
+    }));
+
+    // departure board: split-flap style scramble into place, again on hover
+    const flaps = $$("[data-flap]", field);
+    flaps.forEach((el) => (el.dataset.text = el.textContent));
+    const flip = (els, speed = 1) => {
+      if (!window.ScrambleTextPlugin || reduced) return;
+      els.forEach((el, i) => gsap.to(el, { duration: 0.9 * speed, delay: i * 0.03 * speed, scrambleText: { text: el.dataset.text, chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", speed: 0.5 } }));
+    };
+    ST.create({ trigger: ".dep", start: "top 80%", once: true, onEnter: () => flip(flaps) });
+    $$(".dep__row", field).forEach((row) => row.addEventListener("pointerenter", () => flip($$("[data-flap]", row), 0.5)));
+
+    const clock = $(".clock2", field);
+    const tick = () => (clock.textContent = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" }).format(new Date()));
+    tick(); setInterval(tick, 15000);
+  }
+
+  /* ---------- Leadership: swinging lanyard badge ---------- */
+  function initLead() {
+    $$(".role").forEach((role) => {
+      const pen = $(".pendulum", role), badge = $(".badge", role);
+      if (!pen) return;
+      let angle = 0, vel = 0, dragging = false, moved = 0, visible = false, last = 0;
+      const pivot = () => { const r = pen.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top }; };
+
+      pen.addEventListener("pointerdown", (e) => {
+        dragging = true; moved = 0; pen.classList.add("is-dragging");
+        pen.setPointerCapture(e.pointerId);
+      });
+      pen.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        moved += Math.abs(e.movementX) + Math.abs(e.movementY);
+        const p = pivot();
+        const target = clamp(Math.atan2(p.x - e.clientX, e.clientY - p.y) * 57.3, -65, 65);
+        vel = target - angle; angle = target;
+      });
+      const release = () => {
+        if (!dragging) return;
+        dragging = false; pen.classList.remove("is-dragging");
+        if (moved < 6) { badge.classList.toggle("is-flipped"); sfx.swoosh(); vel += 3; }
+      };
+      pen.addEventListener("pointerup", release);
+      pen.addEventListener("pointercancel", release);
+
+      new IntersectionObserver(([en]) => (visible = en.isIntersecting)).observe(pen);
+      if (lenis) lenis.on("scroll", (l) => { if (visible && !dragging && !reduced) vel += clamp(l.velocity, -30, 30) * 0.004; });
+
+      gsap.ticker.add((t) => {
+        if (!visible) return;
+        if (!dragging && !reduced) {
+          vel += -angle * 0.012 + Math.sin(t * 0.9) * 0.004; // spring back + a faint idle sway
+          vel *= 0.965;
+          angle = clamp(angle + vel, -38, 38);
+        }
+        if (Math.abs(angle - last) < 0.001) return;
+        last = angle;
+        pen.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+        badge.style.setProperty("--shine", `${clamp(-angle * 4, -80, 80)}%`);
+      });
+
+      if (!reduced) {
+        ST.create({ trigger: role, start: "top 70%", once: true, onEnter: () => { vel = 2.6; } });
+        gsap.from($(".role__badge-col", role), { y: -160, opacity: 0, duration: 1.3, ease: "expo.out", scrollTrigger: { trigger: role, start: "top 75%" } });
+        gsap.from($$(".duties li", role), { y: 30, opacity: 0, stagger: 0.08, duration: 0.9, ease: "expo.out", scrollTrigger: { trigger: $(".duties", role), start: "top 85%" } });
+      }
+
+      // tenure timeline fills as you scroll
+      const ten = $(".tenure", role), steps = $$(".tenure li", role);
+      ST.create({
+        trigger: ten, start: "top 88%", end: "top 45%", scrub: true,
+        onUpdate(self) {
+          ten.style.setProperty("--p", self.progress.toFixed(3));
+          steps.forEach((li, i) => li.classList.toggle("is-on", self.progress >= i / (steps.length - 1) - 0.02));
+        },
+      });
+    });
+  }
+
   /* ---------- Certificates: show all ---------- */
   function initCerts() {
     const box = $(".certs"), btn = $(".certs__more");
@@ -980,9 +1176,11 @@
       { t: "Go to · Work", k: "04", run: () => scrollTo("#work") },
       { t: "Go to · Live builds", k: "04", run: () => scrollTo("#live") },
       { t: "Go to · Journey", k: "05", run: () => scrollTo("#journey") },
-      { t: "Go to · LinkedIn posts", k: "06", run: () => scrollTo("#posts") },
-      { t: "Go to · After hours", k: "07", run: () => scrollTo("#after") },
-      { t: "Go to · Contact", k: "08", run: () => scrollTo("#contact") },
+      { t: "Go to · Hackathons & events", k: "06", run: () => scrollTo("#field") },
+      { t: "Go to · Leadership", k: "07", run: () => scrollTo("#lead") },
+      { t: "Go to · LinkedIn posts", k: "08", run: () => scrollTo("#posts") },
+      { t: "Go to · After hours", k: "09", run: () => scrollTo("#after") },
+      { t: "Go to · Contact", k: "10", run: () => scrollTo("#contact") },
       { t: "Toggle sound", k: "♪", run: () => sfx.toggle() },
       { t: "Copy email address", k: "⧉", run: () => navigator.clipboard?.writeText("sanat.karkhanis2@gmail.com") },
       { t: "Open GitHub", k: "↗", run: () => open("https://github.com/sanatK24", "_blank", "noopener") },
@@ -1029,6 +1227,9 @@
     introHero();
     initFiles();
     initLive();
+    initWall();
+    initField();
+    initLead();
     initBoard();
     initScroll();
     ST.refresh();
