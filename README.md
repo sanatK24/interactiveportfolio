@@ -1,139 +1,36 @@
-# Interactive Portfolio
+# Sanat Karkhanis — Portfolio 2026
 
-A modern, interactive portfolio website built with React, TypeScript, and Supabase, featuring GitHub integration, blog functionality, and a clean, responsive design.
+Static site: `index.html` + `style.css` + `main.js`. No build step, no backend.
+Libraries load from jsDelivr: GSAP 3.13 (ScrollTrigger, SplitText, ScrambleText, Draggable, Inertia) and Lenis.
 
-## Website Screenshots
-
-
-![Sanat-s-Portfolio](https://github.com/user-attachments/assets/34edf5e8-a7f0-44f3-8679-fa08eaeaae1d)
-
-![Sanat-s-Portfolio (1)](https://github.com/user-attachments/assets/4bf2dc5f-58df-4271-9c1d-cf7428aea3ba)
-
-
-## Features
-
-- **Interactive UI**: Smooth animations and transitions using Framer Motion
-- **Responsive Design**: Works perfectly on all devices
-- **Dark/Light Mode**: Automatic theme switching based on system preferences
-- **Blog System**: Create, edit, and publish blog posts
-- **GitHub Integration**: Automatically fetches and displays your GitHub projects
-- **Contact Form**: Integrated contact form with email notifications
-- **Skills & Certifications**: Showcase your skills and professional certifications
-- **Admin Dashboard**: Secure admin panel for content management
-- **Mobile-Friendly**: Optimized for mobile devices
-
-## Tech Stack
-
-- **Frontend**: React 18, TypeScript, Tailwind CSS
-- **State Management**: React Context API
-- **Animations**: Framer Motion
-- **Backend**: Supabase (PostgreSQL + Authentication)
-- **Markdown**: React Markdown with GFM support
-- **Editor**: TinyMCE for rich text editing
-- **Authentication**: Supabase Auth
-- **API**: GitHub API for project integration
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-- Supabase account
-- GitHub account
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/interactive-portfolio.git
-cd interactive-portfolio
+## Run locally
 ```
-
-2. Install dependencies:
-```bash
-npm install
-# or
-yarn install
+python -m http.server 5173
 ```
+Then open http://localhost:5173
 
-3. Create a `.env` file in the root directory with the following variables:
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_GITHUB_CLIENT_ID=your_github_client_id
-VITE_TINYMCE_API_KEY=your_tinymce_api_key
-```
+## Deploy
+Drag the folder onto Netlify / Vercel / Cloudflare Pages, or push it to a GitHub repo and turn on GitHub Pages.
 
-4. Start the development server:
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Personalise
+- **Portrait:** add `assets/portrait.jpg` (3:4, ideally a moody, high-contrast photo). Until then the site uses the GitHub avatar, and falls back to an "SK" monogram.
+- **Resume:** replace `assets/Sanat_Karkhanis_Resume.pdf`.
+- **Projects:** each `<article class="file">` in `index.html` is one project file (tab label, copy, metric, visual).
+- **LinkedIn posts:** LinkedIn has no public API for a profile's posts, so the feed reads from the `POSTS` list in `main.js`. To add a post, copy the number from its URL (`linkedin.com/feed/update/urn:li:activity:<id>`) and add a row at the top with date, tag, title, a one-line summary and the reaction count.
+- **Live builds:** each `<article class="lcard">` in the `#live` section shows one deployed site. Screenshots live in `assets/live/`; a card with `data-autoload` and no screenshot loads the real site when it scrolls into view.
+- **Logos:** `assets/logos/`. Organisations without a usable logo get a burgundy monogram badge (`<span class="lg lg--mono">ACM</span>`).
+- **Cache:** after editing `style.css` or `main.js`, bump the `?v=` number on their links in `index.html` so browsers load the new version.
+- **GitHub feed:** the CODE_005 file pulls the latest public repos from `api.github.com/users/sanatK24` and falls back to the four resume projects.
 
-5. Open [http://localhost:5173](http://localhost:5173) in your browser
+## Sections → inspiration
+| # | Section | Inspo |
+|---|---------|-------|
+| 01 | Aurora specimen hero, variable-font letters that react to the cursor, "0X OF 07" pill | "After" type specimen |
+| 02 | Giant PORTFOLIO letters, script "Hello, I'm", portrait, stats, manifesto | Red portfolio + terminal |
+| 03 | Black / Burgundy / White columns with HEX/RGB/CMYK specs, satin + smoke textures | CAESAR palette card |
+| 04 | Pinned, scroll-driven file dividers with tabs and live project visuals | GRID DAILY file tabs |
+| 05 | Experience, 5-step work process, burgundy quote panel, achievements, cert feed | Red portfolio + terminal |
+| 06 | "After hours" draggable interest cards over the aurora glow | "After" + file cards |
+| 07 | Contact, magnetic CTA, glitch "BUILD WITHOUT LIMITS.", barcode footer | Terminal "Break the grid" |
 
-## Project Structure
-
-```
-src/
-├── components/           # Reusable UI components
-├── context/             # React context providers
-├── hooks/              # Custom React hooks
-├── pages/              # Page components
-├── types/             # TypeScript type definitions
-├── utils/             # Utility functions
-└── styles/            # Global styles
-```
-
-## Features Overview
-
-### GitHub Integration
-- Automatically fetches repositories from your GitHub account
-- Displays project details including stars, forks, and topics
-- Includes README content and project links
-- Responsive project cards with hover effects
-
-### Blog System
-- Create and manage blog posts
-- Rich text editing with TinyMCE
-- Markdown support for content
-- Image upload and management
-- Public/private post control
-
-### Admin Dashboard
-- Secure content management
-- Project management
-- Blog post management
-- Contact message management
-- User authentication
-
-### Skills & Certifications
-- Interactive skill bubbles
-- Certification display
-- Experience timeline
-- Technology showcase
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-# All Rights Reserved
-
-Copyright (c) 2025 SanatK24
-
-All rights reserved.
-
-This repository and its contents are the exclusive property of the author. No part of this repository may be reproduced, distributed, or transmitted in any form or by any means, including but not limited to photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the author.
-
-For permission requests, please contact [https://github.com/sanatK24].
-
-By using this repository, you agree to the terms and conditions outlined in the LICENSE file.
-[(https://github.com/sanatK24/interactiveportfolio/LICENSE.txt)](https://github.com/sanatK24/interactiveportfolio/blob/main/LICENSE.txt)
+Press **⌘K / Ctrl+K** anywhere to open the command menu.

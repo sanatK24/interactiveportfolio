@@ -1,23 +1,690 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sanat's Portfolio</title>
-    <meta name="description" content="Interactive portfolio showcasing computer engineering projects and skills with drag-and-drop elements and GitHub integration">
-    <style>
-      @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-      }
-      .animate-blink {
-        animation: blink 1s infinite;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanat Karkhanis — AI Engineer</title>
+  <meta name="description" content="Sanat Karkhanis — AI Engineer & Data Science undergrad. Data pipelines, ML models and the interfaces that make them usable." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%236D001A'/><text x='50%' y='56%' text-anchor='middle' dominant-baseline='middle' font-family='Arial Black,Arial' font-weight='900' font-size='30' fill='white'>SK</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=3" />
+</head>
+<body class="is-loading">
+
+  <!-- ============ GLOBAL LAYERS ============ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+
+  <!-- Preloader -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__top"><span>//SANAT_K//</span><span>PORTFOLIO_2026</span></div>
+    <div class="loader__count"><span class="loader__num">000</span><span class="loader__pct">%</span></div>
+    <ul class="loader__log"></ul>
+    <div class="loader__bar"><i></i></div>
+  </div>
+
+  <!-- Nav -->
+  <header class="nav">
+    <a href="#hero" class="nav__brand" data-cursor="Top">
+      <strong>//SANAT_K//</strong>
+      <span>AI ENGINEER<br />DATA SCIENCE</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#about" data-scramble>[ABOUT]</a>
+      <a href="#work" data-scramble>[WORK]</a>
+      <a href="#journey" data-scramble>[JOURNEY]</a>
+      <a href="#posts" data-scramble>[POSTS]</a>
+      <a href="#contact" data-scramble>[CONTACT]</a>
+    </nav>
+    <div class="nav__right">
+      <span class="nav__status"><i></i>OPEN TO INTERNSHIPS</span>
+      <button class="nav__cmd" type="button" data-cmd-open data-cursor="Menu" aria-label="Open command menu"><kbd>⌘K</kbd></button>
+    </div>
+  </header>
+
+  <!-- Section counter pill (inspo: "04 OF 07") -->
+  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 08</div>
+
+  <main>
+
+    <!-- ============ 01 · HERO (aurora specimen) ============ -->
+    <section id="hero" class="hero" data-section="01">
+      <div class="hero__shell">
+        <div class="hero__frame">
+          <canvas class="hero__aurora" aria-hidden="true"></canvas>
+          <div class="hero__fallback" aria-hidden="true"></div>
+
+          <div class="hero__corner hero__corner--tl"><span>SPECIMEN Nº01</span><span>Vol. 2026</span></div>
+          <div class="hero__corner hero__corner--tr"><span>B.TECH CE · DATA SCIENCE</span><span>NAVI MUMBAI, IN</span></div>
+
+          <h1 class="hero__word" aria-label="Sanat">
+            <span class="hw">S</span><span class="hw">a</span><span class="hw">n</span><span class="hw">a</span><span class="hw">t</span>
+          </h1>
+
+          <div class="spec hero__spec">
+            <div><span class="spec__k">Name</span><span class="spec__v">Sanat Karkhanis</span></div>
+            <div><span class="spec__k">Role</span><span class="spec__v">AI Engineer</span></div>
+            <div><span class="spec__k">Weight</span><span class="spec__v">Data &amp; Systems</span></div>
+          </div>
+
+          <div class="hero__scroll"><span>Scroll</span><i></i></div>
+          <div class="hero__hint">Move your cursor over the letters</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 · ABOUT (big-type portfolio) ============ -->
+    <section id="about" class="about" data-section="02">
+      <div class="about__big" aria-hidden="true">
+        <span>P</span><span>O</span><span>R</span><span>T</span><span>F</span><span>O</span><span>L</span><span>I</span><span>O</span>
+      </div>
+
+      <div class="about__grid">
+        <div class="about__left">
+          <p class="about__script">Hello, I'm</p>
+          <h2 class="about__name">Sanat<br />Karkhanis</h2>
+          <p class="about__role">AI Engineer &amp;<br />Data Science Undergrad</p>
+          <p class="about__blurb" data-reveal>I'm a Computer Engineering student majoring in Data Science at RAIT, D.&nbsp;Y. Patil, and an AI Engineer Intern at ReasonateAI. I build data pipelines, ML models and the interfaces that make them usable.</p>
+          <p class="about__loc"><i></i>Based in Navi Mumbai · Open to remote</p>
+        </div>
+
+        <figure class="about__portrait" data-cursor="Hi!">
+          <div class="portrait__img">
+            <img src="assets/portrait.jpg" alt="Portrait of Sanat Karkhanis" data-fallback="https://github.com/sanatK24.png?size=640" />
+            <div class="portrait__mono" aria-hidden="true">SK</div>
+          </div>
+          <div class="portrait__tint" aria-hidden="true"></div>
+          <div class="portrait__dots" aria-hidden="true"></div>
+          <div class="portrait__glitch" aria-hidden="true"></div>
+          <figcaption><span>FIG. 01</span><span>SANAT_K.JPG</span></figcaption>
+        </figure>
+
+        <div class="about__right">
+          <div class="about__claim"><span class="star">✦</span><p>Turning raw data into systems people actually use.</p></div>
+          <ul class="stats">
+            <li><b data-count="9.00" data-dec="2">0</b><span>CGPA<br />B.Tech CE</span></li>
+            <li><b data-count="25" data-suffix="K+">0</b><span>Users on a platform<br />I built UI for</span></li>
+            <li><b data-count="2000" data-suffix="+" data-comma>0</b><span>Hackers at events<br />I tech-led</span></li>
+            <li><b data-count="5" data-pad="2">0</b><span>Hackathon runs<br />NASA · Flipkart · Adobe · Samsung · KAINOS</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Manifesto (terminal block) -->
+      <div class="manifesto">
+        <span class="br br--tl"></span><span class="br br--tr"></span><span class="br br--bl"></span><span class="br br--br"></span>
+        <p class="manifesto__label">//MANIFESTO.TXT</p>
+        <p class="manifesto__text" data-words>I don't follow trends. I build systems that hold up under real data, real users and real load.</p>
+        <svg class="manifesto__smile" viewBox="0 0 100 110" aria-hidden="true">
+          <circle cx="50" cy="48" r="40" fill="none" stroke="currentColor" stroke-width="6"/>
+          <circle cx="36" cy="40" r="5" fill="currentColor"/><circle cx="64" cy="40" r="5" fill="currentColor"/>
+          <path d="M30 58 Q50 78 70 58" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+          <path d="M22 70 q0 22 4 30 q4-8 4-22 M74 76 q0 18 3 26 q3-6 3-20 M48 88 q0 10 2 16 q2-4 2-14" fill="currentColor"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Velocity marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Python</span><i>✦</i><span>SQL</span><i>✦</i><span>FastAPI</span><i>✦</i><span>React</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>LangChain</span><i>✦</i><span>FAISS</span><i>✦</i><span>TensorFlow</span><i>✦</i><span>Docker</span><i>✦</i><span>Redis</span><i>✦</i><span>Power BI</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- ============ 03 · IDENTITY (black / burgundy / white) ============ -->
+    <section id="identity" class="identity" data-section="03">
+      <div class="idcard">
+        <div class="idcard__head">
+          <div class="idlogo">Sanat<sup>®</sup></div>
+          <span class="idcard__handle">@sanatK24</span>
+          <div class="idcard__project"><span>Project:</span><strong>SANAT_OS</strong></div>
+        </div>
+
+        <div class="idcol idcol--black" data-col="1" data-cursor="Expand">
+          <div class="idcol__top">
+            <h3 class="idcol__word">Data</h3>
+            <div class="idcol__spec">
+              <p>HEX 000000<br />RGB 0, 0, 0<br />CMYK 75, 68, 67, 89</p>
+              <p class="idcol__list">SQL · PostgreSQL · MySQL · SQLite · MongoDB · Firestore · Pandas · NumPy · Plotly · Tableau · Power BI · Excel</p>
+            </div>
+          </div>
+          <div class="idcol__tex tex-code" aria-hidden="true"><pre class="code-scroll"></pre></div>
+        </div>
+
+        <div class="idcol idcol--burg" data-col="2" data-cursor="Expand">
+          <div class="idcol__top">
+            <h3 class="idcol__word">Models</h3>
+            <div class="idcol__spec">
+              <p>HEX 6D001A<br />RGB 109, 0, 26<br />CMYK 33, 68, 67, 89</p>
+              <p class="idcol__list">TensorFlow · Scikit-learn · LightGBM · XGBoost · LangChain · FAISS · RAG pipelines</p>
+            </div>
+          </div>
+          <div class="idcol__tex tex-satin" aria-hidden="true"></div>
+        </div>
+
+        <div class="idcol idcol--white" data-col="3" data-cursor="Expand">
+          <div class="idcol__top">
+            <h3 class="idcol__word">Systems</h3>
+            <div class="idcol__spec">
+              <p>HEX FFFFFF<br />RGB 255, 255, 255<br />CMYK 0, 0, 0, 0</p>
+              <p class="idcol__list">FastAPI · React · Docker · Redis · WebSockets · Java · Git · Agile / SDLC</p>
+            </div>
+          </div>
+          <div class="idcol__tex tex-smoke" aria-hidden="true">
+            <svg preserveAspectRatio="none" viewBox="0 0 400 300"><filter id="smoke"><feTurbulence type="fractalNoise" baseFrequency="0.008 0.018" numOctaves="4" seed="7"><animate attributeName="baseFrequency" dur="24s" values="0.008 0.018;0.012 0.024;0.008 0.018" repeatCount="indefinite"/></feTurbulence><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.6 1.25"/></filter><rect width="400" height="300" fill="#cfcfcf"/><rect width="400" height="300" filter="url(#smoke)"/></svg>
+          </div>
+        </div>
+
+        <div class="idcard__foot">
+          <span>© Sanat Karkhanis,<br />All Rights Reserved</span>
+          <span class="idcard__mail">sanat.karkhanis2@gmail.com</span>
+          <span class="idcard__swipe">Hover <b>→</b></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 · WORK (file dividers) ============ -->
+    <section id="work" class="work" data-section="04">
+      <div class="files">
+
+        <!-- Cover -->
+        <div class="file file--cover">
+          <div class="file__inner">
+            <h2 class="cover__title">WORK DAILY_01–04</h2>
+            <p class="cover__sub">Selected studies:<br />Code · Data · Emotion</p>
+            <p class="cover__file">FILE_01//</p>
+            <p class="cover__hint">Scroll or click a tab →</p>
+          </div>
+        </div>
+
+        <!-- 01 TradeFlow -->
+        <article class="file file--bone" data-file="0">
+          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_001 // TRADEFLOW</span></button>
+          <div class="file__inner">
+            <button class="file__head" type="button"><span>CODE_001 //</span><b>TradeFlow</b><i>+</i></button>
+            <span class="file__vlabel">TRADEFLOW</span>
+            <div class="file__body">
+              <div class="file__meta">
+                <p class="file__code">CODE_001 // 2026</p>
+                <h3 class="file__title">TradeFlow</h3>
+                <p class="file__kicker">Fixed-income electronic trading simulator</p>
+                <div class="spec spec--dark">
+                  <div><span class="spec__k">Stack</span><span class="spec__v">FastAPI · React · PostgreSQL · Redis · WebSockets · Docker</span></div>
+                  <div><span class="spec__k">Focus</span><span class="spec__v">RFQ · Market-making</span></div>
+                </div>
+                <p class="file__desc">Simulates RFQ quote-competition for fixed-income market-making inside a 15-second response window under live liquidity and yield constraints — tracking execution KPIs and counterparty settlement risk on real-time dashboards.</p>
+                <p class="file__metric"><b>15s</b><span>RFQ response window</span></p>
+              </div>
+              <div class="file__visual">
+                <div class="rfq">
+                  <div class="rfq__top"><span>RFQ #48213</span><span>UST 4.125% '36</span><span class="rfq__state">● LIVE</span></div>
+                  <div class="rfq__body">
+                    <div class="rfq__clock">
+                      <svg viewBox="0 0 120 120"><circle class="rfq__bg" cx="60" cy="60" r="52"/><circle class="rfq__fg" cx="60" cy="60" r="52"/></svg>
+                      <span class="rfq__time">15.0</span>
+                    </div>
+                    <table class="rfq__table">
+                      <thead><tr><th>Dealer</th><th>Bid</th><th>Ask</th><th>Yld</th></tr></thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                  <div class="rfq__kpis"><span>FILLS <b class="k-fill">0</b></span><span>AVG SPRD <b class="k-sprd">—</b></span><span>SETTLE RISK <b class="k-risk">LOW</b></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 02 Financial Research -->
+        <article class="file file--slate" data-file="1">
+          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_002 // RESEARCH_AI</span></button>
+          <div class="file__inner">
+            <button class="file__head" type="button"><span>CODE_002 //</span><b>AI Financial Research</b><i>+</i></button>
+            <span class="file__vlabel">RESEARCH</span>
+            <div class="file__body">
+              <div class="file__meta">
+                <p class="file__code">CODE_002 // 2026</p>
+                <h3 class="file__title">AI Financial<br />Research Assistant</h3>
+                <p class="file__kicker">ETL → indicators → RAG summaries</p>
+                <div class="spec spec--dark">
+                  <div><span class="spec__k">Stack</span><span class="spec__v">Python · SQL · FastAPI · PostgreSQL · React · Plotly · LangChain · FAISS</span></div>
+                  <div><span class="spec__k">Data</span><span class="spec__v">yFinance · SEC EDGAR</span></div>
+                </div>
+                <p class="file__desc">ETL pipelines pull market data from yFinance and SEC EDGAR into PostgreSQL, powering dashboards for financial ratios, SMA, RSI and MACD — with AI-generated investment summaries via retrieval-augmented generation.</p>
+                <p class="file__metric"><b>RAG</b><span>LangChain + FAISS</span></p>
+              </div>
+              <div class="file__visual">
+                <div class="fin">
+                  <div class="fin__top"><span>TICKER · SMA20 · RSI14</span><span class="fin__px">—</span></div>
+                  <svg class="fin__svg" viewBox="0 0 600 270" preserveAspectRatio="none">
+                    <g class="fin__grid"></g>
+                    <path class="fin__area"/><path class="fin__price"/><path class="fin__sma"/>
+                    <line x1="0" x2="600" y1="200" y2="200" class="fin__sep"/>
+                    <path class="fin__rsi"/>
+                  </svg>
+                  <p class="fin__ai"><span>&gt; summary:</span> <em class="fin__type"></em><i class="caret"></i></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 03 EmpathI -->
+        <article class="file file--burg" data-file="2">
+          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_003 // EMPATHI</span></button>
+          <div class="file__inner">
+            <button class="file__head" type="button"><span>CODE_003 //</span><b>EmpathI</b><i>+</i></button>
+            <span class="file__vlabel">EMPATHI</span>
+            <div class="file__body">
+              <div class="file__meta">
+                <p class="file__code">CODE_003 // 2026</p>
+                <h3 class="file__title">EmpathI</h3>
+                <p class="file__kicker">AI-powered crowdfunding platform</p>
+                <div class="spec">
+                  <div><span class="spec__k">Stack</span><span class="spec__v">Python · FastAPI · React · PostgreSQL · LightGBM · XGBoost · Docker</span></div>
+                  <div><span class="spec__k">Event</span><span class="spec__v">Samsung Innovation Campus '26</span></div>
+                </div>
+                <p class="file__desc">Validation and reporting pipelines across 500+ campaigns, with gradient-boosted models (LightGBM, XGBoost) reaching 90%+ fraud detection. Built for the Samsung Innovation Campus 2026 hackathon.</p>
+                <p class="file__metric"><b>90%+</b><span>Fraud detection</span></p>
+              </div>
+              <div class="file__visual file__visual--switch">
+                <div class="vswitch"><button type="button" class="is-on" data-v="demo">DEMO</button><button type="button" data-v="live">LIVE SITE</button></div>
+                <div class="vpane vpane--demo">
+                <div class="emp">
+                  <div class="emp__top"><span>CAMPAIGN_SCAN</span><span>MODEL: LGBM+XGB</span></div>
+                  <div class="emp__grid"></div>
+                  <div class="emp__kpis"><span>SCANNED <b class="e-scan">0</b></span><span>FLAGGED <b class="e-flag">0</b></span><span>DETECTION <b>90%+</b></span></div>
+                </div>
+                </div>
+                <div class="vpane vpane--live" hidden>
+                  <a class="miniwin" href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener" data-cursor="Visit">
+                    <span class="miniwin__bar"><i></i><i></i><i></i><em>empathi-frontend.onrender.com</em></span>
+                    <span class="miniwin__screen"><img src="assets/live/empathi.jpg" alt="EmpathI live homepage" loading="lazy" class="is-tall" /></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 04 Messier -->
+        <article class="file file--black" data-file="3">
+          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_004 // MESSIER</span></button>
+          <div class="file__inner">
+            <button class="file__head" type="button"><span>CODE_004 //</span><b>Messier Deep Sky Navigator</b><i>+</i></button>
+            <span class="file__vlabel">SIGNAL</span>
+            <div class="file__body">
+              <div class="file__meta">
+                <p class="file__code">CODE_004 // 2025</p>
+                <h3 class="file__title">Messier Deep<br />Sky Navigator</h3>
+                <p class="file__kicker">NASA Space Apps 2025 · Local winner · Global nominee</p>
+                <div class="spec">
+                  <div><span class="spec__k">Stack</span><span class="spec__v">JavaScript · Python · Leaflet.js · OpenSeadragon</span></div>
+                  <div><span class="spec__k">Scale</span><span class="spec__v">10,000+ image tiles</span></div>
+                </div>
+                <p class="file__desc">Processed 10,000+ astronomical image tiles into a coordinate-mapped, deep-zoom sky catalogue. Won locally in Amritsar and went on to be a Global Nominee at NASA Space Apps Challenge 2025 — top ~10% of 11,500+ submissions.</p>
+                <p class="file__metric"><b>10K+</b><span>Tiles mapped</span></p>
+              </div>
+              <div class="file__visual file__visual--switch">
+                <div class="vswitch"><button type="button" class="is-on" data-v="demo">DEMO</button><button type="button" data-v="live">LIVE SITE</button></div>
+                <div class="vpane vpane--demo">
+                <div class="sky" data-cursor="Explore">
+                  <canvas class="sky__canvas"></canvas>
+                  <div class="sky__hud"><span>RA 05h 34m · DEC +22° 00′</span><span class="sky__target">TARGET: —</span></div>
+                </div>
+                </div>
+                <div class="vpane vpane--live" hidden>
+                  <a class="miniwin" href="https://messier-catalog-nasa-space-challeng.vercel.app" target="_blank" rel="noopener" data-cursor="Visit">
+                    <span class="miniwin__bar"><i></i><i></i><i></i><em>messier-catalog-nasa-space-challeng.vercel.app</em></span>
+                    <span class="miniwin__screen"><img src="assets/live/messier.jpg" alt="Messier SkyMap live homepage" loading="lazy" /></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 05 Archive / GitHub feed -->
+        <article class="file file--moss" data-file="4">
+          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_005 // ARCHIVE</span></button>
+          <div class="file__inner">
+            <button class="file__head" type="button"><span>CODE_005 //</span><b>Archive · GitHub</b><i>+</i></button>
+            <span class="file__vlabel">AFTER WORK</span>
+            <div class="file__body">
+              <div class="file__meta">
+                <p class="file__code">CODE_005 // LIVE</p>
+                <h3 class="file__title">Experiments<br />Feed</h3>
+                <p class="file__kicker">Pulled live from github.com/sanatK24</p>
+                <p class="file__desc">Everything else — side builds, hackathon prototypes and half-finished ideas worth finishing. Updated straight from GitHub.</p>
+                <a class="btn btn--line" href="https://github.com/sanatK24" target="_blank" rel="noopener" data-magnetic data-cursor="Go">&gt; VIEW ALL ON GITHUB_</a>
+              </div>
+              <div class="file__visual">
+                <div class="feed">
+                  <p class="feed__label">//EXPERIMENTS_FEED</p>
+                  <ul class="feed__list"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ 04b · LIVE BUILDS (real homepages) ============ -->
+    <section id="live" class="live" data-section="04">
+      <div class="sec-head"><span>_LIVE_BUILDS</span><i></i><span>DEPLOYED · CLICK TO INTERACT</span></div>
+      <div class="live__intro">
+        <h2 class="live__title" data-split>Shipped &amp;<br />running live.</h2>
+        <p>Real homepages, not mockups. Hover to scroll the page, hit <b>Interact</b> to drive the actual site right here, or expand it full-screen.</p>
+      </div>
+      <div class="live__grid">
+        <article class="lcard" data-url="https://empathi-frontend.onrender.com">
+          <div class="lcard__win">
+            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">empathi-frontend.onrender.com</span><span class="lcard__live">● LIVE</span></div>
+            <div class="lcard__screen" data-cursor="Interact">
+              <img class="lcard__shot lcard__shot--tall" src="assets/live/empathi.jpg" alt="EmpathI live homepage" loading="lazy" />
+              <div class="lcard__frame"></div>
+              <div class="lcard__ctrl">
+                <button type="button" class="lcard__go">▶ INTERACT</button>
+                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
+                <button type="button" class="lcard__full">⤢ EXPAND</button>
+                <a href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener">OPEN ↗</a>
+              </div>
+            </div>
+          </div>
+          <div class="lcard__meta">
+            <span class="lcard__n">LIVE_01 // SAMSUNG SIC 2026</span>
+            <h3>EmpathI</h3>
+            <p>Intelligence for urgent care — a fundraising platform pairing contextual personalisation with fraud security and fairness re-ranking.</p>
+            <span class="lcard__stack">LightGBM · XGBoost · FastAPI · React</span>
+          </div>
+        </article>
+        <article class="lcard" data-url="https://messier-catalog-nasa-space-challeng.vercel.app">
+          <div class="lcard__win">
+            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">messier-catalog-nasa-space-challeng.vercel.app</span><span class="lcard__live">● LIVE</span></div>
+            <div class="lcard__screen" data-cursor="Interact">
+              <img class="lcard__shot" src="assets/live/messier.jpg" alt="Messier SkyMap live homepage" loading="lazy" />
+              <div class="lcard__frame"></div>
+              <div class="lcard__ctrl">
+                <button type="button" class="lcard__go">▶ INTERACT</button>
+                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
+                <button type="button" class="lcard__full">⤢ EXPAND</button>
+                <a href="https://messier-catalog-nasa-space-challeng.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
+              </div>
+            </div>
+          </div>
+          <div class="lcard__meta">
+            <span class="lcard__n">LIVE_02 // NASA SPACE APPS 2025</span>
+            <h3>Messier SkyMap</h3>
+            <p>An interactive sky map of the Messier catalogue — filter deep-sky objects by type and fly straight to each target.</p>
+            <span class="lcard__stack">JavaScript · Leaflet.js · OpenSeadragon</span>
+          </div>
+        </article>
+        <article class="lcard" data-url="https://f1-driver-sphere-ui.vercel.app">
+          <div class="lcard__win">
+            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">f1-driver-sphere-ui.vercel.app</span><span class="lcard__live">● LIVE</span></div>
+            <div class="lcard__screen" data-cursor="Interact">
+              <img class="lcard__shot" src="assets/live/f1.jpg" alt="F1 Analyzer live homepage" loading="lazy" />
+              <div class="lcard__frame"></div>
+              <div class="lcard__ctrl">
+                <button type="button" class="lcard__go">▶ INTERACT</button>
+                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
+                <button type="button" class="lcard__full">⤢ EXPAND</button>
+                <a href="https://f1-driver-sphere-ui.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
+              </div>
+            </div>
+          </div>
+          <div class="lcard__meta">
+            <span class="lcard__n">LIVE_03 // FORMULA 1</span>
+            <h3>F1 Analyzer</h3>
+            <p>A Formula 1 analysis and information platform — search drivers, circuits, results and seasons in one place.</p>
+            <span class="lcard__stack">TypeScript · React</span>
+          </div>
+        </article>
+        <article class="lcard" data-url="https://edu-mate-ai.vercel.app" data-autoload>
+          <div class="lcard__win">
+            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">edu-mate-ai.vercel.app</span><span class="lcard__live">● LIVE</span></div>
+            <div class="lcard__screen" data-cursor="Interact">
+              <div class="lcard__poster"><b>EduMate AI</b><span>Loading the live site…</span></div>
+              <div class="lcard__frame"></div>
+              <div class="lcard__ctrl">
+                <button type="button" class="lcard__go">▶ INTERACT</button>
+                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
+                <button type="button" class="lcard__full">⤢ EXPAND</button>
+                <a href="https://edu-mate-ai.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
+              </div>
+            </div>
+          </div>
+          <div class="lcard__meta">
+            <span class="lcard__n">LIVE_04 // STUDY ASSISTANT</span>
+            <h3>EduMate AI</h3>
+            <p>Paste any text and get structured notes, summaries and actionable insights — a personal AI study assistant.</p>
+            <span class="lcard__stack">TypeScript · LLM</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ 05 · JOURNEY ============ -->
+    <section id="journey" class="journey" data-section="05">
+      <div class="sec-head"><span>_JOURNEY</span><i></i><span>2023 → NOW</span></div>
+      <h2 class="journey__title" data-split>Education, experience<br />&amp; how I work.</h2>
+
+      <div class="jgrid">
+        <div class="jcol">
+          <p class="jlabel">Experience</p>
+          <ul class="tl">
+            <li data-reveal>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/reasonateai.png" alt="ReasonateAI logo" loading="lazy" /></span><b>AI Engineer Intern</b><span>Aug 2026 — Now</span></div>
+              <p class="tl__org">ReasonateAI Pvt. Ltd. · Remote</p>
+              <p>Built a modern, responsive UI for an AI vibecoding platform used by 25K+ users, and wired the front end to GPU-hosted LLM inference over secure SSH tunnels.</p>
+            </li>
+            <li data-reveal>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/serviceio.png" alt="ServiceIO logo" loading="lazy" /></span><b>Trainee Intern</b><span>May — Jul 2026</span></div>
+              <p class="tl__org">ServiceIO Consultancy Services · Thane</p>
+              <p>Built a bidirectional Jira ↔ ServiceNow integration with Scripted REST APIs and webhooks — incident sync, data mapping and correlation tracking.</p>
+            </li>
+            <li data-reveal>
+              <div class="tl__row"><span class="lg lg--mono">ACM</span><b>Webmaster · Tech Lead</b><span>Sep 2025 — Jul 2026</span></div>
+              <p class="tl__org">RAIT ACM SIGAI Student Chapter</p>
+              <p>Tech lead for national hackathons with 2,000+ participants; Editor-in-Chief of <em>Synara 2026</em>. Mentored the next Webmaster through the handover.</p>
+            </li>
+            <li data-reveal>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/samsung.png" alt="Samsung logo" loading="lazy" /></span><b>Innovation Campus Trainee</b><span>Nov 2025 — 2026</span></div>
+              <p class="tl__org">Samsung India Innovation Campus · RAIT</p>
+              <p>Selected for Samsung's industry-aligned programme — DSA and problem-solving track; built EmpathI at the SIC hackathon.</p>
+            </li>
+            <li data-reveal>
+              <div class="tl__row"><span class="lg"><img src="assets/logos/microsoft.png" alt="Microsoft logo" loading="lazy" /></span><b>TechSaksham Intern</b><span>Dec 2024 — Jan 2025</span></div>
+              <p class="tl__org">Microsoft &amp; SAP · Edunet Foundation</p>
+              <p>One-month internship focused on core fundamentals and practical industry exposure.</p>
+            </li>
+            <li data-reveal>
+              <div class="tl__row"><span class="lg lg--mono">AC</span><b>Data Science Intern</b><span>Nov 2023 — Jan 2024</span></div>
+              <p class="tl__org">Academor</p>
+              <p>Data science course and internship — awarded an Outstanding Performance certificate as a first-year student.</p>
+            </li>
+          </ul>
+          <p class="jlabel">Education</p>
+          <ul class="edu">
+            <li data-reveal><span class="lg"><img src="assets/logos/dypatil.png" alt="D. Y. Patil University logo" loading="lazy" /></span><div><b>B.Tech, Computer Engineering</b><span>Major: Data Science · RAIT, D. Y. Patil University</span></div><em>9.00<small>/10</small></em></li>
+            <li data-reveal><span class="lg lg--mono">JS</span><div><b>Class XII</b><span>Jaipuriar School</span></div><em>70.8<small>%</small></em></li>
+            <li data-reveal><span class="lg lg--mono">AH</span><div><b>Class X</b><span>Avalon Heights International</span></div><em>91<small>%</small></em></li>
+          </ul>
+        </div>
+
+        <div class="jcol jcol--process">
+          <p class="jlabel">Work process</p>
+          <ol class="process">
+            <li><span class="process__n">01</span><span class="process__ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><div><b>Discover</b><p>Understand the problem, the people and the data behind it.</p></div></li>
+            <li><span class="process__n">02</span><span class="process__ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><div><b>Model</b><p>Shape pipelines, pick the right model, validate early.</p></div></li>
+            <li><span class="process__n">03</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><div><b>Design</b><p>Interfaces that make complex systems feel simple.</p></div></li>
+            <li><span class="process__n">04</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span><div><b>Develop</b><p>Typed, containerised, fast — FastAPI, React, Docker.</p></div></li>
+            <li><span class="process__n">05</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span><div><b>Deliver</b><p>Test, measure, iterate — then hand it to real users.</p></div></li>
+          </ol>
+        </div>
+
+        <div class="jcol jcol--quote">
+          <span class="quote__mark">“</span>
+          <p class="quote__text">Good models aren't just accurate — they're understood.</p>
+          <p class="quote__sig">Sanat</p>
+          <p class="quote__cta">Let's create something<br />great together.</p>
+          <span class="star">✦</span>
+        </div>
+      </div>
+
+      <div class="jgrid2">
+        <div class="ach">
+          <p class="jlabel">Achievements</p>
+          <ul class="ach__list">
+            <li data-cursor="✦"><span class="ach__n">01</span><span class="lg"><img src="assets/logos/spaceapps.png" alt="NASA Space Apps Challenge logo" loading="lazy" /></span><b>NASA Space Apps Challenge</b><span class="ach__d">Local winner · Global nominee (top ~10%)</span><span class="ach__y">2025</span></li>
+            <li data-cursor="✦"><span class="ach__n">02</span><span class="lg"><img src="assets/logos/dypatil.png" alt="Winter Internship Program logo" loading="lazy" /></span><b>Winter Internship Program</b><span class="ach__d">1st place · malariaCARE LLM chatbot</span><span class="ach__y">2025</span></li>
+            <li data-cursor="✦"><span class="ach__n">03</span><span class="lg"><img src="assets/logos/flipkart.png" alt="Flipkart Gridlock 2.0 logo" loading="lazy" /></span><b>Flipkart Gridlock 2.0</b><span class="ach__d">Round 2 · Prototype phase</span><span class="ach__y">2026</span></li>
+            <li data-cursor="✦"><span class="ach__n">04</span><span class="lg"><img src="assets/logos/adobe.png" alt="Adobe University Hackathon logo" loading="lazy" /></span><b>Adobe University Hackathon</b><span class="ach__d">Online assessment · Qualified</span><span class="ach__y">2026</span></li>
+            <li data-cursor="✦"><span class="ach__n">05</span><span class="lg"><img src="assets/logos/samsung.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Samsung Innovation Campus</b><span class="ach__d">Hackathon build · EmpathI</span><span class="ach__y">2026</span></li>
+            <li data-cursor="✦"><span class="ach__n">06</span><span class="lg lg--mono">ACM</span><b>KAINOS 2024 AI Hackathon</b><span class="ach__d">F1 race-data analysis · OpenF1</span><span class="ach__y">2024</span></li>
+          </ul>
+        </div>
+        <div class="certs">
+          <p class="jlabel">//CERTS_FEED</p>
+          <ul class="certs__list">
+            <li><span class="lg"><img src="assets/logos/cisco.png" alt="Cisco logo" loading="lazy" /></span><div><b>CISCO_DATA.CERT</b><span>Cisco · Data Analytics Essentials</span></div><em>JUN 2026</em></li>
+            <li><span class="lg"><img src="assets/logos/simplilearn.png" alt="Simplilearn SkillUp logo" loading="lazy" /></span><div><b>POWER_BI.CERT</b><span>Simplilearn SkillUp · Power BI for Beginners</span></div><em>APR 2026</em></li>
+            <li><span class="lg"><img src="assets/logos/mckinsey.png" alt="McKinsey.org Forward Program logo" loading="lazy" /></span><div><b>MCKINSEY_FORWARD.CERT</b><span>McKinsey.org Forward Program</span></div><em>DEC 2025</em></li>
+            <li><span class="lg"><img src="assets/logos/aspire.png" alt="Aspire Leaders Program logo" loading="lazy" /></span><div><b>ASPIRE_LEADERS.CERT</b><span>Aspire Leaders Program</span></div><em>DEC 2025</em></li>
+            <li><span class="lg"><img src="assets/logos/google.png" alt="Google logo" loading="lazy" /></span><div><b>GEMINI_UNIVERSITY.CERT</b><span>Google · Gemini Certified University Student</span></div><em>NOV 2025</em></li>
+            <li><span class="lg"><img src="assets/logos/kaggle.png" alt="Google × Kaggle logo" loading="lazy" /></span><div><b>AI_AGENTS_INTENSIVE.CERT</b><span>Google × Kaggle · 5-Day AI Agents Intensive</span></div><em>NOV 2025</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/ibm.png" alt="CSRBOX × IBM SkillsBuild logo" loading="lazy" /></span><div><b>PBL_2025.CERT</b><span>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></div><em>AUG 2025</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/deloitte.png" alt="Deloitte Australia logo" loading="lazy" /></span><div><b>DELOITTE_DATA.CERT</b><span>Deloitte Australia · Data Analytics</span></div><em>JUL 2025</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/ibm.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>AI_AGENT_ARCHITECT.CERT</b><span>IBM SkillsBuild · From Learner to Builder</span></div><em>JUL 2025</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/google.png" alt="Google Cloud logo" loading="lazy" /></span><div><b>VERTEX_PROMPT.BADGE</b><span>Google Cloud · Prompt Design in Vertex AI</span></div><em>MAY 2025</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/harvard.png" alt="Harvard CS50 logo" loading="lazy" /></span><div><b>CS50X.CERT</b><span>Harvard CS50 · Intro to Computer Science (edX)</span></div><em>MAY 2024</em></li>
+            <li class="is-extra"><span class="lg"><img src="assets/logos/aws.png" alt="AWS logo" loading="lazy" /></span><div><b>AWS_DATA_ANALYTICS.CERT</b><span>AWS · Getting Started with Data Analytics (edX)</span></div><em>MAY 2024</em></li>
+          </ul>
+          <button type="button" class="certs__more" data-cursor="More">+ SHOW ALL 12 CERTIFICATES</button>
+          <p class="jlabel">Skills</p>
+          <div class="chips">
+            <span>Python</span><span>SQL</span><span>Java</span><span>PostgreSQL</span><span>MongoDB</span><span>FastAPI</span><span>React</span><span>TensorFlow</span><span>Scikit-learn</span><span>LangChain</span><span>FAISS</span><span>Pandas</span><span>Plotly</span><span>Tableau</span><span>Power BI</span><span>Docker</span><span>Git</span><span>Agile</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============ 06 · SIGNAL (LinkedIn posts) ============ -->
+    <section id="posts" class="posts" data-section="06">
+      <div class="sec-head"><span>_SIGNAL // LINKEDIN</span><i></i><span>910 FOLLOWERS</span></div>
+      <div class="posts__head">
+        <h2 class="posts__title" data-split>Latest from<br />LinkedIn.</h2>
+        <div class="posts__side">
+          <p>Notes on what I'm building, learning and shipping — newest first. Drag the rail or use the arrows.</p>
+          <div class="posts__actions">
+            <a class="btn btn--line" href="https://www.linkedin.com/in/sanat-karkhanis/recent-activity/all/" target="_blank" rel="noopener" data-magnetic data-cursor="Follow">&gt; FOLLOW ON LINKEDIN_</a>
+            <div class="posts__nav"><button type="button" data-dir="-1" aria-label="Previous posts">←</button><button type="button" data-dir="1" aria-label="Next posts">→</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="posts__rail" data-cursor="Drag"><div class="posts__track"></div></div>
+      <div class="posts__progress"><i></i></div>
+    </section>
+
+    <!-- ============ 07 · AFTER HOURS ============ -->
+    <section id="after" class="after" data-section="07">
+      <div class="after__glow" aria-hidden="true"></div>
+      <div class="after__head">
+        <h2 class="after__title">After<span>hours</span></h2>
+        <div class="spec">
+          <div><span class="spec__k">Font Name</span><span class="spec__v">Off-duty</span></div>
+          <div><span class="spec__k">Weight</span><span class="spec__v">Curious</span></div>
+        </div>
+        <p class="after__hint">[ DRAG THE CARDS ]</p>
+      </div>
+      <div class="board">
+        <div class="card" style="--r:-6deg" data-cursor="Drag">
+          <svg viewBox="0 0 64 64"><path d="M12 52 46 18l6 6-34 34H12z"/><path d="m40 24 6 6"/><path d="M8 58h22"/></svg>
+          <b>Sketching</b><span>pencil · paper · no undo</span><em>IMG_001</em>
+        </div>
+        <div class="card card--burg" style="--r:5deg" data-cursor="Drag">
+          <svg viewBox="0 0 64 64"><circle cx="16" cy="42" r="10"/><circle cx="48" cy="42" r="10"/><path d="M16 42 26 24h16l6 18M26 24l8 18h-18M36 16h8"/></svg>
+          <b>Biking</b><span>clearing the cache</span><em>IMG_002</em>
+        </div>
+        <div class="card card--black" style="--r:-3deg" data-cursor="Drag">
+          <svg viewBox="0 0 64 64"><path d="M10 8v50"/><path d="M10 10h40v24H10"/><path d="M10 10h10v8H10zM30 10h10v8H30zM20 18h10v8H20zM40 18h10v8H40zM10 26h10v8H10zM30 26h10v8H30z" class="fill"/></svg>
+          <b>Formula 1</b><span>strategy &gt; speed</span><em>IMG_003</em>
+        </div>
+        <div class="card card--white" style="--r:7deg" data-cursor="Drag">
+          <svg viewBox="0 0 64 64"><path d="m8 34 34-14 4 10-34 14z"/><path d="M28 40 20 58M30 40l8 18"/><path d="m46 22 6-2 3 8-6 2"/><path d="M50 6l1.5 3 3 1.5-3 1.5L50 15l-1.5-3-3-1.5 3-1.5z" class="fill"/></svg>
+          <b>Astronomy</b><span>&amp; astrophotography</span><em>IMG_004</em>
+        </div>
+        <div class="card card--bone" style="--r:-8deg" data-cursor="Drag">
+          <svg viewBox="0 0 64 64"><path d="M8 56h48"/><path d="M12 44l12-12 10 8 18-20"/><path d="M42 20h10v10"/></svg>
+          <b>Business</b><span>&amp; finance</span><em>IMG_005</em>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 · CONTACT ============ -->
+    <section id="contact" class="contact" data-section="08">
+      <div class="contact__grid">
+        <div class="contact__left">
+          <h2 class="contact__title" data-split>Let's work<br />together<span class="star">✦</span></h2>
+          <p class="contact__lead">Open to internships, research collaborations and hackathon teams. If it involves data, models or a product people will touch — I'm in.</p>
+          <div class="contact__actions">
+            <a class="orb" href="mailto:sanat.karkhanis2@gmail.com" data-magnetic data-cursor="Mail"><span>Say hi</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn btn--line" href="assets/Sanat_Karkhanis_Resume.pdf" target="_blank" rel="noopener" data-magnetic data-cursor="CV">&gt; DOWNLOAD_CV.PDF</a>
+          </div>
+        </div>
+        <ul class="contact__rows">
+          <li><a href="mailto:sanat.karkhanis2@gmail.com" data-cursor="Mail"><span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span>sanat.karkhanis2@gmail.com</span><i>↗</i></a></li>
+          <li><a href="https://linkedin.com/in/sanat-karkhanis/" target="_blank" rel="noopener" data-cursor="Open"><span class="ci"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></svg></span><span>linkedin.com/in/sanat-karkhanis</span><i>↗</i></a></li>
+          <li><a href="https://github.com/sanatK24" target="_blank" rel="noopener" data-cursor="Open"><span class="ci"><svg viewBox="0 0 24 24"><path d="M9 19c-4 1.5-4-2-6-2.5m12 5v-3.5a3 3 0 0 0-.9-2.3c3-.3 6.1-1.5 6.1-6.6a5.2 5.2 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.4 12.4 0 0 0-6.6 0C6 1.8 4.9 2.1 4.9 2.1a4.8 4.8 0 0 0-.1 3.6 5.2 5.2 0 0 0-1.4 3.6c0 5.1 3.1 6.3 6.1 6.6a3 3 0 0 0-.9 2.3V22"/></svg></span><span>github.com/sanatK24</span><i>↗</i></a></li>
+          <li><div><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>Navi Mumbai, India · <b class="clock">--:--</b> IST</span></div></li>
+        </ul>
+      </div>
+
+      <p class="rebel" data-cursor="Glitch"><span data-text="BUILD WITHOUT LIMITS.">BUILD WITHOUT LIMITS.</span></p>
+
+      <footer class="foot">
+        <span class="foot__l">LET'S BREAK<br />SOMETHING TOGETHER.</span>
+        <a href="mailto:sanat.karkhanis2@gmail.com" class="foot__mail">SANAT.KARKHANIS2@GMAIL.COM</a>
+        <span class="foot__links">
+          <a href="https://github.com/sanatK24" target="_blank" rel="noopener" data-scramble>[GITHUB]</a>
+          <a href="https://linkedin.com/in/sanat-karkhanis/" target="_blank" rel="noopener" data-scramble>[LINKEDIN]</a>
+          <a href="assets/Sanat_Karkhanis_Resume.pdf" target="_blank" rel="noopener" data-scramble>[RESUME]</a>
+        </span>
+        <span class="foot__bar"><svg class="barcode" viewBox="0 0 160 34" preserveAspectRatio="none"></svg><small>SANAT_K_2026</small></span>
+      </footer>
+    </section>
+  </main>
+
+  <!-- Live site modal -->
+  <div class="lmodal" role="dialog" aria-modal="true" aria-label="Live site preview" hidden>
+    <div class="lmodal__win">
+      <div class="lmodal__bar"><i></i><i></i><i></i><span class="lmodal__url"></span><a class="lmodal__open" target="_blank" rel="noopener">OPEN ↗</a><button type="button" class="lmodal__x" aria-label="Close preview">✕</button></div>
+      <iframe class="lmodal__frame" title="Live site" loading="lazy"></iframe>
+    </div>
+  </div>
+
+  <!-- Command palette (carried over from the original site, restyled) -->
+  <div class="cmd" role="dialog" aria-modal="true" aria-label="Command menu" hidden>
+    <div class="cmd__panel">
+      <div class="cmd__input"><span>&gt;</span><input type="text" placeholder="type a command…" aria-label="Search commands" /><kbd>ESC</kbd></div>
+      <ul class="cmd__list"></ul>
+      <p class="cmd__foot">↑↓ navigate · ↵ select · ⌘K toggle</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="main.js?v=3"></script>
+</body>
 </html>
