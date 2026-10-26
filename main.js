@@ -197,7 +197,7 @@
     };
 
     paint();
-    btn && btn.addEventListener("click", (e) => { e.stopPropagation(); toggle(); });
+    btn && btn.addEventListener("click", (e) => { e.stopPropagation(); toggle(); setTimeout(() => window.SK && SK.toast(on ? "Sound on" : "Sound off", "info", 1800), 80); });
     // a remembered "on" preference starts at the first gesture (autoplay rules)
     const firstGesture = () => { if (wanted && !on) enable(); };
     addEventListener("pointerdown", firstGesture, { once: true });
@@ -350,7 +350,8 @@
     let shown = 0;
 
     return new Promise((resolve) => {
-      if (reduced) { loader.remove(); resolve(); return; }
+      // reduced motion, or arriving from another page through the pixel storm: no loader
+      if (reduced || window.SK?.arrived) { loader.remove(); resolve(); return; }
       const tl = gsap.timeline({ onComplete: resolve });
       tl.to(counter, {
         v: 100, duration: 2.1, ease: "power2.inOut",
@@ -412,17 +413,8 @@
     gsap.to(".hero__word", { yPercent: -30, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
     gsap.to(".hero__shell", { scale: 0.94, opacity: 0.4, ease: "none", scrollTrigger: { trigger: ".hero", start: "20% top", end: "bottom top", scrub: true } });
 
-    // About: giant PORTFOLIO letters rise
-    gsap.from(".about__big span", {
-      yPercent: 100, opacity: 0, stagger: 0.05, ease: "power3.out",
-      scrollTrigger: { trigger: ".about", start: "top 85%", end: "top 25%", scrub: 1 },
-    });
-    gsap.to(".about__big", { xPercent: -8, ease: "none", scrollTrigger: { trigger: ".about", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.from(".about__portrait .portrait__img", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "expo.inOut", clearProps: "clipPath", scrollTrigger: { trigger: ".about__portrait", start: "top 85%" } });
-    gsap.from(".about__portrait .fbr, .about__portrait .hud", { scale: 0, opacity: 0, duration: 0.7, stagger: 0.06, delay: 0.6, ease: "back.out(2)", scrollTrigger: { trigger: ".about__portrait", start: "top 85%" } });
-    gsap.fromTo(".portrait__img img", { yPercent: -10 }, { yPercent: 0, ease: "none", scrollTrigger: { trigger: ".about__portrait", start: "top bottom", end: "bottom top", scrub: true } });
-    gsap.from(".about__script, .about__name, .about__role", { y: 60, opacity: 0, stagger: 0.1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".about__left", start: "top 80%" } });
-    gsap.from(".about__claim, .stats li", { x: 40, opacity: 0, stagger: 0.08, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".about__right", start: "top 85%" } });
+    // Intro (the About section now lives on about.html)
+    gsap.from(".intro__script, .intro__title, .intro__cta", { y: 60, opacity: 0, stagger: 0.1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".intro__grid", start: "top 80%" } });
 
     // Counters
     $$("[data-count]").forEach((el) => {
@@ -444,8 +436,6 @@
     if (mt) {
       mt.innerHTML = mt.textContent.trim().split(/\s+/).map((w) => `<span class="w">${w}</span>`).join(" ");
       gsap.to($$(".w", mt), { opacity: 1, stagger: 0.1, ease: "none", scrollTrigger: { trigger: mt, start: "top 80%", end: "bottom 45%", scrub: true } });
-      gsap.from(".manifesto .br", { scale: 0, duration: 0.8, ease: "back.out(2)", stagger: 0.08, scrollTrigger: { trigger: ".manifesto", start: "top 80%" } });
-      gsap.from(".manifesto__smile", { rotate: -90, scale: 0.4, opacity: 0, ease: "back.out(1.6)", duration: 1.2, scrollTrigger: { trigger: ".manifesto", start: "top 70%" } });
     }
 
     // Identity card: columns rise, vertical words wipe in
@@ -460,24 +450,9 @@
     });
     $$("[data-reveal]").forEach((el) => gsap.from(el, { y: 30, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%" } }));
 
-    const proc = $(".process"), procItems = $$(".process li");
-    ST.create({
-      trigger: proc, start: "top 75%", end: "bottom 55%", scrub: true,
-      onUpdate(self) {
-        proc.style.setProperty("--p", self.progress.toFixed(3));
-        procItems.forEach((li, i) => li.classList.toggle("is-on", self.progress >= i / (procItems.length - 1) - 0.02));
-      },
-    });
-    gsap.from(".jcol--quote > *", { y: 30, opacity: 0, stagger: 0.1, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".jcol--quote", start: "top 80%" } });
-    gsap.from(".ach__list li, .certs__list li", { y: 24, opacity: 0, stagger: 0.06, duration: 0.9, ease: "expo.out", scrollTrigger: { trigger: ".jgrid2", start: "top 85%" } });
-    gsap.from(".chips span", { scale: 0.6, opacity: 0, stagger: 0.025, duration: 0.6, ease: "back.out(2)", scrollTrigger: { trigger: ".chips", start: "top 90%" } });
-
-    // After hours
-    gsap.from(".after__title", { yPercent: 40, opacity: 0, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".after", start: "top 70%" } });
 
     // Contact
     gsap.from(".contact__rows li", { x: 40, opacity: 0, stagger: 0.08, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".contact__rows", start: "top 85%" } });
-    gsap.from(".rebel span", { yPercent: 100, opacity: 0, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".rebel", start: "top 95%" } });
   }
 
   /* ---------- Velocity marquee ---------- */
@@ -855,7 +830,9 @@
 
   /* ---------- After hours: draggable cards ---------- */
   function initBoard() {
-    const board = $(".board"), cards = $$(".card", board);
+    const board = $(".board");
+    if (!board) return;
+    const cards = $$(".card", board);
     const layout = () => {
       if (!isDesktop()) { cards.forEach((c) => gsap.set(c, { clearProps: "left,top,x,y" })); return; }
       const W = board.clientWidth, H = Math.max(board.clientHeight, 460);
@@ -1168,44 +1145,29 @@
 
   /* ---------- Command palette ---------- */
   function initCommand() {
-    const root = $(".cmd"), input = $("input", root), list = $(".cmd__list", root);
     const items = [
       { t: "Go to · Home", k: "01", run: () => scrollTo("#hero") },
-      { t: "Go to · About", k: "02", run: () => scrollTo("#about") },
+      { t: "Go to · About me (page)", k: "02", run: () => { SK.toast("Opening About…", "info", 1600); location.href = "about.html"; } },
+      { t: "Go to · How I work (page)", k: "↗", run: () => { SK.toast("Opening Process…", "info", 1600); location.href = "process.html"; } },
+      { t: "Go to · Skills & certificates (page)", k: "↗", run: () => { SK.toast("Opening Skills…", "info", 1600); location.href = "skills.html"; } },
+      { t: "Go to · Send a message (page)", k: "↗", run: () => { SK.toast("Opening Contact…", "info", 1600); location.href = "contact.html"; } },
       { t: "Go to · Identity", k: "03", run: () => scrollTo("#identity") },
       { t: "Go to · Work", k: "04", run: () => scrollTo("#work") },
       { t: "Go to · Live builds", k: "04", run: () => scrollTo("#live") },
-      { t: "Go to · Journey", k: "05", run: () => scrollTo("#journey") },
       { t: "Go to · Hackathons & events", k: "06", run: () => scrollTo("#field") },
       { t: "Go to · Leadership", k: "07", run: () => scrollTo("#lead") },
       { t: "Go to · LinkedIn posts", k: "08", run: () => scrollTo("#posts") },
-      { t: "Go to · After hours", k: "09", run: () => scrollTo("#after") },
       { t: "Go to · Contact", k: "10", run: () => scrollTo("#contact") },
-      { t: "Toggle sound", k: "♪", run: () => sfx.toggle() },
-      { t: "Copy email address", k: "⧉", run: () => navigator.clipboard?.writeText("sanat.karkhanis2@gmail.com") },
-      { t: "Open GitHub", k: "↗", run: () => open("https://github.com/sanatK24", "_blank", "noopener") },
-      { t: "Open LinkedIn", k: "↗", run: () => open("https://linkedin.com/in/sanat-karkhanis/", "_blank", "noopener") },
-      { t: "Download resume (PDF)", k: "↓", run: () => open("assets/Sanat_Karkhanis_Resume.pdf", "_blank", "noopener") },
+      { t: "Toggle sound", k: "♪", run: () => { sfx.toggle(); setTimeout(() => SK.toast(sfx.on ? "Sound on" : "Sound off", "info", 1800), 80); } },
+      ...SK.commonCommands(),
     ];
-    let shown = items, sel = 0;
-    const render = () => {
-      list.innerHTML = shown.map((it, i) => `<li class="${i === sel ? "is-sel" : ""}" data-i="${i}"><span>${it.t}</span><small>${it.k}</small></li>`).join("") || `<li><span>no matches</span></li>`;
-    };
-    const openP = () => { sfx.blip(); root.hidden = false; input.value = ""; shown = items; sel = 0; render(); lenis?.stop(); setTimeout(() => input.focus(), 10); gsap.fromTo(".cmd__panel", { y: -20, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }); };
-    const closeP = () => { root.hidden = true; lenis?.start(); };
-    const runSel = () => { const it = shown[sel]; if (!it) return; closeP(); it.run(); };
-    input.addEventListener("input", () => { const q = input.value.toLowerCase(); shown = items.filter((i) => i.t.toLowerCase().includes(q)); sel = 0; render(); });
-    list.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) { sel = +li.dataset.i; runSel(); } });
-    list.addEventListener("pointermove", (e) => { const li = e.target.closest("li[data-i]"); if (li && +li.dataset.i !== sel) { sel = +li.dataset.i; render(); } });
-    root.addEventListener("click", (e) => { if (e.target === root) closeP(); });
-    $$("[data-cmd-open]").forEach((b) => b.addEventListener("click", openP));
-    addEventListener("keydown", (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); root.hidden ? openP() : closeP(); return; }
-      if (root.hidden) return;
-      if (e.key === "Escape") closeP();
-      else if (e.key === "ArrowDown") { sel = (sel + 1) % Math.max(shown.length, 1); render(); e.preventDefault(); }
-      else if (e.key === "ArrowUp") { sel = (sel - 1 + shown.length) % Math.max(shown.length, 1); render(); e.preventDefault(); }
-      else if (e.key === "Enter") runSel();
+    SK.palette({
+      items,
+      onOpen: () => {
+        sfx.blip(); lenis?.stop();
+        gsap.fromTo(".cmd__panel", { y: -20, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" });
+      },
+      onClose: () => lenis?.start(),
     });
   }
 
@@ -1233,5 +1195,8 @@
     initBoard();
     initScroll();
     ST.refresh();
+    // links like index.html#work land on their section once the pinned layout has settled
+    const target = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+    if (target) lenis ? lenis.scrollTo(target, { immediate: true }) : target.scrollIntoView();
   });
 })();

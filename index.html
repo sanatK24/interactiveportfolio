@@ -32,6 +32,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=14" />
+  <link rel="stylesheet" href="shared.css?v=2" />
+  <link rel="stylesheet" href="extras.css?v=4" />
 </head>
 <body class="is-loading">
 
@@ -51,26 +53,24 @@
   <header class="nav">
     <a href="#hero" class="nav__brand" data-cursor="Top">
       <strong>//SANAT_K//</strong>
-      <span>AI ENGINEER<br />DATA SCIENCE</span>
     </a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="#about" data-scramble>[ABOUT]</a>
+      <a href="about.html" data-scramble>[ABOUT]</a>
+      <a href="skills.html" data-scramble>[SKILLS]</a>
       <a href="#work" data-scramble>[WORK]</a>
-      <a href="#journey" data-scramble>[JOURNEY]</a>
+      <a href="process.html" data-scramble>[PROCESS]</a>
       <a href="#field" data-scramble>[HACKS]</a>
-      <a href="#lead" data-scramble>[LEAD]</a>
-      <a href="#posts" data-scramble>[POSTS]</a>
-      <a href="#contact" data-scramble>[CONTACT]</a>
+      <a href="contact.html" data-scramble>[CONTACT]</a>
     </nav>
     <div class="nav__right">
-      <span class="nav__status"><i></i>OPEN TO INTERNSHIPS</span>
+      <span class="nav__clock" data-clock></span>
       <button class="nav__sound" type="button" aria-pressed="false" aria-label="Toggle sound" data-cursor="Sound"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="nav__sound-label">SOUND OFF</span></button>
       <button class="nav__cmd" type="button" data-cmd-open data-cursor="Menu" aria-label="Open command menu"><kbd>⌘K</kbd></button>
     </div>
   </header>
 
   <!-- Section counter pill (inspo: "04 OF 07") -->
-  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 10</div>
+  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 9</div>
 
   <main>
 
@@ -96,72 +96,48 @@
 
           <div class="hero__scroll"><span>Scroll</span><i></i></div>
           <div class="hero__hint">Move your cursor over the letters</div>
+
+          <a class="spin" href="contact.html" aria-label="Open to internships — get in touch" data-cursor="Talk">
+            <svg class="spin__ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="spin-path" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs><text><textPath href="#spin-path" textLength="236" lengthAdjust="spacing">Open to internships · Let's talk — </textPath></text></svg>
+            <span class="spin__arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- ============ 02 · ABOUT (big-type portfolio) ============ -->
-    <section id="about" class="about about--field" data-section="02">
-      <canvas class="about__wall" aria-hidden="true"></canvas>
-      <div class="about__glow" aria-hidden="true"></div>
-      <div class="about__big" aria-hidden="true">
-        <span>P</span><span>O</span><span>R</span><span>T</span><span>F</span><span>O</span><span>L</span><span>I</span><span>O</span>
-      </div>
-
-      <div class="about__grid">
-        <div class="about__left">
-          <p class="about__script">Hello, I'm</p>
-          <h2 class="about__name">Sanat<br />Karkhanis</h2>
-          <p class="about__role">AI Engineer &amp;<br />Data Science Undergrad</p>
-          <p class="about__blurb" data-reveal>I'm a Computer Engineering student majoring in Data Science at RAIT, D.&nbsp;Y. Patil, and an AI Engineer Intern at ReasonateAI. I build data pipelines, ML models and the interfaces that make them usable.</p>
-          <p class="about__loc"><i></i>Based in Navi Mumbai · Open to remote</p>
-        </div>
-
-        <figure class="about__portrait about__portrait--field" data-cursor="Hi!">
-          <span class="fbr fbr--tl"></span><span class="fbr fbr--tr"></span><span class="fbr fbr--bl"></span><span class="fbr fbr--br"></span>
-          <div class="portrait__img">
-            <img src="assets/portrait.jpg" alt="Sanat at AWS Future Builders Connect, pointing at his builder passport" width="720" height="1280" />
-            <i class="portrait__ghost portrait__ghost--r" aria-hidden="true"></i>
-            <i class="portrait__ghost portrait__ghost--g" aria-hidden="true"></i>
-            <div class="portrait__mono" aria-hidden="true">SK</div>
+    <!-- ============ 02 · INTRO (About now lives on its own page: about.html) ============ -->
+    <section id="intro" class="intro" data-section="02">
+      <div class="intro__grid">
+        <div>
+          <p class="intro__script">Hello, I'm</p>
+          <h2 class="intro__title">Sanat<br /><em>Karkhanis</em></h2>
+          <p class="intro__text" data-reveal>AI Engineer &amp; Data Science undergrad. I build data pipelines, ML models and the interfaces that make them usable — currently an AI Engineer Intern at ReasonateAI.</p>
+          <div class="intro__cta">
+            <a href="about.html" class="sk-btn sk-btn--solid" data-cursor="Open">About me <span aria-hidden="true">→</span></a>
+            <a href="skills.html" class="sk-btn" data-cursor="Open">Skills</a>
+            <a href="process.html" class="sk-btn" data-cursor="Open">How I work</a>
           </div>
-          <div class="portrait__scan" aria-hidden="true"></div>
-          <span class="hud hud--sys"><i></i>SYS_01 · ONLINE</span>
-          <span class="hud hud--tag">FUTURE BUILDERS PASSPORT <b>✓</b></span>
-          <figcaption><span>FIG. 01 // AWS FUTURE BUILDERS CONNECT</span><span>MUMBAI · 11.09.2026</span></figcaption>
-        </figure>
-
-        <div class="about__right">
-          <div class="about__claim"><span class="star">✦</span><p>Turning raw data into systems people actually use.</p></div>
-          <ul class="stats">
-            <li><b data-count="9.00" data-dec="2">0</b><span>CGPA<br />B.Tech CE</span></li>
-            <li><b data-count="25" data-suffix="K+">0</b><span>Users on a platform<br />I built UI for</span></li>
-            <li><b data-count="2000" data-suffix="+" data-comma>0</b><span>Hackers at events<br />I tech-led</span></li>
-            <li><b data-count="5" data-pad="2">0</b><span>Hackathon runs<br />NASA · Flipkart · Adobe · Samsung · KAINOS</span></li>
-          </ul>
+        </div>
+        <div class="intro__globe">
+          <div class="globe" data-globe aria-hidden="true"><span class="globe__pin"></span><span class="globe__label">Navi Mumbai, India</span></div>
+          <p class="statement__loc">Based in Navi Mumbai · working with teams anywhere, remotely</p>
         </div>
       </div>
 
       <!-- Manifesto (terminal block) -->
       <div class="manifesto">
-        <span class="br br--tl"></span><span class="br br--tr"></span><span class="br br--bl"></span><span class="br br--br"></span>
-        <p class="manifesto__label">//MANIFESTO.TXT</p>
+        <span class="manifesto__glow" aria-hidden="true"></span>
+        <div class="manifesto__top"><p class="manifesto__label">(Manifesto)</p><span class="manifesto__rule">Rule no. 01</span></div>
         <p class="manifesto__text" data-words>I don't follow trends. I build systems that hold up under real data, real users and real load.</p>
-        <svg class="manifesto__smile" viewBox="0 0 100 110" aria-hidden="true">
-          <circle cx="50" cy="48" r="40" fill="none" stroke="currentColor" stroke-width="6"/>
-          <circle cx="36" cy="40" r="5" fill="currentColor"/><circle cx="64" cy="40" r="5" fill="currentColor"/>
-          <path d="M30 58 Q50 78 70 58" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-          <path d="M22 70 q0 22 4 30 q4-8 4-22 M74 76 q0 18 3 26 q3-6 3-20 M48 88 q0 10 2 16 q2-4 2-14" fill="currentColor"/>
-        </svg>
       </div>
+    
+      <a class="pillrow" href="#work" aria-label="Data, models, products — see my work" data-cursor="Work">
+        <span class="pillrow__a"><b>Data</b></span>
+        <span class="pillrow__b"><b><i>Models</i></b></span>
+        <span class="pillrow__c"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <span class="pillrow__d"><b>Products</b></span>
+      </a>
     </section>
-
-    <!-- Velocity marquee -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>Python</span><i>✦</i><span>SQL</span><i>✦</i><span>FastAPI</span><i>✦</i><span>React</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>LangChain</span><i>✦</i><span>FAISS</span><i>✦</i><span>TensorFlow</span><i>✦</i><span>Docker</span><i>✦</i><span>Redis</span><i>✦</i><span>Power BI</span><i>✦</i>
-      </div>
-    </div>
 
     <!-- ============ 03 · IDENTITY (black / burgundy / white) ============ -->
     <section id="identity" class="identity" data-section="03">
@@ -404,7 +380,7 @@
     </section>
 
     <!-- ============ 04b · LIVE BUILDS (real homepages) ============ -->
-    <section id="live" class="live" data-section="04">
+    <section id="live" class="live" data-section="05">
       <div class="sec-head"><span>_LIVE_BUILDS</span><i></i><span>DEPLOYED · CLICK TO INTERACT</span></div>
       <div class="live__intro">
         <h2 class="live__title" data-split>Shipped &amp;<br />running live.</h2>
@@ -497,113 +473,6 @@
         </article>
       </div>
     </section>
-
-    <!-- ============ 05 · JOURNEY ============ -->
-    <section id="journey" class="journey" data-section="05">
-      <div class="sec-head"><span>_JOURNEY</span><i></i><span>2023 → NOW</span></div>
-      <h2 class="journey__title" data-split>Education, experience<br />&amp; how I work.</h2>
-
-      <div class="jgrid">
-        <div class="jcol">
-          <p class="jlabel">Experience</p>
-          <ul class="tl">
-            <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/reasonateai.png" alt="ReasonateAI logo" loading="lazy" /></span><b>AI Engineer Intern</b><span>Aug 2026 — Now</span></div>
-              <p class="tl__org">ReasonateAI Pvt. Ltd. · Remote</p>
-              <p>Built a modern, responsive UI for an AI vibecoding platform used by 25K+ users, and wired the front end to GPU-hosted LLM inference over secure SSH tunnels.</p>
-            </li>
-            <li data-reveal>
-              <div class="tl__row"><span class="lg lg--wide"><img src="assets/logos/serviceio-wide.png" alt="ServiceIO logo" loading="lazy" /></span><b>Trainee Intern</b><span>May — Jul 2026</span></div>
-              <p class="tl__org">ServiceIO Consultancy Services · Thane</p>
-              <p>Built a bidirectional Jira ↔ ServiceNow integration with Scripted REST APIs and webhooks — incident sync, data mapping and correlation tracking.</p>
-            </li>
-            <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><b>Webmaster · Tech Lead</b><span>Sep 2025 — Jul 2026</span></div>
-              <p class="tl__org">RAIT ACM SIGAI Student Chapter</p>
-              <p>Tech lead for national hackathons with 2,000+ participants; Editor-in-Chief of <em>Synara 2026</em>. Mentored the next Webmaster through the handover.</p>
-            </li>
-            <li data-reveal>
-              <div class="tl__row"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Innovation Campus Trainee</b><span>Nov 2025 — 2026</span></div>
-              <p class="tl__org">Samsung India Innovation Campus · RAIT</p>
-              <p>Selected for Samsung's industry-aligned programme — DSA and problem-solving track; built EmpathI at the SIC hackathon.</p>
-            </li>
-            <li data-reveal>
-              <div class="tl__row"><span class="lg lg--wide"><img src="assets/logos/techsaksham-wide.png" alt="TechSaksham logo" loading="lazy" /></span><b>TechSaksham Intern</b><span>Dec 2024 — Jan 2025</span></div>
-              <p class="tl__org">Microsoft &amp; SAP · Edunet Foundation</p>
-              <p>One-month internship focused on core fundamentals and practical industry exposure.</p>
-            </li>
-            <li data-reveal>
-              <div class="tl__row"><span class="lg"><img src="assets/logos/academor.png" alt="Academor logo" loading="lazy" /></span><b>Data Science Intern</b><span>Nov 2023 — Jan 2024</span></div>
-              <p class="tl__org">Academor</p>
-              <p>Data science course and internship — awarded an Outstanding Performance certificate as a first-year student.</p>
-            </li>
-          </ul>
-          <p class="jlabel">Education</p>
-          <ul class="edu">
-            <li data-reveal><span class="lg"><img src="assets/logos/dypatil.png" alt="D. Y. Patil University logo" loading="lazy" /></span><div><b>B.Tech, Computer Engineering</b><span>Major: Data Science · RAIT, D. Y. Patil University</span></div><em>9.00<small>/10</small></em></li>
-            <li data-reveal><span class="lg"><img src="assets/logos/jaipuriar.png" alt="Jaipuriar School logo" loading="lazy" /></span><div><b>Class XII</b><span>Jaipuriar School</span></div><em>70.8<small>%</small></em></li>
-            <li data-reveal><span class="lg"><img src="assets/logos/avalon.png" alt="Avalon Heights International School logo" loading="lazy" /></span><div><b>Class X</b><span>Avalon Heights International</span></div><em>91<small>%</small></em></li>
-          </ul>
-        </div>
-
-        <div class="jcol jcol--process">
-          <p class="jlabel">Work process</p>
-          <ol class="process">
-            <li><span class="process__n">01</span><span class="process__ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><div><b>Discover</b><p>Understand the problem, the people and the data behind it.</p></div></li>
-            <li><span class="process__n">02</span><span class="process__ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><div><b>Model</b><p>Shape pipelines, pick the right model, validate early.</p></div></li>
-            <li><span class="process__n">03</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><div><b>Design</b><p>Interfaces that make complex systems feel simple.</p></div></li>
-            <li><span class="process__n">04</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span><div><b>Develop</b><p>Typed, containerised, fast — FastAPI, React, Docker.</p></div></li>
-            <li><span class="process__n">05</span><span class="process__ic"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span><div><b>Deliver</b><p>Test, measure, iterate — then hand it to real users.</p></div></li>
-          </ol>
-        </div>
-
-        <div class="jcol jcol--quote">
-          <span class="quote__mark">“</span>
-          <p class="quote__text">Good models aren't just accurate — they're understood.</p>
-          <p class="quote__sig">Sanat</p>
-          <p class="quote__cta">Let's create something<br />great together.</p>
-          <span class="star">✦</span>
-        </div>
-      </div>
-
-      <div class="jgrid2">
-        <div class="ach">
-          <p class="jlabel">Achievements</p>
-          <ul class="ach__list">
-            <li data-cursor="✦"><span class="ach__n">01</span><span class="lg"><img src="assets/logos/spaceapps.png" alt="NASA Space Apps Challenge logo" loading="lazy" /></span><b>NASA Space Apps Challenge</b><span class="ach__d">Local winner · Global nominee (top ~10%)</span><span class="ach__y">2025</span></li>
-            <li data-cursor="✦"><span class="ach__n">02</span><span class="lg"><img src="assets/logos/dypatil.png" alt="Winter Internship Program logo" loading="lazy" /></span><b>Winter Internship Program</b><span class="ach__d">1st place · malariaCARE LLM chatbot</span><span class="ach__y">2025</span></li>
-            <li data-cursor="✦"><span class="ach__n">03</span><span class="lg"><img src="assets/logos/flipkart.png" alt="Flipkart Gridlock 2.0 logo" loading="lazy" /></span><b>Flipkart Gridlock 2.0</b><span class="ach__d">Round 2 · Prototype phase</span><span class="ach__y">2026</span></li>
-            <li data-cursor="✦"><span class="ach__n">04</span><span class="lg"><img src="assets/logos/adobe.png" alt="Adobe University Hackathon logo" loading="lazy" /></span><b>Adobe University Hackathon</b><span class="ach__d">Online assessment · Qualified</span><span class="ach__y">2026</span></li>
-            <li data-cursor="✦"><span class="ach__n">05</span><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><b>Samsung Innovation Campus</b><span class="ach__d">Hackathon build · EmpathI</span><span class="ach__y">2026</span></li>
-            <li data-cursor="✦"><span class="ach__n">06</span><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><b>KAINOS 2024 AI Hackathon</b><span class="ach__d">F1 race-data analysis · OpenF1</span><span class="ach__y">2024</span></li>
-          </ul>
-        </div>
-        <div class="certs">
-          <p class="jlabel">//CERTS_FEED</p>
-          <ul class="certs__list">
-            <li><span class="lg"><img src="assets/logos/cisco.png" alt="Cisco logo" loading="lazy" /></span><div><b>CISCO_DATA.CERT</b><span>Cisco · Data Analytics Essentials</span></div><em>JUN 2026</em></li>
-            <li><span class="lg"><img src="assets/logos/simplilearn.png" alt="Simplilearn SkillUp logo" loading="lazy" /></span><div><b>POWER_BI.CERT</b><span>Simplilearn SkillUp · Power BI for Beginners</span></div><em>APR 2026</em></li>
-            <li><span class="lg"><img src="assets/logos/mckinsey.png" alt="McKinsey.org Forward Program logo" loading="lazy" /></span><div><b>MCKINSEY_FORWARD.CERT</b><span>McKinsey.org Forward Program</span></div><em>DEC 2025</em></li>
-            <li><span class="lg"><img src="assets/logos/aspire.png" alt="Aspire Leaders Program logo" loading="lazy" /></span><div><b>ASPIRE_LEADERS.CERT</b><span>Aspire Leaders Program</span></div><em>DEC 2025</em></li>
-            <li><span class="lg"><img src="assets/logos/google.png" alt="Google logo" loading="lazy" /></span><div><b>GEMINI_UNIVERSITY.CERT</b><span>Google · Gemini Certified University Student</span></div><em>NOV 2025</em></li>
-            <li><span class="lg lg--wide"><img src="assets/logos/kaggle-wide.png" alt="Kaggle logo" loading="lazy" /></span><div><b>AI_AGENTS_INTENSIVE.CERT</b><span>Google × Kaggle · 5-Day AI Agents Intensive</span></div><em>NOV 2025</em></li>
-            <li class="is-extra"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>PBL_2025.CERT</b><span>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></div><em>AUG 2025</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/deloitte.png" alt="Deloitte Australia logo" loading="lazy" /></span><div><b>DELOITTE_DATA.CERT</b><span>Deloitte Australia · Data Analytics</span></div><em>JUL 2025</em></li>
-            <li class="is-extra"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><div><b>AI_AGENT_ARCHITECT.CERT</b><span>IBM SkillsBuild · From Learner to Builder</span></div><em>JUL 2025</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/google.png" alt="Google Cloud logo" loading="lazy" /></span><div><b>VERTEX_PROMPT.BADGE</b><span>Google Cloud · Prompt Design in Vertex AI</span></div><em>MAY 2025</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/harvard.png" alt="Harvard CS50 logo" loading="lazy" /></span><div><b>CS50X.CERT</b><span>Harvard CS50 · Intro to Computer Science (edX)</span></div><em>MAY 2024</em></li>
-            <li class="is-extra"><span class="lg"><img src="assets/logos/aws.png" alt="AWS logo" loading="lazy" /></span><div><b>AWS_DATA_ANALYTICS.CERT</b><span>AWS · Getting Started with Data Analytics (edX)</span></div><em>MAY 2024</em></li>
-          </ul>
-          <button type="button" class="certs__more" data-cursor="More">+ SHOW ALL 12 CERTIFICATES</button>
-          <p class="jlabel">Skills</p>
-          <div class="chips">
-            <span>Python</span><span>SQL</span><span>Java</span><span>PostgreSQL</span><span>MongoDB</span><span>FastAPI</span><span>React</span><span>TensorFlow</span><span>Scikit-learn</span><span>LangChain</span><span>FAISS</span><span>Pandas</span><span>Plotly</span><span>Tableau</span><span>Power BI</span><span>Docker</span><span>Git</span><span>Agile</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
 
     <!-- ============ 06 · FIELD LOG (hackathons + events) ============ -->
     <section id="field" class="field" data-section="06">
@@ -810,7 +679,7 @@
               <div class="badge__face badge__front">
                 <div class="badge__hole" aria-hidden="true"></div>
                 <div class="badge__band"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>RAIT ACM SIGAI<br />STUDENT CHAPTER</span></div>
-                <div class="badge__photo"><img src="assets/portrait-badge.jpg" alt="Sanat Karkhanis" width="300" height="300" loading="lazy" /></div>
+                <div class="badge__photo"><img src="assets/sanat-formal.jpg" alt="Sanat Karkhanis" width="2048" height="2048" loading="lazy" /></div>
                 <p class="badge__name">Sanat Karkhanis</p>
                 <p class="badge__role">Webmaster</p>
                 <p class="badge__sub">Tech Lead · Editor-in-Chief</p>
@@ -887,50 +756,15 @@
       <div class="posts__progress"><i></i></div>
     </section>
 
-    <!-- ============ 09 · AFTER HOURS ============ -->
-    <section id="after" class="after" data-section="09">
-      <div class="after__glow" aria-hidden="true"></div>
-      <div class="after__head">
-        <h2 class="after__title">After<span>hours</span></h2>
-        <div class="spec">
-          <div><span class="spec__k">Font Name</span><span class="spec__v">Off-duty</span></div>
-          <div><span class="spec__k">Weight</span><span class="spec__v">Curious</span></div>
-        </div>
-        <p class="after__hint">[ DRAG THE CARDS ]</p>
-      </div>
-      <div class="board">
-        <div class="card" style="--r:-6deg" data-cursor="Drag">
-          <svg viewBox="0 0 64 64"><path d="M12 52 46 18l6 6-34 34H12z"/><path d="m40 24 6 6"/><path d="M8 58h22"/></svg>
-          <b>Sketching</b><span>pencil · paper · no undo</span><em>IMG_001</em>
-        </div>
-        <div class="card card--burg" style="--r:5deg" data-cursor="Drag">
-          <svg viewBox="0 0 64 64"><circle cx="16" cy="42" r="10"/><circle cx="48" cy="42" r="10"/><path d="M16 42 26 24h16l6 18M26 24l8 18h-18M36 16h8"/></svg>
-          <b>Biking</b><span>clearing the cache</span><em>IMG_002</em>
-        </div>
-        <div class="card card--black" style="--r:-3deg" data-cursor="Drag">
-          <svg viewBox="0 0 64 64"><path d="M10 8v50"/><path d="M10 10h40v24H10"/><path d="M10 10h10v8H10zM30 10h10v8H30zM20 18h10v8H20zM40 18h10v8H40zM10 26h10v8H10zM30 26h10v8H30z" class="fill"/></svg>
-          <b>Formula 1</b><span>strategy &gt; speed</span><em>IMG_003</em>
-        </div>
-        <div class="card card--white" style="--r:7deg" data-cursor="Drag">
-          <svg viewBox="0 0 64 64"><path d="m8 34 34-14 4 10-34 14z"/><path d="M28 40 20 58M30 40l8 18"/><path d="m46 22 6-2 3 8-6 2"/><path d="M50 6l1.5 3 3 1.5-3 1.5L50 15l-1.5-3-3-1.5 3-1.5z" class="fill"/></svg>
-          <b>Astronomy</b><span>&amp; astrophotography</span><em>IMG_004</em>
-        </div>
-        <div class="card card--bone" style="--r:-8deg" data-cursor="Drag">
-          <svg viewBox="0 0 64 64"><path d="M8 56h48"/><path d="M12 44l12-12 10 8 18-20"/><path d="M42 20h10v10"/></svg>
-          <b>Business</b><span>&amp; finance</span><em>IMG_005</em>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ 10 · CONTACT ============ -->
-    <section id="contact" class="contact" data-section="10">
+    <section id="contact" class="contact" data-section="09">
       <div class="contact__grid">
         <div class="contact__left">
           <h2 class="contact__title" data-split>Let's work<br />together<span class="star">✦</span></h2>
           <p class="contact__lead">Open to internships, research collaborations and hackathon teams. If it involves data, models or a product people will touch — I'm in.</p>
           <div class="contact__actions">
             <a class="orb" href="mailto:sanat.karkhanis2@gmail.com" data-magnetic data-cursor="Mail"><span>Say hi</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <a class="btn btn--line" href="assets/Sanat_Karkhanis_Resume.pdf" target="_blank" rel="noopener" data-magnetic data-cursor="CV">&gt; DOWNLOAD_CV.PDF</a>
+            <a class="btn btn--line" href="contact.html" data-magnetic data-cursor="Write">&gt; SEND_MESSAGE</a>
           </div>
         </div>
         <ul class="contact__rows">
@@ -940,12 +774,10 @@
           <li><div><span class="ci"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span>Navi Mumbai, India · <b class="clock">--:--</b> IST</span></div></li>
         </ul>
       </div>
-
-      <p class="rebel" data-cursor="Glitch"><span data-text="BUILD WITHOUT LIMITS.">BUILD WITHOUT LIMITS.</span></p>
+      <div class="datamark" data-datamark="SANAT."><p class="datamark__hint" aria-hidden="true">go on, smash it ↓</p></div>
 
       <footer class="foot">
         <span class="foot__l">LET'S BREAK<br />SOMETHING TOGETHER.</span>
-        <a href="mailto:sanat.karkhanis2@gmail.com" class="foot__mail">SANAT.KARKHANIS2@GMAIL.COM</a>
         <span class="foot__links">
           <a href="https://github.com/sanatK24" target="_blank" rel="noopener" data-scramble>[GITHUB]</a>
           <a href="https://linkedin.com/in/sanat-karkhanis/" target="_blank" rel="noopener" data-scramble>[LINKEDIN]</a>
@@ -981,6 +813,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="main.js?v=11"></script>
+  <script src="shared.js?v=3"></script>
+  <script src="extras.js?v=4"></script>
+  <script src="main.js?v=16"></script>
 </body>
 </html>
