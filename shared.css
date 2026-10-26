@@ -238,3 +238,11 @@ body.subpage .nav { background: linear-gradient(#000 0, rgba(0, 0, 0, 0)); mix-b
   .grade__hint { display: none; }
   .grade { min-height: 420px; }
 }
+
+/* ---------- Command palette scrollbar: thin burgundy thumb on the dark panel ---------- */
+.cmd__list { scrollbar-width: thin; scrollbar-color: var(--burg) transparent; }
+.cmd__list::-webkit-scrollbar { width: 8px; }
+.cmd__list::-webkit-scrollbar-track { background: transparent; margin: 8px 0; }
+.cmd__list::-webkit-scrollbar-thumb { background: var(--burg); border-radius: 999px; border: 2px solid #0c0c0c; }
+.cmd__list::-webkit-scrollbar-thumb:hover { background: var(--signal); }
+.cmd__list::-webkit-scrollbar-button { display: none; height: 0; }
