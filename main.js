@@ -313,7 +313,7 @@
   /* ---------- Hero: variable-font proximity ---------- */
   function initHeroLetters() {
     const letters = $$(".hw");
-    if (!finePointer || reduced) return;
+    if (!finePointer || reduced || !letters.length) return;
     const state = letters.map(() => ({ w: 800, s: 112, hot: false }));
     let active = false;
     const hero = $(".hero");
@@ -351,7 +351,8 @@
 
     return new Promise((resolve) => {
       // reduced motion, or arriving from another page through the pixel storm: no loader
-      if (reduced || window.SK?.arrived) { loader.remove(); resolve(); return; }
+      // pages without the loader (work, hacks) start straight away
+      if (reduced || window.SK?.arrived || !loader) { loader?.remove(); resolve(); return; }
       const tl = gsap.timeline({ onComplete: resolve });
       tl.to(counter, {
         v: 100, duration: 2.1, ease: "power2.inOut",
@@ -373,7 +374,7 @@
   function introHero() {
     document.body.classList.remove("is-loading");
     lenis && lenis.start();
-    if (reduced) return;
+    if (reduced || !$(".hero")) return;
     const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
     tl.from(".hero__shell", { scale: 0.92, borderRadius: 60, duration: 1.6 }, 0)
       .from(".hero__frame", { clipPath: "inset(18% 18% 18% 18% round 40px)", duration: 1.6 }, 0)
@@ -395,26 +396,28 @@
         onToggle(self) {
           if (!self.isActive) return;
           const n = sec.dataset.section;
-          if (pillCur.textContent !== n) {
+          if (pillCur && pillCur.textContent !== n) {
             window.ScrambleTextPlugin ? gsap.to(pillCur, { duration: 0.5, scrambleText: { text: n, chars: "0123456789" } }) : (pillCur.textContent = n);
             sfx.chime(+n);
           }
-          navLinks.forEach((a) => a.classList.toggle("is-active", a.getAttribute("href") === "#" + sec.id));
+          navLinks.forEach((a) => a.getAttribute("href").startsWith("#") && a.classList.toggle("is-active", a.getAttribute("href") === "#" + sec.id));
         },
       });
     });
 
-    const pill = $(".pill");
-    ST.create({ trigger: ".foot", start: "top bottom", onToggle: (self) => pill.classList.toggle("is-hidden", self.isActive) });
+    const pill = $(".pill"), foot = $(".foot") || $(".subfoot");
+    if (pill && foot) ST.create({ trigger: foot, start: "top bottom", onToggle: (self) => pill.classList.toggle("is-hidden", self.isActive) });
 
     if (reduced) return;
 
     // Hero exit: frame scales down & word lifts
-    gsap.to(".hero__word", { yPercent: -30, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-    gsap.to(".hero__shell", { scale: 0.94, opacity: 0.4, ease: "none", scrollTrigger: { trigger: ".hero", start: "20% top", end: "bottom top", scrub: true } });
+    if ($(".hero")) {
+      gsap.to(".hero__word", { yPercent: -30, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+      gsap.to(".hero__shell", { scale: 0.94, opacity: 0.4, ease: "none", scrollTrigger: { trigger: ".hero", start: "20% top", end: "bottom top", scrub: true } });
+    }
 
     // Intro (the About section now lives on about.html)
-    gsap.from(".intro__script, .intro__title, .intro__cta", { y: 60, opacity: 0, stagger: 0.1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".intro__grid", start: "top 80%" } });
+    if ($(".intro__grid")) gsap.from(".intro__script, .intro__title, .intro__cta", { y: 60, opacity: 0, stagger: 0.1, duration: 1.2, ease: "expo.out", scrollTrigger: { trigger: ".intro__grid", start: "top 80%" } });
 
     // Counters
     $$("[data-count]").forEach((el) => {
@@ -439,8 +442,8 @@
     }
 
     // Identity card: columns rise, vertical words wipe in
-    gsap.from(".idcol", { yPercent: 30, opacity: 0, stagger: 0.12, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".idcard", start: "top 75%" } });
-    gsap.from(".idcol__word", { clipPath: "inset(100% 0 0 0)", duration: 1.4, stagger: 0.12, ease: "expo.inOut", scrollTrigger: { trigger: ".idcard", start: "top 60%" } });
+    if ($(".idcard")) gsap.from(".idcol", { yPercent: 30, opacity: 0, stagger: 0.12, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".idcard", start: "top 75%" } });
+    if ($(".idcard")) gsap.from(".idcol__word", { clipPath: "inset(100% 0 0 0)", duration: 1.4, stagger: 0.12, ease: "expo.inOut", scrollTrigger: { trigger: ".idcard", start: "top 60%" } });
 
     // Journey
     $$("[data-split]").forEach((el) => {
@@ -452,7 +455,7 @@
 
 
     // Contact
-    gsap.from(".contact__rows li", { x: 40, opacity: 0, stagger: 0.08, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".contact__rows", start: "top 85%" } });
+    if ($(".contact__rows")) gsap.from(".contact__rows li", { x: 40, opacity: 0, stagger: 0.08, duration: 1, ease: "expo.out", scrollTrigger: { trigger: ".contact__rows", start: "top 85%" } });
   }
 
   /* ---------- Velocity marquee ---------- */
@@ -477,6 +480,7 @@
   /* ---------- Identity hover ---------- */
   function initIdentity() {
     const card = $(".idcard");
+    if (!card) return;
     $$(".idcol", card).forEach((col) => {
       const n = col.dataset.col;
       const on = () => { card.classList.remove("is-1", "is-2", "is-3"); card.classList.add("is-" + n); };
@@ -501,6 +505,7 @@
   const fileHooks = {}; // index → { on(), off() }
   function initFiles() {
     const files = $$(".file[data-file]");
+    if (!files.length) return;
     let current = -1;
     const setActive = (i) => {
       if (i === current) return;
@@ -855,10 +860,12 @@
   /* ---------- Contact bits ---------- */
   function initContact() {
     const clock = $(".clock");
+    if (!clock) return;
     const tick = () => (clock.textContent = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date()));
     tick(); setInterval(tick, 1000);
 
     const bc = $(".barcode");
+    if (!bc) return;
     let seed = 2026, x = 0, out = "";
     const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
     while (x < 160) { const w = 1 + Math.floor(rnd() * 3.2); if (rnd() > 0.35) out += `<rect x="${x}" y="0" width="${w}" height="34"/>`; x += w + 1; }
@@ -1145,19 +1152,24 @@
 
   /* ---------- Command palette ---------- */
   function initCommand() {
+    const page = location.pathname.split("/").pop() || "index.html";
+    // scroll when the section is on this page, otherwise open the page that has it
+    const goTo = (file, hash, label) => () => {
+      if (file === page || (file === "index.html" && page === "")) { hash ? scrollTo(hash) : scrollTo(0); return; }
+      SK.toast(`Opening ${label}…`, "info", 1600);
+      location.href = file + (hash || "");
+    };
     const items = [
-      { t: "Go to · Home", k: "01", run: () => scrollTo("#hero") },
-      { t: "Go to · About me (page)", k: "02", run: () => { SK.toast("Opening About…", "info", 1600); location.href = "about.html"; } },
-      { t: "Go to · How I work (page)", k: "↗", run: () => { SK.toast("Opening Process…", "info", 1600); location.href = "process.html"; } },
-      { t: "Go to · Skills & certificates (page)", k: "↗", run: () => { SK.toast("Opening Skills…", "info", 1600); location.href = "skills.html"; } },
-      { t: "Go to · Send a message (page)", k: "↗", run: () => { SK.toast("Opening Contact…", "info", 1600); location.href = "contact.html"; } },
-      { t: "Go to · Identity", k: "03", run: () => scrollTo("#identity") },
-      { t: "Go to · Work", k: "04", run: () => scrollTo("#work") },
-      { t: "Go to · Live builds", k: "04", run: () => scrollTo("#live") },
-      { t: "Go to · Hackathons & events", k: "06", run: () => scrollTo("#field") },
-      { t: "Go to · Leadership", k: "07", run: () => scrollTo("#lead") },
-      { t: "Go to · LinkedIn posts", k: "08", run: () => scrollTo("#posts") },
-      { t: "Go to · Contact", k: "10", run: () => scrollTo("#contact") },
+      { t: "Go to · Home", k: "01", run: goTo("index.html", "#hero", "Home") },
+      { t: "Go to · About me", k: "↗", run: goTo("about.html", "", "About") },
+      { t: "Go to · Skills & certificates", k: "↗", run: goTo("skills.html", "", "Skills") },
+      { t: "Go to · Project library", k: "↗", run: goTo("work.html", "#work", "the project library") },
+      { t: "Go to · Live builds", k: "↗", run: goTo("work.html", "#live", "live builds") },
+      { t: "Go to · How I work", k: "↗", run: goTo("process.html", "", "Process") },
+      { t: "Go to · Hackathons & events", k: "↗", run: goTo("hacks.html", "#field", "Hackathons") },
+      { t: "Go to · Leadership", k: "07", run: goTo("index.html", "#lead", "Leadership") },
+      { t: "Go to · LinkedIn posts", k: "08", run: goTo("index.html", "#posts", "LinkedIn posts") },
+      { t: "Go to · Send a message", k: "↗", run: goTo("contact.html", "", "Contact") },
       { t: "Toggle sound", k: "♪", run: () => { sfx.toggle(); setTimeout(() => SK.toast(sfx.on ? "Sound on" : "Sound off", "info", 1800), 80); } },
       ...SK.commonCommands(),
     ];

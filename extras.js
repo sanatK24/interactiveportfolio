@@ -1,7 +1,7 @@
 /* =========================================================
    SANAT KARKHANIS — extras (no dependencies, every page). Needs shared.js.
    scroll progress · pixel-storm transition · nav clock · tilt · spotlight · globe ·
-   stacked project cards · data wordmark · decoding labels · fall in place · contact form
+   stacked project cards · project slider · data wordmark · decoding labels · fall in place · contact form
    ========================================================= */
 (() => {
   "use strict";
@@ -329,6 +329,9 @@
       cancelAnimationFrame(raf); raf = 0; start = 0;
       setup();
     }).observe(host);
+    // draw once straight away too, rather than waiting for the first resize callback
+    lastWidth = host.clientWidth;
+    setup();
   });
 
   /* ---------- Decoding labels: section tags resolve from random glyphs, on view and on hover ---------- */
@@ -450,6 +453,61 @@
     }
     btn?.addEventListener("click", () => { play(true); SK.toast("Shaking it up…", "info", 1400); });
   }
+
+  /* ---------- Latest projects slider: arrows, drag to scroll, counter and progress ---------- */
+  $$("[data-slider]").forEach((root) => {
+    const track = $("[data-slider-track]", root);
+    if (!track) return;
+    const slides = $$(":scope > li", track);
+    const cur = $("[data-slider-cur]", root), total = $("[data-slider-total]", root), bar = $("[data-slider-bar]", root);
+    const prev = $("[data-slider-prev]", root), next = $("[data-slider-next]", root);
+    const pad = (n) => String(n).padStart(2, "0");
+    if (total) total.textContent = pad(slides.length);
+    const step = () => (slides[0]?.getBoundingClientRect().width || 300) + 16;
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const p = max > 0 ? track.scrollLeft / max : 0;
+      // at the far end the last few cards share the view, so count the last one
+      const i = track.scrollLeft > max - 4 ? slides.length : Math.min(slides.length, Math.round(track.scrollLeft / step()) + 1);
+      if (cur) cur.textContent = pad(i);
+      if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.max(p, 0.04) : 1})`;
+      if (prev) prev.disabled = track.scrollLeft < 4;
+      if (next) next.disabled = track.scrollLeft > max - 4;
+    };
+    prev?.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: reduced ? "auto" : "smooth" }));
+    next?.addEventListener("click", () => track.scrollBy({ left: step(), behavior: reduced ? "auto" : "smooth" }));
+    track.addEventListener("scroll", update, { passive: true });
+    addEventListener("resize", update);
+    track.tabIndex = 0;
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { next?.click(); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { prev?.click(); e.preventDefault(); }
+    });
+    // drag with the mouse; touch screens already swipe natively
+    let down = null;
+    track.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || e.button) return;
+      down = { x: e.clientX, left: track.scrollLeft, moved: false };
+    });
+    addEventListener("pointermove", (e) => {
+      if (!down) return;
+      const dx = e.clientX - down.x;
+      if (!down.moved && Math.abs(dx) > 5) { down.moved = true; track.classList.add("is-dragging"); }
+      if (down.moved) track.scrollLeft = down.left - dx;
+    });
+    addEventListener("pointerup", () => {
+      if (!down) return;
+      const moved = down.moved;
+      down = null;
+      track.classList.remove("is-dragging");
+      if (moved) {
+        // settle on the nearest card
+        const i = Math.round(track.scrollLeft / step());
+        track.scrollTo({ left: i * step(), behavior: reduced ? "auto" : "smooth" });
+      }
+    });
+    update();
+  });
 
   /* ---------- Contact form: opens the visitor's email app (static site, no backend) ---------- */
   const form = $("[data-contact-form]");

@@ -225,3 +225,73 @@ p.is-decode { display: block; }
 .fall__status::before { content: "> "; color: var(--signal); }
 .fall__hint { position: absolute; right: clamp(16px, 3vw, 40px); bottom: 14px; font-family: var(--f-script); font-size: 26px; color: var(--signal); transform: rotate(-4deg); pointer-events: none; }
 @media (max-width: 640px) { .fall { min-height: 640px; } }
+
+/* ---------- Self-heal (autosync.js + data/portfolio.json) ---------- */
+.ghmore { padding: clamp(70px, 11vh, 130px) var(--pad) 0; }
+.ghmore__grid { margin-top: clamp(26px, 4vh, 44px); display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.ghcard { display: flex; flex-direction: column; padding: 22px; border-radius: 20px; background: var(--ink-2); border: 1px solid var(--line); transition: border-color .3s, transform .3s var(--ease-out); }
+.ghcard:hover { border-color: rgba(227, 36, 59, .5); transform: translateY(-3px); }
+.ghcard__top { display: flex; justify-content: space-between; gap: 10px; font: 500 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ghcard.has-live .ghcard__top span:first-child::before { content: "● "; color: var(--signal); }
+.ghcard__title { margin-top: 16px; font-family: var(--f-display); font-weight: 800; font-stretch: 82%; text-transform: uppercase; font-size: 24px; line-height: 1; }
+.ghcard__text { margin-top: 10px; font-size: 13.5px; color: rgba(255, 255, 255, .68); }
+.ghcard__tech { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.ghcard__tech span { padding: 4px 10px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; font: 500 10.5px var(--f-mono); color: rgba(255, 255, 255, .75); }
+.ghcard__links { margin-top: auto; padding-top: 18px; display: flex; gap: 8px; }
+.ghcard__links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border: 1px solid rgba(255, 255, 255, .2); font: 500 11px var(--f-mono); letter-spacing: .06em; transition: background .3s, border-color .3s; }
+.ghcard__links a:hover { border-color: #fff; }
+.ghcard__links a.is-live { border-color: var(--burg); background: var(--burg); }
+.ghcard__links a.is-live:hover { background: var(--signal); border-color: var(--signal); }
+.ghcard__links svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
+.lcard.is-offline { position: relative; opacity: .55; }
+.lcard__offline { position: absolute; z-index: 5; top: 12px; left: 12px; padding: 4px 9px; border-radius: 4px; background: #000; border: 1px solid #ff6a3d; color: #ff6a3d; font: 600 10px var(--f-mono); letter-spacing: .1em; }
+.synced { font: 500 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- Library + hacks pages (main.js pages without the home hero) ---------- */
+.pagehead { padding: calc(var(--pad) + 110px) var(--pad) clamp(30px, 6vh, 70px); }
+.pagehead__title { margin-top: 22px; font-family: var(--f-display); font-weight: 800; font-stretch: 78%; text-transform: uppercase; font-size: clamp(50px, 9vw, 160px); line-height: .86; letter-spacing: -.01em; }
+.pagehead__lead { margin-top: 26px; max-width: 56ch; color: var(--muted); font-size: 16px; }
+.pagefoot { padding: 0 var(--pad) 30px; }
+
+/* ---------- Latest projects slider (home) ---------- */
+.pslider { padding: clamp(80px, 12vh, 140px) var(--pad) 0; }
+.pslider__head { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; }
+.pslider__title { font-family: var(--f-display); font-weight: 800; font-stretch: 78%; text-transform: uppercase; font-size: clamp(44px, 7vw, 120px); line-height: .88; letter-spacing: -.01em; }
+.pslider__ctrl { display: flex; align-items: center; gap: 10px; }
+.pslider__count { margin-right: 8px; font: 500 13px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.pslider__count b { color: #fff; font-weight: 600; }
+.pslider__btn { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .25); font-size: 20px; transition: background .3s, border-color .3s, opacity .3s; }
+.pslider__btn:hover { background: var(--burg); border-color: var(--burg); }
+.pslider__btn:disabled { opacity: .3; pointer-events: none; }
+.pslider__track { margin: clamp(26px, 4vh, 44px) calc(var(--pad) * -1) 0; padding: 0 var(--pad) 6px; display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 var(--pad); scrollbar-width: none; cursor: grab; overscroll-behavior-x: contain; }
+.pslider__track::-webkit-scrollbar { display: none; }
+.pslider__track.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.pslider__track.is-dragging a { pointer-events: none; }
+.pslide { flex: 0 0 clamp(280px, 30vw, 420px); scroll-snap-align: start; display: flex; flex-direction: column; border-radius: 24px; background: var(--ink-2); border: 1px solid var(--line); overflow: hidden; transition: border-color .3s, transform .4s var(--ease-out); user-select: none; }
+.pslide:hover { border-color: rgba(227, 36, 59, .5); transform: translateY(-4px); }
+.pslide__media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #050505; }
+.pslide__media img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: object-position 3s ease-in-out; pointer-events: none; }
+.pslide:hover .pslide__media img { object-position: bottom; }
+.pslide__cover { position: absolute; inset: 0; background: radial-gradient(circle at 25% 20%, rgba(227, 36, 59, .55), transparent 55%), repeating-linear-gradient(135deg, rgba(255, 255, 255, .05) 0 2px, transparent 2px 22px), linear-gradient(160deg, var(--burg), #0a0003); }
+.pslide__cover b { position: absolute; left: 18px; bottom: 10px; font: 800 clamp(40px, 5vw, 64px)/1 var(--f-display); font-stretch: 70%; text-transform: uppercase; color: rgba(255, 255, 255, .2); }
+.pslide__n { position: absolute; top: 12px; left: 12px; padding: 4px 9px; border-radius: 999px; background: rgba(0, 0, 0, .7); font: 600 11px var(--f-mono); }
+.pslide.has-live .pslide__n::after { content: " · LIVE"; color: var(--signal); }
+.pslide__body { display: flex; flex-direction: column; flex: 1; padding: 20px; }
+.pslide__meta { display: flex; justify-content: space-between; gap: 10px; font: 500 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pslide__title { margin-top: 12px; font-family: var(--f-display); font-weight: 800; font-stretch: 82%; text-transform: uppercase; font-size: 26px; line-height: .95; }
+.pslide__text { margin-top: 10px; font-size: 13.5px; color: rgba(255, 255, 255, .7); }
+.pslide__tech { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.pslide__tech span { padding: 4px 10px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; font: 500 10.5px var(--f-mono); color: rgba(255, 255, 255, .78); }
+.pslide__links { margin-top: auto; padding-top: 18px; display: flex; gap: 8px; }
+.pslide__links a { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border: 1px solid rgba(255, 255, 255, .2); font: 500 11px var(--f-mono); letter-spacing: .06em; transition: background .3s, border-color .3s; }
+.pslide__links a:hover { border-color: #fff; }
+.pslide__links a.is-live { background: var(--burg); border-color: var(--burg); }
+.pslide__links a.is-live:hover { background: var(--signal); border-color: var(--signal); }
+.pslide__links svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
+.pslide--more { background: linear-gradient(160deg, var(--burg), var(--burg-deep) 70%, #12000a); border-color: rgba(227, 36, 59, .4); }
+.pslide--more a { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 26px; min-height: 100%; }
+.pslide__more-k { font: 500 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+.pslide--more b { font-family: var(--f-display); font-weight: 800; font-stretch: 80%; text-transform: uppercase; font-size: clamp(32px, 3.4vw, 48px); line-height: .92; }
+.pslide__more-n { font-size: 13px; opacity: .75; }
+.pslider__bar { margin-top: 20px; height: 2px; background: var(--line); overflow: hidden; }
+.pslider__bar i { display: block; height: 100%; background: var(--signal); transform-origin: 0 50%; transform: scaleX(0); transition: transform .2s linear; }

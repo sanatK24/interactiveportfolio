@@ -140,8 +140,9 @@
     { t: "Go to · How I work", k: "03", run: here === "process.html" ? () => scrollTo({ top: 0, behavior: "smooth" }) : go("process.html", "Process") },
     { t: "Go to · Skills & certificates", k: "↗", run: here === "skills.html" ? () => scrollTo({ top: 0, behavior: "smooth" }) : go("skills.html", "Skills") },
     { t: "Go to · Send a message", k: "↗", run: here === "contact.html" ? () => scrollTo({ top: 0, behavior: "smooth" }) : go("contact.html", "Contact") },
-    { t: "Go to · Work", k: "04", run: go("index.html#work", "Work") },
-    { t: "Go to · Hackathons & events", k: "06", run: go("index.html#field", "Hackathons") },
+    { t: "Go to · Project library", k: "↗", run: go("work.html", "the project library") },
+    { t: "Go to · Live builds", k: "↗", run: go("work.html#live", "live builds") },
+    { t: "Go to · Hackathons & events", k: "↗", run: go("hacks.html", "Hackathons") },
     ...SK.commonCommands(),
   ];
   SK.palette({ items });

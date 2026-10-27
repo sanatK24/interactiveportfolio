@@ -32,8 +32,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=14" />
-  <link rel="stylesheet" href="shared.css?v=3" />
-  <link rel="stylesheet" href="extras.css?v=4" />
+  <link rel="stylesheet" href="shared.css?v=9" />
+  <link rel="stylesheet" href="extras.css?v=7" />
 </head>
 <body class="is-loading">
 
@@ -58,9 +58,9 @@
       <a href="#hero" data-scramble>[HOME]</a>
       <a href="about.html" data-scramble>[ABOUT]</a>
       <a href="skills.html" data-scramble>[SKILLS]</a>
-      <a href="#work" data-scramble>[WORK]</a>
+      <a href="work.html" data-scramble>[WORK]</a>
       <a href="process.html" data-scramble>[PROCESS]</a>
-      <a href="#field" data-scramble>[HACKS]</a>
+      <a href="hacks.html" data-scramble>[HACKS]</a>
       <a href="contact.html" data-scramble>[CONTACT]</a>
     </nav>
     <div class="nav__right">
@@ -71,7 +71,7 @@
   </header>
 
   <!-- Section counter pill (inspo: "04 OF 07") -->
-  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 9</div>
+  <div class="pill" aria-hidden="true"><span class="pill__cur">01</span> OF 7</div>
 
   <main>
 
@@ -132,7 +132,7 @@
         <p class="manifesto__text" data-words>I don't follow trends. I build systems that hold up under real data, real users and real load.</p>
       </div>
     
-      <a class="pillrow" href="#work" aria-label="Data, models, products — see my work" data-cursor="Work">
+      <a class="pillrow" href="work.html" aria-label="Data, models, products — see my work" data-cursor="Work">
         <span class="pillrow__a"><b>Data</b></span>
         <span class="pillrow__b"><b><i>Models</i></b></span>
         <span class="pillrow__c"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
@@ -192,482 +192,69 @@
       </div>
     </section>
 
-    <!-- ============ 04 · WORK (file dividers) ============ -->
-    <section id="work" class="work" data-section="04">
-      <div class="files">
-
-        <!-- Cover -->
-        <div class="file file--cover">
-          <div class="file__inner">
-            <h2 class="cover__title">WORK DAILY_01–04</h2>
-            <p class="cover__sub">Selected studies:<br />Code · Data · Emotion</p>
-            <p class="cover__file">FILE_01//</p>
-            <p class="cover__hint">Scroll or click a tab →</p>
-          </div>
-        </div>
-
-        <!-- 01 TradeFlow -->
-        <article class="file file--bone" data-file="0">
-          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_001 // TRADEFLOW</span></button>
-          <div class="file__inner">
-            <button class="file__head" type="button"><span>CODE_001 //</span><b>TradeFlow</b><i>+</i></button>
-            <span class="file__vlabel">TRADEFLOW</span>
-            <div class="file__body">
-              <div class="file__meta">
-                <p class="file__code">CODE_001 // 2026</p>
-                <h3 class="file__title">TradeFlow</h3>
-                <p class="file__kicker">Fixed-income electronic trading simulator</p>
-                <div class="spec spec--dark">
-                  <div><span class="spec__k">Stack</span><span class="spec__v">FastAPI · React · PostgreSQL · Redis · WebSockets · Docker</span></div>
-                  <div><span class="spec__k">Focus</span><span class="spec__v">RFQ · Market-making</span></div>
-                </div>
-                <p class="file__desc">Simulates RFQ quote-competition for fixed-income market-making inside a 15-second response window under live liquidity and yield constraints — tracking execution KPIs and counterparty settlement risk on real-time dashboards.</p>
-                <p class="file__metric"><b>15s</b><span>RFQ response window</span></p>
-              </div>
-              <div class="file__visual">
-                <div class="rfq">
-                  <div class="rfq__top"><span>RFQ #48213</span><span>UST 4.125% '36</span><span class="rfq__state">● LIVE</span></div>
-                  <div class="rfq__body">
-                    <div class="rfq__clock">
-                      <svg viewBox="0 0 120 120"><circle class="rfq__bg" cx="60" cy="60" r="52"/><circle class="rfq__fg" cx="60" cy="60" r="52"/></svg>
-                      <span class="rfq__time">15.0</span>
-                    </div>
-                    <table class="rfq__table">
-                      <thead><tr><th>Dealer</th><th>Bid</th><th>Ask</th><th>Yld</th></tr></thead>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                  <div class="rfq__kpis"><span>FILLS <b class="k-fill">0</b></span><span>AVG SPRD <b class="k-sprd">—</b></span><span>SETTLE RISK <b class="k-risk">LOW</b></span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 02 Financial Research -->
-        <article class="file file--slate" data-file="1">
-          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_002 // RESEARCH_AI</span></button>
-          <div class="file__inner">
-            <button class="file__head" type="button"><span>CODE_002 //</span><b>AI Financial Research</b><i>+</i></button>
-            <span class="file__vlabel">RESEARCH</span>
-            <div class="file__body">
-              <div class="file__meta">
-                <p class="file__code">CODE_002 // 2026</p>
-                <h3 class="file__title">AI Financial<br />Research Assistant</h3>
-                <p class="file__kicker">ETL → indicators → RAG summaries</p>
-                <div class="spec spec--dark">
-                  <div><span class="spec__k">Stack</span><span class="spec__v">Python · SQL · FastAPI · PostgreSQL · React · Plotly · LangChain · FAISS</span></div>
-                  <div><span class="spec__k">Data</span><span class="spec__v">yFinance · SEC EDGAR</span></div>
-                </div>
-                <p class="file__desc">ETL pipelines pull market data from yFinance and SEC EDGAR into PostgreSQL, powering dashboards for financial ratios, SMA, RSI and MACD — with AI-generated investment summaries via retrieval-augmented generation.</p>
-                <p class="file__metric"><b>RAG</b><span>LangChain + FAISS</span></p>
-              </div>
-              <div class="file__visual">
-                <div class="fin">
-                  <div class="fin__top"><span>TICKER · SMA20 · RSI14</span><span class="fin__px">—</span></div>
-                  <svg class="fin__svg" viewBox="0 0 600 270" preserveAspectRatio="none">
-                    <g class="fin__grid"></g>
-                    <path class="fin__area"/><path class="fin__price"/><path class="fin__sma"/>
-                    <line x1="0" x2="600" y1="200" y2="200" class="fin__sep"/>
-                    <path class="fin__rsi"/>
-                  </svg>
-                  <p class="fin__ai"><span>&gt; summary:</span> <em class="fin__type"></em><i class="caret"></i></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 03 EmpathI -->
-        <article class="file file--burg" data-file="2">
-          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_003 // EMPATHI</span></button>
-          <div class="file__inner">
-            <button class="file__head" type="button"><span>CODE_003 //</span><b>EmpathI</b><i>+</i></button>
-            <span class="file__vlabel">EMPATHI</span>
-            <div class="file__body">
-              <div class="file__meta">
-                <p class="file__code">CODE_003 // 2026</p>
-                <h3 class="file__title">EmpathI</h3>
-                <p class="file__kicker">AI-powered crowdfunding platform</p>
-                <div class="spec">
-                  <div><span class="spec__k">Stack</span><span class="spec__v">Python · FastAPI · React · PostgreSQL · LightGBM · XGBoost · Docker</span></div>
-                  <div><span class="spec__k">Event</span><span class="spec__v">Samsung Innovation Campus '26</span></div>
-                </div>
-                <p class="file__desc">Validation and reporting pipelines across 500+ campaigns, with gradient-boosted models (LightGBM, XGBoost) reaching 90%+ fraud detection. Built for the Samsung Innovation Campus 2026 hackathon.</p>
-                <p class="file__metric"><b>90%+</b><span>Fraud detection</span></p>
-              </div>
-              <div class="file__visual file__visual--switch">
-                <div class="vswitch"><button type="button" class="is-on" data-v="demo">DEMO</button><button type="button" data-v="live">LIVE SITE</button></div>
-                <div class="vpane vpane--demo">
-                <div class="emp">
-                  <div class="emp__top"><span>CAMPAIGN_SCAN</span><span>MODEL: LGBM+XGB</span></div>
-                  <div class="emp__grid"></div>
-                  <div class="emp__kpis"><span>SCANNED <b class="e-scan">0</b></span><span>FLAGGED <b class="e-flag">0</b></span><span>DETECTION <b>90%+</b></span></div>
-                </div>
-                </div>
-                <div class="vpane vpane--live" hidden>
-                  <a class="miniwin" href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener" data-cursor="Visit">
-                    <span class="miniwin__bar"><i></i><i></i><i></i><em>empathi-frontend.onrender.com</em></span>
-                    <span class="miniwin__screen"><img src="assets/live/empathi.jpg" alt="EmpathI live homepage" loading="lazy" class="is-tall" /></span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 04 Messier -->
-        <article class="file file--black" data-file="3">
-          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_004 // MESSIER</span></button>
-          <div class="file__inner">
-            <button class="file__head" type="button"><span>CODE_004 //</span><b>Messier Deep Sky Navigator</b><i>+</i></button>
-            <span class="file__vlabel">SIGNAL</span>
-            <div class="file__body">
-              <div class="file__meta">
-                <p class="file__code">CODE_004 // 2025</p>
-                <h3 class="file__title">Messier Deep<br />Sky Navigator</h3>
-                <p class="file__kicker">NASA Space Apps 2025 · Local winner · Global nominee</p>
-                <div class="spec">
-                  <div><span class="spec__k">Stack</span><span class="spec__v">JavaScript · Python · Leaflet.js · OpenSeadragon</span></div>
-                  <div><span class="spec__k">Scale</span><span class="spec__v">10,000+ image tiles</span></div>
-                </div>
-                <p class="file__desc">Processed 10,000+ astronomical image tiles into a coordinate-mapped, deep-zoom sky catalogue. Won locally in Amritsar and went on to be a Global Nominee at NASA Space Apps Challenge 2025 — top ~10% of 11,500+ submissions.</p>
-                <p class="file__metric"><b>10K+</b><span>Tiles mapped</span></p>
-              </div>
-              <div class="file__visual file__visual--switch">
-                <div class="vswitch"><button type="button" class="is-on" data-v="demo">DEMO</button><button type="button" data-v="live">LIVE SITE</button></div>
-                <div class="vpane vpane--demo">
-                <div class="sky" data-cursor="Explore">
-                  <canvas class="sky__canvas"></canvas>
-                  <div class="sky__hud"><span>RA 05h 34m · DEC +22° 00′</span><span class="sky__target">TARGET: —</span></div>
-                </div>
-                </div>
-                <div class="vpane vpane--live" hidden>
-                  <a class="miniwin" href="https://messier-catalog-nasa-space-challeng.vercel.app" target="_blank" rel="noopener" data-cursor="Visit">
-                    <span class="miniwin__bar"><i></i><i></i><i></i><em>messier-catalog-nasa-space-challeng.vercel.app</em></span>
-                    <span class="miniwin__screen"><img src="assets/live/messier.jpg" alt="Messier SkyMap live homepage" loading="lazy" /></span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- 05 Archive / GitHub feed -->
-        <article class="file file--moss" data-file="4">
-          <button class="file__tab" type="button" data-cursor="Open"><span>CODE_005 // ARCHIVE</span></button>
-          <div class="file__inner">
-            <button class="file__head" type="button"><span>CODE_005 //</span><b>Archive · GitHub</b><i>+</i></button>
-            <span class="file__vlabel">AFTER WORK</span>
-            <div class="file__body">
-              <div class="file__meta">
-                <p class="file__code">CODE_005 // LIVE</p>
-                <h3 class="file__title">Experiments<br />Feed</h3>
-                <p class="file__kicker">Pulled live from github.com/sanatK24</p>
-                <p class="file__desc">Everything else — side builds, hackathon prototypes and half-finished ideas worth finishing. Updated straight from GitHub.</p>
-                <a class="btn btn--line" href="https://github.com/sanatK24" target="_blank" rel="noopener" data-magnetic data-cursor="Go">&gt; VIEW ALL ON GITHUB_</a>
-              </div>
-              <div class="file__visual">
-                <div class="feed">
-                  <p class="feed__label">//EXPERIMENTS_FEED</p>
-                  <ul class="feed__list"></ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- ============ 04b · LIVE BUILDS (real homepages) ============ -->
-    <section id="live" class="live" data-section="05">
-      <div class="sec-head"><span>_LIVE_BUILDS</span><i></i><span>DEPLOYED · CLICK TO INTERACT</span></div>
-      <div class="live__intro">
-        <h2 class="live__title" data-split>Shipped &amp;<br />running live.</h2>
-        <p>Real homepages, not mockups. Hover to scroll the page, hit <b>Interact</b> to drive the actual site right here, or expand it full-screen.</p>
-      </div>
-      <div class="live__grid">
-        <article class="lcard" data-url="https://empathi-frontend.onrender.com">
-          <div class="lcard__win">
-            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">empathi-frontend.onrender.com</span><span class="lcard__live">● LIVE</span></div>
-            <div class="lcard__screen" data-cursor="Interact">
-              <img class="lcard__shot lcard__shot--tall" src="assets/live/empathi.jpg" alt="EmpathI live homepage" loading="lazy" />
-              <div class="lcard__frame"></div>
-              <div class="lcard__ctrl">
-                <button type="button" class="lcard__go">▶ INTERACT</button>
-                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
-                <button type="button" class="lcard__full">⤢ EXPAND</button>
-                <a href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener">OPEN ↗</a>
-              </div>
-            </div>
-          </div>
-          <div class="lcard__meta">
-            <span class="lcard__n">LIVE_01 // SAMSUNG SIC 2026</span>
-            <h3>EmpathI</h3>
-            <p>Intelligence for urgent care — a fundraising platform pairing contextual personalisation with fraud security and fairness re-ranking.</p>
-            <span class="lcard__stack">LightGBM · XGBoost · FastAPI · React</span>
-          </div>
-        </article>
-        <article class="lcard" data-url="https://messier-catalog-nasa-space-challeng.vercel.app">
-          <div class="lcard__win">
-            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">messier-catalog-nasa-space-challeng.vercel.app</span><span class="lcard__live">● LIVE</span></div>
-            <div class="lcard__screen" data-cursor="Interact">
-              <img class="lcard__shot" src="assets/live/messier.jpg" alt="Messier SkyMap live homepage" loading="lazy" />
-              <div class="lcard__frame"></div>
-              <div class="lcard__ctrl">
-                <button type="button" class="lcard__go">▶ INTERACT</button>
-                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
-                <button type="button" class="lcard__full">⤢ EXPAND</button>
-                <a href="https://messier-catalog-nasa-space-challeng.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
-              </div>
-            </div>
-          </div>
-          <div class="lcard__meta">
-            <span class="lcard__n">LIVE_02 // NASA SPACE APPS 2025</span>
-            <h3>Messier SkyMap</h3>
-            <p>An interactive sky map of the Messier catalogue — filter deep-sky objects by type and fly straight to each target.</p>
-            <span class="lcard__stack">JavaScript · Leaflet.js · OpenSeadragon</span>
-          </div>
-        </article>
-        <article class="lcard" data-url="https://f1-driver-sphere-ui.vercel.app">
-          <div class="lcard__win">
-            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">f1-driver-sphere-ui.vercel.app</span><span class="lcard__live">● LIVE</span></div>
-            <div class="lcard__screen" data-cursor="Interact">
-              <img class="lcard__shot" src="assets/live/f1.jpg" alt="F1 Analyzer live homepage" loading="lazy" />
-              <div class="lcard__frame"></div>
-              <div class="lcard__ctrl">
-                <button type="button" class="lcard__go">▶ INTERACT</button>
-                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
-                <button type="button" class="lcard__full">⤢ EXPAND</button>
-                <a href="https://f1-driver-sphere-ui.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
-              </div>
-            </div>
-          </div>
-          <div class="lcard__meta">
-            <span class="lcard__n">LIVE_03 // FORMULA 1</span>
-            <h3>F1 Analyzer</h3>
-            <p>A Formula 1 analysis and information platform — search drivers, circuits, results and seasons in one place.</p>
-            <span class="lcard__stack">TypeScript · React</span>
-          </div>
-        </article>
-        <article class="lcard" data-url="https://edu-mate-ai.vercel.app" data-autoload>
-          <div class="lcard__win">
-            <div class="lcard__bar"><i></i><i></i><i></i><span class="lcard__url">edu-mate-ai.vercel.app</span><span class="lcard__live">● LIVE</span></div>
-            <div class="lcard__screen" data-cursor="Interact">
-              <div class="lcard__poster"><b>EduMate AI</b><span>Loading the live site…</span></div>
-              <div class="lcard__frame"></div>
-              <div class="lcard__ctrl">
-                <button type="button" class="lcard__go">▶ INTERACT</button>
-                <button type="button" class="lcard__x" hidden>✕ CLOSE</button>
-                <button type="button" class="lcard__full">⤢ EXPAND</button>
-                <a href="https://edu-mate-ai.vercel.app" target="_blank" rel="noopener">OPEN ↗</a>
-              </div>
-            </div>
-          </div>
-          <div class="lcard__meta">
-            <span class="lcard__n">LIVE_04 // STUDY ASSISTANT</span>
-            <h3>EduMate AI</h3>
-            <p>Paste any text and get structured notes, summaries and actionable insights — a personal AI study assistant.</p>
-            <span class="lcard__stack">TypeScript · LLM</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ============ 06 · FIELD LOG (hackathons + events) ============ -->
-    <section id="field" class="field" data-section="06">
-      <div class="sec-head"><span>_FIELD_LOG // HACKATHONS &amp; EVENTS</span><i></i><span>2024 → NOW</span></div>
-      <div class="field__head">
-        <h2 class="field__title" data-split>In the room,<br />on the clock.</h2>
-        <ul class="field__stats">
-          <li><b data-count="6" data-pad="2">0</b><span>Hackathons &amp;<br />competitions</span></li>
-          <li><b data-count="1" data-pad="2">0</b><span>First-place<br />finish</span></li>
-          <li><b>~10%</b><span>Global rank at<br />NASA Space Apps</span></li>
-          <li><b data-count="2000" data-suffix="+" data-comma>0</b><span>Hackers I helped<br />host as organiser</span></li>
-        </ul>
-      </div>
-
-      <div class="field__bar">
-        <p class="jlabel">Hackathons — admit one</p>
-        <div class="field__filters" role="tablist" aria-label="Filter hackathons">
-          <button type="button" class="is-on" data-filter="all">ALL</button>
-          <button type="button" data-filter="result">RESULTS</button>
-          <button type="button" data-filter="build">BUILDS</button>
-          <button type="button" data-filter="org">ORGANISED</button>
+    <!-- ============ LATEST LIVE BUILDS (self-healing slider: only repos whose live link answers, newest first) ============ -->
+    <section id="projects" class="pslider" data-section="04" data-slider>
+      <div class="sec-head"><span>_LATEST_LIVE_BUILDS</span><i></i><span>CHECKED LIVE DAILY</span></div>
+      <div class="pslider__head">
+        <h2 class="pslider__title" data-split>Running live,<br />right now.</h2>
+        <div class="pslider__ctrl">
+          <span class="pslider__count" aria-live="polite"><b data-slider-cur>01</b> / <span data-slider-total>06</span></span>
+          <button type="button" class="pslider__btn" data-slider-prev aria-label="Previous project" data-cursor="Prev">←</button>
+          <button type="button" class="pslider__btn" data-slider-next aria-label="Next project" data-cursor="Next">→</button>
         </div>
       </div>
-      <div class="tickets">
-          <article class="ticket ticket--white" data-cat="result">
-            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 001</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/adobe.png" alt="Adobe logo" loading="lazy" /></span><span>Adobe University Hackathon</span></div>
-              <h3 class="ticket__title">Online Assessment</h3>
-              <p class="ticket__desc">15 multiple-choice questions and 2 coding challenges inside one hour — cleared to qualify.</p>
-              <dl class="ticket__meta"><div><dt>Format</dt><dd>Timed OA</dd></div><div><dt>When</dt><dd>Aug 2026</dd></div><div><dt>Where</dt><dd>India · Online</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">QUALIFIED</span>
-              
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="3" height="28"/><rect x="4" y="0" width="1" height="28"/><rect x="10" y="0" width="2" height="28"/><rect x="16" y="0" width="1" height="28"/><rect x="24" y="0" width="1" height="28"/><rect x="28" y="0" width="1" height="28"/><rect x="30" y="0" width="1" height="28"/><rect x="35" y="0" width="2" height="28"/><rect x="38" y="0" width="3" height="28"/><rect x="47" y="0" width="4" height="28"/><rect x="52" y="0" width="3" height="28"/><rect x="60" y="0" width="2" height="28"/><rect x="63" y="0" width="2" height="28"/><rect x="66" y="0" width="2" height="28"/><rect x="75" y="0" width="1" height="28"/><rect x="77" y="0" width="3" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="85" y="0" width="3" height="28"/><rect x="89" y="0" width="2" height="28"/><rect x="96" y="0" width="3" height="28"/><rect x="100" y="0" width="1" height="28"/><rect x="107" y="0" width="2" height="28"/><rect x="110" y="0" width="1" height="28"/><rect x="112" y="0" width="2" height="28"/><rect x="115" y="0" width="2" height="28"/><rect x="118" y="0" width="1" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--slate" data-cat="result">
-            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 002</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/flipkart.png" alt="Flipkart logo" loading="lazy" /></span><span>Flipkart Gridlock Hackathon 2.0</span></div>
-              <h3 class="ticket__title">StreetSync · Traffic Forecasting</h3>
-              <p class="ticket__desc">Round 1: traffic-demand prediction from geohash, time and weather — a stacked LightGBM / XGBoost / CatBoost ensemble scoring 91.2. Round 2: an event-impact forecaster recommending manpower, barricades and diversions.</p>
-              <dl class="ticket__meta"><div><dt>Team</dt><dd>4 · with Omkar, Rohit, Sanjeta</dd></div><div><dt>When</dt><dd>May — Sep 2026</dd></div><div><dt>Host</dt><dd>Flipkart × HackerEarth</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">ROUND 2</span>
-              <a class="ticket__link" href="https://github.com/sanatK24/StreetSync2.0_GridLock_Round2" target="_blank" rel="noopener" data-cursor="Open">REPO ↗</a>
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="12" y="0" width="2" height="28"/><rect x="15" y="0" width="1" height="28"/><rect x="17" y="0" width="1" height="28"/><rect x="19" y="0" width="1" height="28"/><rect x="29" y="0" width="1" height="28"/><rect x="34" y="0" width="3" height="28"/><rect x="38" y="0" width="2" height="28"/><rect x="41" y="0" width="2" height="28"/><rect x="47" y="0" width="3" height="28"/><rect x="51" y="0" width="1" height="28"/><rect x="53" y="0" width="1" height="28"/><rect x="55" y="0" width="2" height="28"/><rect x="58" y="0" width="2" height="28"/><rect x="67" y="0" width="2" height="28"/><rect x="70" y="0" width="2" height="28"/><rect x="73" y="0" width="2" height="28"/><rect x="76" y="0" width="1" height="28"/><rect x="84" y="0" width="3" height="28"/><rect x="88" y="0" width="1" height="28"/><rect x="90" y="0" width="1" height="28"/><rect x="92" y="0" width="2" height="28"/><rect x="95" y="0" width="2" height="28"/><rect x="98" y="0" width="3" height="28"/><rect x="102" y="0" width="1" height="28"/><rect x="108" y="0" width="2" height="28"/><rect x="115" y="0" width="3" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--burg" data-cat="build">
-            <div class="ticket__stub"><span class="ticket__yr">2026</span><span class="ticket__no">ADMIT · 003</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><span>Samsung Innovation Campus Hackathon</span></div>
-              <h3 class="ticket__title">EmpathI</h3>
-              <p class="ticket__desc">A platform for getting campaigns supported — transparent fundraising backed by Bitcoin-inspired document verification, with 90%+ fraud detection.</p>
-              <dl class="ticket__meta"><div><dt>Team</dt><dd>2 · with Sanyukta Deshmukh</dd></div><div><dt>When</dt><dd>Jan 2026</dd></div><div><dt>Where</dt><dd>RAIT, Navi Mumbai</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">SHIPPED LIVE</span>
-              <a class="ticket__link" href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener" data-cursor="Open">LIVE ↗</a>
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="2" height="28"/><rect x="3" y="0" width="2" height="28"/><rect x="9" y="0" width="1" height="28"/><rect x="14" y="0" width="1" height="28"/><rect x="25" y="0" width="2" height="28"/><rect x="40" y="0" width="2" height="28"/><rect x="45" y="0" width="3" height="28"/><rect x="49" y="0" width="1" height="28"/><rect x="51" y="0" width="1" height="28"/><rect x="53" y="0" width="3" height="28"/><rect x="57" y="0" width="3" height="28"/><rect x="68" y="0" width="2" height="28"/><rect x="71" y="0" width="3" height="28"/><rect x="75" y="0" width="1" height="28"/><rect x="77" y="0" width="2" height="28"/><rect x="86" y="0" width="2" height="28"/><rect x="93" y="0" width="1" height="28"/><rect x="97" y="0" width="2" height="28"/><rect x="100" y="0" width="3" height="28"/><rect x="108" y="0" width="3" height="28"/><rect x="112" y="0" width="3" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--black" data-cat="result">
-            <div class="ticket__stub"><span class="ticket__yr">2025</span><span class="ticket__no">ADMIT · 004</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/spaceapps.png" alt="NASA Space Apps logo" loading="lazy" /></span><span>NASA International Space Apps Challenge</span></div>
-              <h3 class="ticket__title">Messier Deep Sky Navigator</h3>
-              <p class="ticket__desc">10,000+ astronomical tiles turned into a deep-zoom sky catalogue. Won the Amritsar local event, then named a Global Nominee — top ~10% of 11,500+ submissions.</p>
-              <dl class="ticket__meta"><div><dt>Team</dt><dd>DataDrift · 5</dd></div><div><dt>When</dt><dd>Oct 2025</dd></div><div><dt>Where</dt><dd>Amritsar → Global</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">GLOBAL NOMINEE</span>
-              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7393579755943407616/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="2" height="28"/><rect x="3" y="0" width="1" height="28"/><rect x="9" y="0" width="2" height="28"/><rect x="12" y="0" width="2" height="28"/><rect x="15" y="0" width="2" height="28"/><rect x="18" y="0" width="3" height="28"/><rect x="22" y="0" width="2" height="28"/><rect x="25" y="0" width="2" height="28"/><rect x="28" y="0" width="2" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="1" height="28"/><rect x="35" y="0" width="1" height="28"/><rect x="37" y="0" width="2" height="28"/><rect x="40" y="0" width="3" height="28"/><rect x="44" y="0" width="3" height="28"/><rect x="52" y="0" width="1" height="28"/><rect x="54" y="0" width="1" height="28"/><rect x="58" y="0" width="1" height="28"/><rect x="60" y="0" width="2" height="28"/><rect x="63" y="0" width="2" height="28"/><rect x="66" y="0" width="1" height="28"/><rect x="73" y="0" width="3" height="28"/><rect x="77" y="0" width="1" height="28"/><rect x="79" y="0" width="1" height="28"/><rect x="81" y="0" width="4" height="28"/><rect x="86" y="0" width="3" height="28"/><rect x="90" y="0" width="2" height="28"/><rect x="98" y="0" width="2" height="28"/><rect x="103" y="0" width="3" height="28"/><rect x="107" y="0" width="1" height="28"/><rect x="109" y="0" width="3" height="28"/><rect x="115" y="0" width="1" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--bone" data-cat="result">
-            <div class="ticket__stub"><span class="ticket__yr">2025</span><span class="ticket__no">ADMIT · 005</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/dypatil.png" alt="RAIT logo" loading="lazy" /></span><span>Winter Internship Program · RAIT</span></div>
-              <h3 class="ticket__title">malariaCARE</h3>
-              <p class="ticket__desc">An LLM-powered healthcare chatbot for malaria awareness and care, built with Nishtha Sharma under Prof. Rajashree Shedge.</p>
-              <dl class="ticket__meta"><div><dt>Team</dt><dd>2 · with Nishtha Sharma</dd></div><div><dt>When</dt><dd>Feb 2025</dd></div><div><dt>Field</dt><dd>LLM · NLP · Health</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">1ST PLACE</span>
-              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7296551543208579073/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="3" height="28"/><rect x="8" y="0" width="1" height="28"/><rect x="10" y="0" width="4" height="28"/><rect x="15" y="0" width="1" height="28"/><rect x="17" y="0" width="2" height="28"/><rect x="20" y="0" width="2" height="28"/><rect x="25" y="0" width="1" height="28"/><rect x="27" y="0" width="3" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="1" height="28"/><rect x="38" y="0" width="2" height="28"/><rect x="44" y="0" width="1" height="28"/><rect x="48" y="0" width="1" height="28"/><rect x="54" y="0" width="2" height="28"/><rect x="59" y="0" width="2" height="28"/><rect x="62" y="0" width="2" height="28"/><rect x="76" y="0" width="4" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="90" y="0" width="1" height="28"/><rect x="92" y="0" width="3" height="28"/><rect x="101" y="0" width="2" height="28"/><rect x="114" y="0" width="1" height="28"/><rect x="116" y="0" width="3" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--ash" data-cat="build">
-            <div class="ticket__stub"><span class="ticket__yr">2024</span><span class="ticket__no">ADMIT · 006</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>KAINOS 2024 · AI National Hackathon</span></div>
-              <h3 class="ticket__title">F1 Race-Data Deep Dive</h3>
-              <p class="ticket__desc">Pulled live Formula 1 data from the OpenF1 API — lap times, pit stops, weather — cleaned it and charted max speed by team to read race strategy.</p>
-              <dl class="ticket__meta"><div><dt>Host</dt><dd>ACM SIGAI × Zero True</dd></div><div><dt>When</dt><dd>26 — 29 Sep 2024</dd></div><div><dt>Stack</dt><dd>Python · OpenF1</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">BUILT</span>
-              <a class="ticket__link" href="https://www.linkedin.com/feed/update/urn:li:activity:7268676756125962240/" target="_blank" rel="noopener" data-cursor="Open">POST ↗</a>
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="2" y="0" width="2" height="28"/><rect x="5" y="0" width="2" height="28"/><rect x="11" y="0" width="1" height="28"/><rect x="19" y="0" width="4" height="28"/><rect x="24" y="0" width="3" height="28"/><rect x="28" y="0" width="1" height="28"/><rect x="32" y="0" width="2" height="28"/><rect x="35" y="0" width="2" height="28"/><rect x="38" y="0" width="1" height="28"/><rect x="40" y="0" width="1" height="28"/><rect x="42" y="0" width="2" height="28"/><rect x="45" y="0" width="2" height="28"/><rect x="48" y="0" width="1" height="28"/><rect x="53" y="0" width="1" height="28"/><rect x="55" y="0" width="2" height="28"/><rect x="65" y="0" width="3" height="28"/><rect x="69" y="0" width="2" height="28"/><rect x="78" y="0" width="2" height="28"/><rect x="81" y="0" width="3" height="28"/><rect x="87" y="0" width="3" height="28"/><rect x="91" y="0" width="2" height="28"/><rect x="96" y="0" width="2" height="28"/><rect x="99" y="0" width="1" height="28"/><rect x="101" y="0" width="2" height="28"/><rect x="104" y="0" width="2" height="28"/><rect x="110" y="0" width="1" height="28"/><rect x="112" y="0" width="3" height="28"/><rect x="116" y="0" width="2" height="28"/></svg>
-            </div>
-          </article>
-          <article class="ticket ticket--burg" data-cat="org">
-            <div class="ticket__stub"><span class="ticket__yr">25/26</span><span class="ticket__no">ADMIT · 007</span></div>
-            <div class="ticket__main">
-              <div class="ticket__org"><span class="lg"><img src="assets/logos/sigai.png" alt="RAIT ACM SIGAI logo" loading="lazy" /></span><span>RAIT ACM SIGAI Student Chapter</span></div>
-              <h3 class="ticket__title">Running the Hackathons</h3>
-              <p class="ticket__desc">Tech lead and Webmaster for the chapter's national-level hackathons — platform, website and tech for 2,000+ participants.</p>
-              <dl class="ticket__meta"><div><dt>Role</dt><dd>Tech Lead · Webmaster</dd></div><div><dt>When</dt><dd>Sep 2025 — Jul 2026</dd></div><div><dt>Scale</dt><dd>2,000+ hackers</dd></div></dl>
-            </div>
-            <div class="ticket__end">
-              <span class="stamp">ORGANISER</span>
-              
-              <svg class="ticket__bc" viewBox="0 0 120 28" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="1" height="28"/><rect x="2" y="0" width="1" height="28"/><rect x="4" y="0" width="3" height="28"/><rect x="8" y="0" width="3" height="28"/><rect x="12" y="0" width="1" height="28"/><rect x="14" y="0" width="3" height="28"/><rect x="18" y="0" width="1" height="28"/><rect x="20" y="0" width="3" height="28"/><rect x="27" y="0" width="3" height="28"/><rect x="31" y="0" width="1" height="28"/><rect x="33" y="0" width="3" height="28"/><rect x="41" y="0" width="1" height="28"/><rect x="43" y="0" width="3" height="28"/><rect x="47" y="0" width="3" height="28"/><rect x="51" y="0" width="3" height="28"/><rect x="55" y="0" width="1" height="28"/><rect x="57" y="0" width="4" height="28"/><rect x="65" y="0" width="3" height="28"/><rect x="69" y="0" width="3" height="28"/><rect x="73" y="0" width="2" height="28"/><rect x="76" y="0" width="1" height="28"/><rect x="78" y="0" width="2" height="28"/><rect x="83" y="0" width="2" height="28"/><rect x="88" y="0" width="2" height="28"/><rect x="91" y="0" width="2" height="28"/><rect x="94" y="0" width="2" height="28"/><rect x="97" y="0" width="2" height="28"/><rect x="100" y="0" width="1" height="28"/><rect x="102" y="0" width="3" height="28"/><rect x="106" y="0" width="1" height="28"/><rect x="108" y="0" width="3" height="28"/><rect x="112" y="0" width="2" height="28"/><rect x="115" y="0" width="2" height="28"/><rect x="118" y="0" width="1" height="28"/></svg>
-            </div>
-          </article>
-      </div>
-
-      <div class="dep">
-        <div class="dep__top">
-          <span class="dep__title"><i></i>EVENTS &amp; WORKSHOPS — DEPARTURES</span>
-          <span class="dep__clock">IST <b class="clock2">--:--</b></span>
-        </div>
-        <div class="dep__cols" aria-hidden="true"><span>DATE</span><span>EVENT</span><span class="dep__city">CITY</span><span class="dep__kind">TYPE</span><span>STATUS</span></div>
-        <ul class="dep__list">
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7504406055377043456/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>11 SEP 2026</span>
-              <span class="dep__ev"><span class="lg"><img src="assets/logos/aws.png" alt="AWS logo" loading="lazy" /></span><span class="flap" data-flap>AWS Builder Center · Future Builders Connect</span></span>
-              <span class="flap dep__city" data-flap>MUMBAI</span>
-              <span class="flap dep__kind" data-flap>SUMMIT</span>
-              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7417212926199160832/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>14 JAN 2026</span>
-              <span class="dep__ev"><span class="lg lg--wide lg--fill"><img src="assets/logos/sic-wide.png" alt="Samsung Innovation Campus logo" loading="lazy" /></span><span class="flap" data-flap>Samsung Innovation Campus · Selection &amp; kit</span></span>
-              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
-              <span class="flap dep__kind" data-flap>PROGRAMME</span>
-              <span class="dep__st"><span class="flap" data-flap>SELECTED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7395154259320745985/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>10–14 NOV 2025</span>
-              <span class="dep__ev"><span class="lg lg--wide"><img src="assets/logos/kaggle-wide.png" alt="Kaggle logo" loading="lazy" /></span><span class="flap" data-flap>Google × Kaggle · 5-Day AI Agents Intensive</span></span>
-              <span class="flap dep__city" data-flap>ONLINE</span>
-              <span class="flap dep__kind" data-flap>INTENSIVE</span>
-              <span class="dep__st"><span class="flap" data-flap>COMPLETED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7366779478846431232/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>AUG 2025</span>
-              <span class="dep__ev"><span class="lg lg--wide"><img src="assets/logos/ibm-skillsbuild-wide.png" alt="IBM SkillsBuild logo" loading="lazy" /></span><span class="flap" data-flap>CSRBOX × IBM SkillsBuild · Project-Based Learning</span></span>
-              <span class="flap dep__city" data-flap>NATIONAL</span>
-              <span class="flap dep__kind" data-flap>PROGRAMME</span>
-              <span class="dep__st"><span class="flap" data-flap>COMPLETED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7355268215138140160/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>24 JUL 2025</span>
-              <span class="dep__ev"><span class="lg"><img src="assets/logos/aspire.png" alt="Aspire Institute logo" loading="lazy" /></span><span class="flap" data-flap>Aspire Leaders Program · Graduation</span></span>
-              <span class="flap dep__city" data-flap>MUMBAI</span>
-              <span class="flap dep__kind" data-flap>CEREMONY</span>
-              <span class="dep__st"><span class="flap" data-flap>GRADUATED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7317537783550533635/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>APR 2025</span>
-              <span class="dep__ev"><span class="lg"><img src="assets/logos/csi.png" alt="Computer Society of India logo" loading="lazy" /></span><span class="flap" data-flap>CSI RAIT × TCS · Design Thinking Workshop</span></span>
-              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
-              <span class="flap dep__kind" data-flap>WORKSHOP</span>
-              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
-            </a></li>
-            <li><a class="dep__row" href="https://www.linkedin.com/feed/update/urn:li:activity:7295644816229453825/" target="_blank" rel="noopener" data-cursor="Post">
-              <span class="flap" data-flap>07–08 FEB 2025</span>
-              <span class="dep__ev"><span class="lg lg--fill"><img src="assets/logos/ieee-rait.png" alt="IEEE RAIT logo" loading="lazy" /></span><span class="flap" data-flap>IEEE RAIT · Engineering the Future: LLMs</span></span>
-              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
-              <span class="flap dep__kind" data-flap>WORKSHOP</span>
-              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>↗</i></span>
-            </a></li>
-            <li><div class="dep__row">
-              <span class="flap" data-flap>03–04 AUG 2024</span>
-              <span class="dep__ev"><span class="lg lg--fill"><img src="assets/logos/ieee-rait.png" alt="IEEE RAIT logo" loading="lazy" /></span><span class="flap" data-flap>IEEE RAIT · Image Processing with IoT &amp; OpenCV</span></span>
-              <span class="flap dep__city" data-flap>NAVI MUMBAI</span>
-              <span class="flap dep__kind" data-flap>WORKSHOP</span>
-              <span class="dep__st"><span class="flap" data-flap>ATTENDED</span><i>·</i></span>
-            </div></li>
-        </ul>
-      </div>
+      <!-- project-slider:start (written by scripts/sync-portfolio.mjs — edit the script, not this block) -->
+      <ol class="pslider__track" data-slider-track aria-label="Live builds, most recently updated first">
+        <li class="pslide has-live">
+          <div class="pslide__media"><img src="assets/live/empathi.jpg" alt="EmpathI homepage" loading="lazy" /><span class="pslide__n">01</span></div>
+          <div class="pslide__body">
+            <p class="pslide__meta"><span>JavaScript</span><span>Updated Sep 2026</span></p>
+            <h3 class="pslide__title">EmpathI</h3>
+            <p class="pslide__text">AI-Powered Crowdfunding Platform</p>
+            <p class="pslide__tech"><span>Python</span><span>FastAPI</span><span>React</span><span>PostgreSQL</span></p>
+            <p class="pslide__links"><a class="is-live" href="https://empathi-frontend.onrender.com" target="_blank" rel="noopener" data-cursor="Live">LIVE <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a href="https://github.com/sanatK24/empathi-avre" target="_blank" rel="noopener" data-cursor="Repo">REPO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></p>
+          </div>
+        </li>
+        <li class="pslide has-live">
+          <div class="pslide__media"><img src="assets/live/messier.jpg" alt="Messier SkyMap homepage" loading="lazy" /><span class="pslide__n">02</span></div>
+          <div class="pslide__body">
+            <p class="pslide__meta"><span>HTML</span><span>Updated Nov 2025</span></p>
+            <h3 class="pslide__title">Messier SkyMap</h3>
+            <p class="pslide__text">Explore the cosmos — where code meets the stars. NASA Space Apps Challenge 2025 · Team DataDrift 🚀</p>
+            <p class="pslide__tech"><span>Python</span><span>HTML</span><span>CSS</span><span>Leaflet.js</span></p>
+            <p class="pslide__links"><a class="is-live" href="https://messier-catalog-nasa-space-challeng.vercel.app" target="_blank" rel="noopener" data-cursor="Live">LIVE <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a href="https://github.com/sanatK24/messier_catalog_nasa_space_challenge" target="_blank" rel="noopener" data-cursor="Repo">REPO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></p>
+          </div>
+        </li>
+        <li class="pslide has-live">
+          <div class="pslide__media"><img src="assets/live/f1.jpg" alt="F1 Analyzer homepage" loading="lazy" /><span class="pslide__n">03</span></div>
+          <div class="pslide__body">
+            <p class="pslide__meta"><span>TypeScript</span><span>Updated May 2025</span></p>
+            <h3 class="pslide__title">F1 Analyzer</h3>
+            <p class="pslide__text">The F1 Driver Analyzer is a Python application that provides comprehensive information about Formula 1 drivers. This tool allows users to search…</p>
+            <p class="pslide__tech"><span>Python</span><span>TypeScript</span><span>HTML</span></p>
+            <p class="pslide__links"><a class="is-live" href="https://f1-driver-sphere-ui.vercel.app" target="_blank" rel="noopener" data-cursor="Live">LIVE <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a href="https://github.com/sanatK24/f1-driver-sphere-ui" target="_blank" rel="noopener" data-cursor="Repo">REPO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></p>
+          </div>
+        </li>
+        <li class="pslide has-live">
+          <div class="pslide__media"><span class="pslide__cover" aria-hidden="true"><b>EduMate</b></span><span class="pslide__n">04</span></div>
+          <div class="pslide__body">
+            <p class="pslide__meta"><span>TypeScript</span><span>Updated May 2025</span></p>
+            <h3 class="pslide__title">EduMate AI</h3>
+            <p class="pslide__text">EduMate AI is a web application designed to transform your learning experience. It leverages Artificial Intelligence to turn video lectures or…</p>
+            <p class="pslide__tech"><span>TypeScript</span><span>CSS</span><span>React</span><span>Next.js</span></p>
+            <p class="pslide__links"><a class="is-live" href="https://edu-mate-ai.vercel.app" target="_blank" rel="noopener" data-cursor="Live">LIVE <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a><a href="https://github.com/sanatK24/EduMateAI" target="_blank" rel="noopener" data-cursor="Repo">REPO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></p>
+          </div>
+        </li>
+        <li class="pslide pslide--more">
+          <a href="work.html" data-cursor="Open"><span class="pslide__more-k">Project library</span><b>Everything else I've built →</b><span class="pslide__more-n">10 public repos · live builds · project files</span></a>
+        </li>
+      </ol>
+      <!-- project-slider:end -->
+      <div class="pslider__bar" aria-hidden="true"><i data-slider-bar></i></div>
     </section>
-
 
     <!-- ============ 07 · LEADERSHIP ============ -->
-    <section id="lead" class="lead" data-section="07">
+    <section id="lead" class="lead" data-section="05">
       <div class="sec-head"><span>_LEADERSHIP</span><i></i><span>ROLES HELD · 01</span></div>
 
       <!-- one <article class="role"> per leadership role -->
@@ -741,7 +328,7 @@
     </section>
 
     <!-- ============ 08 · SIGNAL (LinkedIn posts) ============ -->
-    <section id="posts" class="posts" data-section="08">
+    <section id="posts" class="posts" data-section="06">
       <div class="sec-head"><span>_SIGNAL // LINKEDIN</span><i></i><span>910 FOLLOWERS</span></div>
       <div class="posts__head">
         <h2 class="posts__title" data-split>Latest from<br />LinkedIn.</h2>
@@ -758,7 +345,7 @@
     </section>
 
     <!-- ============ 10 · CONTACT ============ -->
-    <section id="contact" class="contact" data-section="09">
+    <section id="contact" class="contact" data-section="07">
       <div class="contact__grid">
         <div class="contact__left">
           <h2 class="contact__title" data-split>Let's work<br />together<span class="star">✦</span></h2>
@@ -815,7 +402,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="shared.js?v=3"></script>
-  <script src="extras.js?v=4"></script>
-  <script src="main.js?v=16"></script>
+  <script src="extras.js?v=7"></script>
+  <script src="autosync.js?v=3"></script>
+  <script src="main.js?v=17"></script>
 </body>
 </html>

@@ -271,7 +271,7 @@ Open to internships, research collaborations and hackathon teams. If it involves
 
 # About this website (for developers)
 
-Static site: `index.html` + `style.css` + `main.js`. No build step, no backend.
+Static site, no build step, no backend. Pages: `index.html` (home), `about.html`, `skills.html`, `work.html` (project library: project files, live builds, other GitHub repos), `process.html`, `hacks.html` (hackathons & events) and `contact.html`. Home, Work and Hacks run on `style.css` + `main.js` (GSAP); the others use `page.js`. `shared.js` / `extras.js` / `autosync.js` load everywhere.
 Libraries load from jsDelivr: GSAP 3.13 (ScrollTrigger, SplitText, ScrambleText, Draggable, Inertia, Flip) and Lenis.
 
 ## Run locally
@@ -287,15 +287,25 @@ Live at https://sanatkarkhanisportfolio-cha8.vercel.app (Vercel). Any static hos
 - **Link previews:** set to https://sanatkarkhanisportfolio-cha8.vercel.app — if the domain changes, update it in the og/twitter tags in `index.html`. The preview image is `assets/og-image.jpg` (1200×630). Test it with LinkedIn's Post Inspector (linkedin.com/post-inspector) or opengraph.xyz; LinkedIn and WhatsApp cache previews, so re-run the inspector after changes.
 - **Portrait:** `assets/portrait.jpg` (About — AWS Future Builders Connect photo, with the wall lines recoloured to the site crimson; the section's live grid wall in `initWall()` is tuned to the wall in this photo) and `assets/portrait-badge.jpg` (leadership badge). The earlier formal headshot is kept, unused, as `assets/portrait-formal.jpg`. Images are cropped with `object-fit: cover`, never stretched.
 - **Resume:** replace `assets/Sanat_Karkhanis_Resume.pdf`.
-- **Projects:** each `<article class="file">` in `index.html` is one project file (tab label, copy, metric, visual).
-- **Live builds:** each `<article class="lcard">` in the `#live` section shows one deployed site. Screenshots live in `assets/live/`; a card with `data-autoload` and no screenshot loads the real site when it scrolls into view.
-- **Hackathons & events:** each hackathon is an `<article class="ticket">` in the `#field` section; `data-cat` (`result`, `build`, `org`) drives the filter tabs, and `.stamp` holds the result. Events are rows in `.dep__list`; wrap a row in `<a class="dep__row" href=…>` to link it to a post.
+- **Projects:** each `<article class="file">` in `work.html` is one project file (tab label, copy, metric, visual).
+- **Live builds:** each `<article class="lcard">` in the `#live` section of `work.html` shows one deployed site. Screenshots live in `assets/live/`; a card with `data-autoload` and no screenshot loads the real site when it scrolls into view.
+- **Hackathons & events:** each hackathon is an `<article class="ticket">` in the `#field` section of `hacks.html`; `data-cat` (`result`, `build`, `org`) drives the filter tabs, and `.stamp` holds the result. Events are rows in `.dep__list`; wrap a row in `<a class="dep__row" href=…>` to link it to a post.
 - **Leadership:** each role is an `<article class="role">` in the `#lead` section (badge front/back, duties, stats, tenure timeline). Copy the whole article to add a role; the swing/flip physics attach automatically. Update the "ROLES HELD" count in the section header.
 - **LinkedIn posts:** LinkedIn has no public API for a profile's posts, so the feed reads from the `POSTS` list in `main.js`. To add a post, copy the number from its URL (`linkedin.com/feed/update/urn:li:activity:<id>`) and add a row at the top with date, tag, title, a one-line summary and the reaction count. (Add it to the table above too, to keep this README in sync.)
 - **Logos:** `assets/logos/`. Square marks use `<span class="lg">`; wordmarks use `<span class="lg lg--wide">`; marks that should fill the badge add `lg--fill`.
 - **Sound:** all audio is synthesised in `main.js` (the `sfx` module, Web Audio API) — no audio files. It is off by default, toggled from the nav or ⌘K, and the visitor's choice is remembered. Calm, interaction-only sine tones with soft attacks and no background audio; tweak volumes via the `peak` values.
 - **Cache:** after editing `style.css` or `main.js`, bump the `?v=` number on their links in `index.html` so browsers load the new version.
 - **GitHub feed:** the CODE_005 file pulls the latest public repos from `api.github.com/users/sanatK24` and falls back to the four resume projects.
+
+## Self-healing (GitHub + résumé sync)
+The site keeps itself in step with the public GitHub repos and the résumé, without anyone editing the HTML.
+
+- **`.github/workflows/sync-portfolio.yml`** runs daily (08:00 IST), on demand from the Actions tab, and whenever the résumé PDF, `data/sync.config.json` or the script changes. It runs `scripts/sync-portfolio.mjs` and commits `data/portfolio.json` only when something actually changed; Vercel redeploys on that commit. The repo owner must allow Actions to write: *Settings → Actions → General → Workflow permissions → Read and write*.
+- **`scripts/sync-portfolio.mjs`** (Node 20, no packages) reads each public, non-fork repo's description, homepage and README; finds live links in that order (homepage → description → README links on known hosts such as vercel.app / onrender.com / github.io, or next to words like "live" or "demo"); and checks that each link actually responds. A flaky host keeps its last good link for 14 days instead of vanishing. It parses `assets/Sanat_Karkhanis_Resume.pdf` with `pdftotext -layout` by its headings (Experience, Projects, Technical Skills, Leadership, Achievements…), so keep those headings when editing the résumé. If GitHub can't be read (rate limit, outage), the previous data is kept rather than blanked.
+- **`autosync.js`** (every page) reads `data/portfolio.json`. Project library (`work.html`): live-build cards whose site is down get an OFFLINE badge, and public repos the page doesn't feature appear under *Also on GitHub* (with a LIVE link when one works). Skills: résumé skills and certificates missing from the page are added. About: résumé roles missing from the experience list are added. Every footer shows the last sync date. Without the data file the pages are unchanged.
+- **Latest-projects slider (home):** the sync script also rewrites the block between the `project-slider` markers in `index.html` — only the live builds (repos whose live link answered the daily check), most recently pushed first, capped at `slider.size` (6), so older ones drop off as new builds go live and a build that goes down leaves the slider, plus a closing card to the project library. Screenshots come from `slider.images` in the config; repos without one get a burgundy cover. `node scripts/sync-portfolio.mjs --render-only` rebuilds it from the saved data without calling GitHub.
+- **`data/sync.config.json`**: `featured` lists the repos the page already presents by hand (they never appear twice); `exclude` hides repos entirely.
+- Run it locally: `node scripts/sync-portfolio.mjs` (needs `pdftotext`; set `GITHUB_TOKEN` to avoid the 60-calls-per-hour anonymous limit, or pass `--offline` to skip the link checks).
 
 ## Sections → inspiration
 | # | Section | Inspo |

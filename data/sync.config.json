@@ -1,0 +1,36 @@
+{
+  "github": "sanatK24",
+  "resume": "assets/Sanat_Karkhanis_Resume.pdf",
+  "output": "data/portfolio.json",
+  "exclude": [
+    "sanatK24",
+    "interactiveportfolio",
+    "Portfolio---Sanat-Karkhanis"
+  ],
+  "featured": [
+    "TradeFlow",
+    "ai-financial-research-assistant",
+    "empathi-avre",
+    "messier_catalog_nasa_space_challenge",
+    "f1-driver-sphere-ui",
+    "EduMateAI",
+    "StreetSync2.0_GridLock_Round2"
+  ],
+  "liveGraceDays": 14,
+  "slider": {
+    "size": 6,
+    "images": {
+      "empathi-avre": "assets/live/empathi.jpg",
+      "messier_catalog_nasa_space_challenge": "assets/live/messier.jpg",
+      "f1-driver-sphere-ui": "assets/live/f1.jpg"
+    }
+  },
+  "titles": {
+    "messier_catalog_nasa_space_challenge": "Messier SkyMap",
+    "f1-driver-sphere-ui": "F1 Analyzer",
+    "EduMateAI": "EduMate AI",
+    "StreetSync2.0_GridLock_Round2": "StreetSync 2.0",
+    "SIGAI-2025-26-Sanat-Karkhanis": "SIGAI 2025–26",
+    "GreenWealthESGINVESTRACKER": "GreenWealth ESG Tracker"
+  }
+}

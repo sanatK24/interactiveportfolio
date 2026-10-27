@@ -1,0 +1,55 @@
+# Keeps the portfolio in step with GitHub and the résumé.
+# Every day it reads the public repos (description, homepage, README), checks which live links respond,
+# parses assets/Sanat_Karkhanis_Resume.pdf, refreshes the home page's latest-projects slider in index.html,
+# and commits data/portfolio.json + index.html when something changed.
+# Vercel redeploys on that commit; the pages read the file and heal themselves.
+name: Sync portfolio
+
+on:
+  schedule:
+    - cron: "30 2 * * *" # 08:00 IST daily
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - assets/Sanat_Karkhanis_Resume.pdf
+      - data/sync.config.json
+      - scripts/sync-portfolio.mjs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-portfolio
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pdftotext
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: Sync from GitHub and the résumé
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sync-portfolio.mjs
+
+      - name: Commit if anything changed
+        run: |
+          if git diff --quiet -- data/portfolio.json index.html; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "portfolio-sync[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/portfolio.json index.html
+          git commit -m "chore(sync): refresh portfolio data from GitHub and résumé"
+          git push

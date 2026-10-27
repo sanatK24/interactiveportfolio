@@ -246,3 +246,48 @@ body.subpage .nav { background: linear-gradient(#000 0, rgba(0, 0, 0, 0)); mix-b
 .cmd__list::-webkit-scrollbar-thumb { background: var(--burg); border-radius: 999px; border: 2px solid #0c0c0c; }
 .cmd__list::-webkit-scrollbar-thumb:hover { background: var(--signal); }
 .cmd__list::-webkit-scrollbar-button { display: none; height: 0; }
+
+/* ---------- Text never spills out of its box (every page) ----------
+   Long single words (repo names, URLs, tool names) break inside their container
+   instead of running past its edge; big display titles hyphenate where they can. */
+html { overflow-wrap: break-word; }
+h1, h2, h3, h4, dd, [class*="__title"], [class*="__name"], [class*="__org"] { overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
+a, p, li, span, b, small { min-width: 0; }
+
+/* the big metric number keeps its whole glyph inside its line box, so it never triggers a scrollbar */
+.file__metric { padding-bottom: 6px; }
+.file__metric b { line-height: 1; }
+
+/* project file tabs grow to fit their label instead of clipping it */
+.file__tab { height: auto; min-height: 150px; padding: 14px 0; }
+
+/* project file text: on short screens it tightens up, and if it still doesn't fit it scrolls inside the file */
+.file__meta { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding-right: 8px; scrollbar-width: thin; scrollbar-color: currentColor transparent; }
+.file__meta::-webkit-scrollbar { width: 6px; }
+.file__meta::-webkit-scrollbar-thumb { background: currentColor; border-radius: 999px; }
+@container (max-height: 760px) {
+  .file__meta { gap: 10px; }
+  .file__title { font-size: clamp(32px, 3.6vw, 60px); }
+  .file__desc { font-size: 13px; line-height: 1.5; }
+  .file__metric b { font-size: clamp(36px, 3.6vw, 60px); }
+}
+
+/* ---------- Cursor over links and buttons: a clear glass lens instead of a solid red disc ----------
+   The text underneath stays readable; the glass only tints and brightens it. */
+.cursor.has-label .cursor__ring {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .22), rgba(227, 36, 59, .12) 55%, rgba(109, 0, 26, .18));
+  border: 1px solid rgba(255, 140, 155, .55);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .35), inset 0 -8px 16px rgba(109, 0, 26, .25), 0 8px 24px -8px rgba(227, 36, 59, .45);
+  -webkit-backdrop-filter: saturate(1.6) brightness(1.15);
+  backdrop-filter: saturate(1.6) brightness(1.15);
+}
+.cursor.has-label .cursor__label { text-shadow: 0 1px 6px rgba(0, 0, 0, .7); }
+
+/* pill row words shrink with their pill so the longest one ("Products") never clips */
+.pillrow span { container-type: inline-size; }
+.pillrow span b { font-size: min(1em, 17cqi); }
+
+/* on phones the globe's "Navi Mumbai" tag sits to the left of the pin so it can't run off the screen */
+@media (max-width: 640px) {
+  .globe__label { left: auto; right: 40%; margin: -4px 22px 0 0; }
+}

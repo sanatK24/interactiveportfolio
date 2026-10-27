@@ -1,0 +1,511 @@
+{
+  "generatedAt": "2026-10-27T05:53:32.267Z",
+  "user": "sanatK24",
+  "repos": [
+    {
+      "name": "TradeFlow",
+      "title": "TradeFlow",
+      "tagline": "Fixed-Income Electronic Trading Simulator",
+      "summary": "Simulated RFQ quote-competition workflows for fixed-income market-making within a 15-second response window under live liquidity and yield constraints, tracking real-time execution KPIs and counterparty settlement…",
+      "url": "https://github.com/sanatK24/TradeFlow",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "Python",
+      "topics": [],
+      "readmeSummary": "The simulator implements standard fixed-income pricing formulas:",
+      "tech": [
+        "FastAPI",
+        "React",
+        "PostgreSQL",
+        "Redis",
+        "WebSockets",
+        "Docker"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-09-20T03:46:32Z",
+      "createdAt": "2026-07-02T11:12:42Z",
+      "featured": true,
+      "resumeProject": "TradeFlow",
+      "live": null
+    },
+    {
+      "name": "ai-financial-research-assistant",
+      "title": "AI Financial Research Assistant",
+      "tagline": "",
+      "summary": "Built ETL pipelines using yFinance and SEC EDGAR APIs to load market data into PostgreSQL, powering dashboards for financial ratios, SMA, RSI, and MACD with AI-powered investment summaries using RAG.",
+      "url": "https://github.com/sanatK24/ai-financial-research-assistant",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "JavaScript",
+      "topics": [],
+      "readmeSummary": "",
+      "tech": [
+        "Python",
+        "SQL",
+        "FastAPI",
+        "PostgreSQL",
+        "React",
+        "Plotly",
+        "Pandas",
+        "LangChain",
+        "FAISS"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-09-20T03:45:50Z",
+      "createdAt": "2026-07-02T11:12:00Z",
+      "featured": true,
+      "resumeProject": "AI Financial Research Assistant",
+      "live": null
+    },
+    {
+      "name": "empathi-avre",
+      "title": "EmpathI",
+      "tagline": "AI-Powered Crowdfunding Platform",
+      "summary": "Engineered validation and reporting pipelines for 500+ campaigns, achieving 90%+ fraud detection using LightGBM and XGBoost; built for the Samsung Innovation Campus 2026 hackathon.",
+      "url": "https://github.com/sanatK24/empathi-avre",
+      "description": "EmpathI",
+      "homepage": "https://empathi-frontend.onrender.com",
+      "defaultBranch": "main",
+      "language": "JavaScript",
+      "topics": [],
+      "readmeSummary": "In traditional crowdfunding, viral campaigns capture 90%+ of donations while critical, localized emergency campaigns get buried. EmpathI solves this \"monopoly of attention\" problem through:  AI-Assisted Moderation:…",
+      "tech": [
+        "Python",
+        "FastAPI",
+        "React",
+        "PostgreSQL",
+        "LightGBM",
+        "XGBoost",
+        "Docker"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-09-20T03:45:42Z",
+      "createdAt": "2026-04-11T15:21:07Z",
+      "featured": true,
+      "resumeProject": "EmpathI",
+      "live": {
+        "url": "https://empathi-frontend.onrender.com",
+        "source": "homepage",
+        "ok": true,
+        "status": 200,
+        "lastOkAt": "2026-10-27T05:00:39.263Z"
+      }
+    },
+    {
+      "name": "SIGAI-2025-26-Sanat-Karkhanis",
+      "title": "SIGAI 2025–26",
+      "tagline": "",
+      "summary": "",
+      "url": "https://github.com/sanatK24/SIGAI-2025-26-Sanat-Karkhanis",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "TypeScript",
+      "topics": [],
+      "readmeSummary": "",
+      "tech": [
+        "TypeScript"
+      ],
+      "stars": 1,
+      "pushedAt": "2026-09-02T14:06:05Z",
+      "createdAt": "2026-09-02T14:03:58Z",
+      "featured": false,
+      "resumeProject": null,
+      "live": null
+    },
+    {
+      "name": "StreetSync2.0_GridLock_Round2",
+      "title": "StreetSync 2.0",
+      "tagline": "",
+      "summary": "Forecasts the traffic impact of an upcoming or just-reported event in Bengaluru and recommends manpower, barricading, and diversion plans — learned from 8,000+ real ASTraM/Bengaluru Traffic Police incident records,…",
+      "url": "https://github.com/sanatK24/StreetSync2.0_GridLock_Round2",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "Python",
+      "topics": [],
+      "readmeSummary": "Forecasts the traffic impact of an upcoming or just-reported event in Bengaluru and recommends manpower, barricading, and diversion plans — learned from 8,000+ real ASTraM/Bengaluru Traffic Police incident records,…",
+      "tech": [
+        "Python",
+        "Streamlit",
+        "Scikit-learn",
+        "Pandas",
+        "Plotly",
+        "Git"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-06-23T15:26:43Z",
+      "createdAt": "2026-06-23T14:54:36Z",
+      "featured": true,
+      "resumeProject": null,
+      "live": null
+    },
+    {
+      "name": "fisherman-weather-alert-system",
+      "title": "Fisherman Weather Alert System",
+      "tagline": "",
+      "summary": "A comprehensive safety system for fishermen with weather-based alerts and guidelines document extraction using NLP.",
+      "url": "https://github.com/sanatK24/fisherman-weather-alert-system",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "Python",
+      "topics": [],
+      "readmeSummary": "A comprehensive safety system for fishermen with weather-based alerts and guidelines document extraction using NLP.",
+      "tech": [
+        "Python",
+        "Flask"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-04-08T21:34:47Z",
+      "createdAt": "2026-04-08T15:15:49Z",
+      "featured": false,
+      "resumeProject": null,
+      "live": null
+    },
+    {
+      "name": "messier_catalog_nasa_space_challenge",
+      "title": "Messier SkyMap",
+      "tagline": "",
+      "summary": "Explore the cosmos — where code meets the stars. NASA Space Apps Challenge 2025 · Team DataDrift 🚀",
+      "url": "https://github.com/sanatK24/messier_catalog_nasa_space_challenge",
+      "description": "",
+      "homepage": "https://messier-catalog-nasa-space-challeng.vercel.app",
+      "defaultBranch": "master",
+      "language": "HTML",
+      "topics": [],
+      "readmeSummary": "Explore the cosmos — where code meets the stars. NASA Space Apps Challenge 2025 · Team DataDrift 🚀",
+      "tech": [
+        "Python",
+        "HTML",
+        "CSS",
+        "Leaflet.js",
+        "OpenSeadragon",
+        "Vercel",
+        "Git"
+      ],
+      "stars": 0,
+      "pushedAt": "2025-11-01T18:51:42Z",
+      "createdAt": "2025-10-05T09:37:53Z",
+      "featured": true,
+      "resumeProject": null,
+      "live": {
+        "url": "https://messier-catalog-nasa-space-challeng.vercel.app",
+        "source": "homepage",
+        "ok": true,
+        "status": 200,
+        "lastOkAt": "2026-10-27T05:00:39.263Z"
+      }
+    },
+    {
+      "name": "f1-driver-sphere-ui",
+      "title": "F1 Analyzer",
+      "tagline": "",
+      "summary": "The F1 Driver Analyzer is a Python application that provides comprehensive information about Formula 1 drivers. This tool allows users to search for drivers by name and view detailed information. The application is…",
+      "url": "https://github.com/sanatK24/f1-driver-sphere-ui",
+      "description": "",
+      "homepage": "https://f1-driver-sphere-ui.vercel.app",
+      "defaultBranch": "main",
+      "language": "TypeScript",
+      "topics": [],
+      "readmeSummary": "The F1 Driver Analyzer is a Python application that provides comprehensive information about Formula 1 drivers. This tool allows users to search for drivers by name and view detailed information. The application is…",
+      "tech": [
+        "Python",
+        "TypeScript",
+        "HTML"
+      ],
+      "stars": 0,
+      "pushedAt": "2025-05-25T09:23:10Z",
+      "createdAt": "2025-05-24T19:35:00Z",
+      "featured": true,
+      "resumeProject": null,
+      "live": {
+        "url": "https://f1-driver-sphere-ui.vercel.app",
+        "source": "homepage",
+        "ok": true,
+        "status": 200,
+        "lastOkAt": "2026-10-27T05:00:39.263Z"
+      }
+    },
+    {
+      "name": "EduMateAI",
+      "title": "EduMate AI",
+      "tagline": "",
+      "summary": "EduMate AI is a web application designed to transform your learning experience. It leverages Artificial Intelligence to turn video lectures or textual transcripts into structured notes, summaries, quizzes, and more.…",
+      "url": "https://github.com/sanatK24/EduMateAI",
+      "description": "",
+      "homepage": "https://edu-mate-ai.vercel.app",
+      "defaultBranch": "master",
+      "language": "TypeScript",
+      "topics": [],
+      "readmeSummary": "EduMate AI is a web application designed to transform your learning experience. It leverages Artificial Intelligence to turn video lectures or textual transcripts into structured notes, summaries, quizzes, and more.…",
+      "tech": [
+        "TypeScript",
+        "CSS",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Tailwind",
+        "Firebase",
+        "Firestore"
+      ],
+      "stars": 0,
+      "pushedAt": "2025-05-24T18:54:24Z",
+      "createdAt": "2025-05-24T18:53:52Z",
+      "featured": true,
+      "resumeProject": null,
+      "live": {
+        "url": "https://edu-mate-ai.vercel.app",
+        "source": "homepage",
+        "ok": true,
+        "status": 200,
+        "lastOkAt": "2026-10-27T05:00:39.263Z"
+      }
+    },
+    {
+      "name": "GreenWealthESGINVESTRACKER",
+      "title": "GreenWealth ESG Tracker",
+      "tagline": "",
+      "summary": "",
+      "url": "https://github.com/sanatK24/GreenWealthESGINVESTRACKER",
+      "description": "",
+      "homepage": "",
+      "defaultBranch": "main",
+      "language": "TypeScript",
+      "topics": [],
+      "readmeSummary": "",
+      "tech": [
+        "TypeScript"
+      ],
+      "stars": 0,
+      "pushedAt": "2025-05-02T17:27:11Z",
+      "createdAt": "2025-04-27T15:18:26Z",
+      "featured": false,
+      "resumeProject": null,
+      "live": null
+    }
+  ],
+  "resume": {
+    "experience": [
+      {
+        "org": "ReasonateAI Pvt. Ltd.",
+        "role": "AI Engineer Intern",
+        "when": "August 2026 - Present",
+        "place": "Remote",
+        "points": [
+          "Designed and built modern, responsive UI for an AI Vibecoding Platform, improving usability for 25K+ users.",
+          "Connected the front end to remote GPU-hosted LLM inference via secure SSH tunnels; debugged API integration issues."
+        ]
+      },
+      {
+        "org": "ServiceIO Consultancy Services",
+        "role": "Trainee Intern",
+        "when": "May 2026 - July 2026",
+        "place": "Thane, India",
+        "points": [
+          "Built a bidirectional Jira-ServiceNow integration using Scripted REST APIs and webhooks for automated incident synchronization, data mapping, and correlation tracking."
+        ]
+      }
+    ],
+    "leadership": [
+      {
+        "org": "RAIT ACM SIGAI Student Chapter",
+        "role": "Webmaster",
+        "when": "September 2025 - July 2026",
+        "place": "Navi Mumbai, India",
+        "points": [
+          "Tech Lead for national-level hackathons with 2,000+ participants; maintained the chapter website.",
+          "Served as Editor-in-Chief of Synara 2026, coordinating technical content and publication."
+        ]
+      }
+    ],
+    "achievements": [
+      {
+        "name": "Adobe University Hackathon 2026",
+        "result": "Online Assessment - Qualified",
+        "when": "August 2026",
+        "place": "India",
+        "points": [
+          "Passed an assessment featuring 15 multiple-choice questions and 2 coding challenges in a one-hour evaluation."
+        ]
+      },
+      {
+        "name": "Flipkart Gridlock Hackathon 2.0",
+        "result": "Round 2 - Prototype Phase",
+        "when": "May 2026",
+        "place": "India",
+        "points": [
+          "Advanced to the prototype phase for innovation and functional solution delivery."
+        ]
+      },
+      {
+        "name": "NASA Space Apps Challenge 2025",
+        "result": "Shortlisted Local Finalist - Global Nominee",
+        "when": "October 2025",
+        "place": "Amritsar, India",
+        "points": [
+          "Built the Messier Deep Sky Navigator and was shortlisted as a local finalist in the global NASA hackathon."
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "TradeFlow",
+        "tagline": "Fixed-Income Electronic Trading Simulator",
+        "stack": [
+          "FastAPI",
+          "React",
+          "PostgreSQL",
+          "Redis",
+          "WebSockets",
+          "Docker"
+        ],
+        "year": "2026",
+        "text": "Simulated RFQ quote-competition workflows for fixed-income market-making within a 15-second response window under live liquidity and yield constraints, tracking real-time execution KPIs and counterparty settlement risk through interactive dashboards."
+      },
+      {
+        "name": "AI Financial Research Assistant",
+        "tagline": "",
+        "stack": [
+          "Python",
+          "SQL",
+          "FastAPI",
+          "PostgreSQL",
+          "React",
+          "Plotly",
+          "Pandas",
+          "LangChain",
+          "FAISS"
+        ],
+        "year": "2026",
+        "text": "Built ETL pipelines using yFinance and SEC EDGAR APIs to load market data into PostgreSQL, powering dashboards for financial ratios, SMA, RSI, and MACD with AI-powered investment summaries using RAG."
+      },
+      {
+        "name": "EmpathI",
+        "tagline": "AI-Powered Crowdfunding Platform",
+        "stack": [
+          "Python",
+          "FastAPI",
+          "React",
+          "PostgreSQL",
+          "LightGBM",
+          "XGBoost",
+          "Docker"
+        ],
+        "year": "2026",
+        "text": "Engineered validation and reporting pipelines for 500+ campaigns, achieving 90%+ fraud detection using LightGBM and XGBoost; built for the Samsung Innovation Campus 2026 hackathon."
+      },
+      {
+        "name": "Messier Deep Sky Navigator",
+        "tagline": "",
+        "stack": [
+          "JavaScript",
+          "Python",
+          "Leaflet.js",
+          "OpenSeadragon"
+        ],
+        "year": "2025",
+        "text": "Processed 10,000+ astronomical image tiles into a coordinate-mapped interactive sky catalog with deep-zoom visualization (NASA Space Apps Challenge 2025)."
+      }
+    ],
+    "skills": {
+      "Languages": [
+        "SQL",
+        "Java",
+        "Python"
+      ],
+      "Databases": [
+        "PostgreSQL",
+        "MySQL",
+        "SQLite",
+        "MongoDB",
+        "Fire-base Firestore"
+      ],
+      "Frameworks": [
+        "FastAPI",
+        "React",
+        "TensorFlow"
+      ],
+      "Libraries": [
+        "Pandas",
+        "NumPy",
+        "Scikit-learn",
+        "LangChain",
+        "FAISS"
+      ],
+      "Visualization": [
+        "Plotly",
+        "Tableau",
+        "Power BI",
+        "Excel"
+      ],
+      "DevOps & Tools": [
+        "Git",
+        "GitHub",
+        "Docker",
+        "VS Code"
+      ],
+      "Software Engineering": [
+        "SDLC",
+        "Agile Development",
+        "Object-Oriented Programming"
+      ]
+    },
+    "allSkills": [
+      "SQL",
+      "Java",
+      "Python",
+      "PostgreSQL",
+      "MySQL",
+      "SQLite",
+      "MongoDB",
+      "Fire-base Firestore",
+      "FastAPI",
+      "React",
+      "TensorFlow",
+      "Pandas",
+      "NumPy",
+      "Scikit-learn",
+      "LangChain",
+      "FAISS",
+      "Plotly",
+      "Tableau",
+      "Power BI",
+      "Excel",
+      "Git",
+      "GitHub",
+      "Docker",
+      "VS Code",
+      "SDLC",
+      "Agile Development",
+      "Object-Oriented Programming"
+    ],
+    "certifications": [
+      {
+        "name": "McKinsey.org Forward Program",
+        "when": "Dec 2025"
+      },
+      {
+        "name": "Aspire Leaders Program",
+        "when": "Dec 2025"
+      },
+      {
+        "name": "Deloitte Australia Data Analytics",
+        "when": "Jul 2025"
+      },
+      {
+        "name": "Cisco Data Analytics Essentials",
+        "when": "Jun 2026"
+      }
+    ],
+    "interests": [
+      "Sketching",
+      "biking",
+      "Formula 1",
+      "astronomy & astrophotography",
+      "business & finance"
+    ]
+  }
+}
