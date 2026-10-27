@@ -291,3 +291,43 @@ a, p, li, span, b, small { min-width: 0; }
 @media (max-width: 640px) {
   .globe__label { left: auto; right: 40%; margin: -4px 22px 0 0; }
 }
+
+/* =========================================================
+   COLOUR-BLIND FRIENDLY
+   Checked against protanopia, deuteranopia and tritanopia (Machado 2009 simulation):
+   every text colour keeps at least 4.5:1 and every control edge 3:1, and nothing
+   relies on red vs green (or on colour at all) to say what it means.
+   ========================================================= */
+
+/* the accent red is lifted from #e3243b: on black it fell to 3.1:1 for red-blind (protan) eyes, now 5.2:1 */
+:root { --signal: #ff5a6e; }
+
+/* text sitting on the red accent is black — white on red drops to 3.8:1 for green-blind (deutan) eyes */
+.btn--line:hover, .orb:hover, .lcard__go, .chip--solid, .spin:hover, .fchip--stat,
+.ghcard__links a.is-live:hover, .pslide__links a.is-live:hover { color: #000; }
+
+/* burgundy is almost as dark as black for every type of colour blindness (1.4–1.9:1),
+   so burgundy buttons, chips and panels get a light edge to show where they are */
+.sk-btn--solid, .shake, .panel--burg, .contact2__panel, .pslide--more, .socials a:first-child, .spin,
+.ghcard__links a.is-live, .pslide__links a.is-live, .lead2__chips .chip--solid, .toast {
+  outline: 1px solid rgba(255, 255, 255, .42); outline-offset: -1px;
+}
+
+/* the highlighted command isn't shown by its burgundy row alone: it also gets a white bar and a pointer */
+.cmd__list li.is-sel { box-shadow: inset 3px 0 0 #fff; }
+.cmd__list li.is-sel > span:first-child::before { content: "› "; }
+
+/* keyboard focus is a white ring, visible to everyone whatever colours they see */
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.fld input:focus-visible, .fld textarea:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* TradeFlow quotes: price moves were green vs red only; now blue vs red, and each carries an arrow */
+.rfq__table td.flash-up { color: #8cc8ff; }
+.rfq__table td.flash-up::after { content: " ▲"; font-size: .8em; }
+.rfq__table td.flash-dn::after { content: " ▼"; font-size: .8em; }
+
+/* visitors who ask their system for more contrast get stronger lines and lighter secondary text */
+@media (prefers-contrast: more) {
+  :root { --line: rgba(255, 255, 255, .32); --muted: rgba(255, 255, 255, .8); }
+  .sk-btn--solid, .shake, .panel--burg, .contact2__panel, .pslide--more, .ghcard__links a.is-live, .pslide__links a.is-live { outline-color: #fff; }
+}

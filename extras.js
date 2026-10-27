@@ -160,8 +160,8 @@
      They stream in and settle left to right, a scan beam sweeps across, they scatter from the
      pointer, blow apart on click and drift away as the footer scrolls off the screen.           */
   // rest colour, three steps of heat for points that are scanned or knocked off their spot, then the accent rest colour
-  const DM_COLORS = ["rgba(243,240,235,0.92)", "rgba(255,170,180,0.95)", "rgba(255,90,110,1)", "rgba(227,36,59,1)", "rgba(227,36,59,1)"];
-  const DM_LINE = "227,36,59";
+  const DM_COLORS = ["rgba(243,240,235,0.92)", "rgba(255,190,198,0.95)", "rgba(255,130,145,1)", "rgba(255,90,110,1)", "rgba(255,90,110,1)"];
+  const DM_LINE = "255,90,110";
 
   const dmSample = (text, width) => {
     const off = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
