@@ -2,7 +2,7 @@
 
 **AI Engineer & Data Science Undergrad** · Navi Mumbai, India · Open to remote
 
-I'm a Computer Engineering student majoring in Data Science at RAIT, D. Y. Patil, and an AI Engineer Intern at ReasonateAI. I build data pipelines, ML models and the interfaces that make them usable.
+I'm a Computer Engineering student majoring in Data Science at RAIT, D. Y. Patil, and was most recently an AI Engineer Intern at ReasonateAI (Aug — Oct 2026). I build data pipelines, ML models and the interfaces that make them usable.
 
 > *Turning raw data into systems people actually use.*
 
@@ -89,7 +89,7 @@ Everything else — side builds, hackathon prototypes and half-finished ideas wo
 
 ## Experience
 
-**AI Engineer Intern** — ReasonateAI Pvt. Ltd. · Remote · *Aug 2026 — Now*
+**AI Engineer Intern** — ReasonateAI Pvt. Ltd. · Remote · *Aug — Oct 2026*
 Built a modern, responsive UI for an AI vibecoding platform used by 25K+ users, and wired the front end to GPU-hosted LLM inference over secure SSH tunnels.
 
 **Trainee Intern** — ServiceIO Consultancy Services · Thane · *May — Jul 2026*
@@ -304,6 +304,7 @@ The site keeps itself in step with the public GitHub repos and the résumé, wit
 - **`scripts/sync-portfolio.mjs`** (Node 20, no packages) reads each public, non-fork repo's description, homepage and README; finds live links in that order (homepage → description → README links on known hosts such as vercel.app / onrender.com / github.io, or next to words like "live" or "demo"); and checks that each link actually responds. A flaky host keeps its last good link for 14 days instead of vanishing. It parses `assets/Sanat_Karkhanis_Resume.pdf` with `pdftotext -layout` by its headings (Experience, Projects, Technical Skills, Leadership, Achievements…), so keep those headings when editing the résumé. If GitHub can't be read (rate limit, outage), the previous data is kept rather than blanked.
 - **`autosync.js`** (every page) reads `data/portfolio.json`. Project library (`work.html`): live-build cards whose site is down get an OFFLINE badge, and public repos the page doesn't feature appear under *Also on GitHub* (with a LIVE link when one works). Skills: résumé skills and certificates missing from the page are added. About: résumé roles missing from the experience list are added. Every footer shows the last sync date. Without the data file the pages are unchanged.
 - **Latest-projects slider (home):** the sync script also rewrites the block between the `project-slider` markers in `index.html` — only the live builds (repos whose live link answered the daily check), most recently pushed first, capped at `slider.size` (6), so older ones drop off as new builds go live and a build that goes down leaves the slider, plus a closing card to the project library. Screenshots come from `slider.images` in the config; repos without one get a burgundy cover. `node scripts/sync-portfolio.mjs --render-only` rebuilds it from the saved data without calling GitHub.
+- **Current role:** a résumé job dated "– Present" is treated as current; one with an end date is finished. The sync rewrites every element marked `data-fact` to match — the home intro and About story wording, the About experience dates (`data-fact="when" data-org="…"`) and the link-preview text (`og:description`, `twitter:description`) — and commits the pages. The preview image (`assets/og-image.jpg`) deliberately carries no job title, so it never goes stale.
 - **`data/sync.config.json`**: `featured` lists the repos the page already presents by hand (they never appear twice); `exclude` hides repos entirely.
 - Run it locally: `node scripts/sync-portfolio.mjs` (needs `pdftotext`; set `GITHUB_TOKEN` to avoid the 60-calls-per-hour anonymous limit, or pass `--offline` to skip the link checks).
 

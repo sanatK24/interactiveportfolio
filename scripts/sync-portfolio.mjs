@@ -221,8 +221,8 @@ const overlap = (a, b) => { const A = new Set(words(a)), B = words(b); if (!A.si
 
 /* ---------- Main ---------- */
 const main = async () => {
-  // --render-only: rebuild the home slider from the saved data without calling GitHub
-  if (args.includes("--render-only")) { if (!previous) throw new Error(`no ${config.output} yet`); return renderSlider(previous.repos); }
+  // --render-only: rebuild the home slider and role wording from the saved data without calling GitHub
+  if (args.includes("--render-only")) { if (!previous) throw new Error(`no ${config.output} yet`); await renderSlider(previous.repos); return renderFacts(previous.resume); }
   const user = config.github;
   log(`reading public repos of ${user}`);
   let repos;
@@ -309,6 +309,7 @@ const main = async () => {
   }
   log(`live: ${out.filter((r) => r.live?.ok).map((r) => r.name).join(", ") || "none"}`);
   await renderSlider(out);
+  await renderFacts(resume);
 };
 
 /* ---------- Home page project slider ----------
@@ -319,6 +320,68 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const monthYear = (iso) => { const d = new Date(iso); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
 const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+
+/* ---------- Role facts: wording that depends on whether a job is current ----------
+   A résumé job dated "… – Present" is current; one with an end date is finished. Every element
+   marked data-fact="…" in the site's pages is rewritten to match, including the link-preview
+   meta tags (link previews only see the saved page, so this can't wait for JavaScript).          */
+const MONTH_IX = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+const ongoing = (when) => /(present|now)\s*$/i.test(when || "");
+const shortOrg = (org) => org.replace(/,?\s+(pvt\.?|private|ltd\.?|limited|inc\.?|llc|llp|co\.)(\s+(ltd\.?|limited))?\.?$/i, "").trim();
+const orgKey = (org) => (org || "").toLowerCase().split(/[^a-z0-9]+/).find((w) => w.length > 3) || "";
+// "August 2026 - October 2026" → "Aug — Oct 2026"; "August 2026 - Present" → "Aug 2026 — Now"
+const span = (when) => {
+  const parts = [...(when || "").matchAll(/([A-Za-z]{3})[a-z]*\.?\s+(\d{4})/g)].map((m) => ({ m: MONTHS[MONTH_IX[m[1].toLowerCase()]], y: m[2] }));
+  if (!parts.length) return when;
+  const [a, b] = parts;
+  if (ongoing(when) || !b) return `${a.m} ${a.y} — Now`;
+  return a.y === b.y ? `${a.m} — ${b.m} ${b.y}` : `${a.m} ${a.y} — ${b.m} ${b.y}`;
+};
+// "an AI…", "an ML…", "a Data…": initialisms go by how the letter sounds
+const an = (word) => (/^[A-Z]{2}/.test(word) ? (/^[AEFHILMNORSX]/.test(word) ? "an" : "a") : /^[aeiou]/i.test(word) ? "an" : "a");
+
+const roleFacts = (resume) => {
+  const jobs = resume?.experience || [];
+  if (!jobs.length) return null;
+  const now = jobs.find((j) => ongoing(j.when));
+  const job = now || jobs[0]; // the résumé lists newest first
+  const org = shortOrg(job.org), role = job.role;
+  const lead = now ? `${role} @ ${org}` : "AI Engineer";
+  const tail = "Data pipelines, ML models and the interfaces that make them usable.";
+  return {
+    current: !!now,
+    text: {
+      "role-clause": now ? `currently ${an(role)} ${role} at ${org}` : `most recently ${an(role)} ${role} at ${org} (${span(job.when)})`,
+      "role-clause-and": now ? `and ${an(role)} ${role} at ${org}` : `and was most recently ${an(role)} ${role} at ${org}`,
+    },
+    attr: {
+      "og-desc": `${lead} · B.Tech Computer Engineering (Data Science). ${tail}`,
+      "twitter-desc": `${lead} · ${tail}`,
+    },
+    when: (orgName) => { const j = jobs.find((x) => orgKey(x.org) === orgKey(orgName)); return j ? span(j.when) : null; },
+  };
+};
+
+const renderFacts = async (resume) => {
+  const facts = roleFacts(resume);
+  if (!facts) { log("role facts: no experience on the résumé — pages left as they are"); return; }
+  const { readdir } = await import("node:fs/promises");
+  const pages = (await readdir(ROOT)).filter((f) => f.endsWith(".html"));
+  const changed = [];
+  for (const page of pages) {
+    const file = path.join(ROOT, page);
+    const html = await readFile(file, "utf8");
+    let next = html
+      // <meta … data-fact="og-desc" content="…">
+      .replace(/(<meta\b[^>]*\bdata-fact="([\w-]+)"[^>]*\bcontent=")([^"]*)(")/g, (m, a, key, v, z) => (facts.attr[key] ? a + esc(facts.attr[key]) + z : m))
+      // <span data-fact="when" data-org="ReasonateAI">Aug 2026 — Now</span>
+      .replace(/(<(\w+)\b[^>]*\bdata-fact="when"[^>]*\bdata-org="([^"]+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, org, v, close) => { const w = facts.when(org); return w ? open + esc(w) + close : m; })
+      // <span data-fact="role-clause">…</span>
+      .replace(/(<(\w+)\b[^>]*\bdata-fact="([\w-]+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, key, v, close) => (facts.text[key] ? open + esc(facts.text[key]) + close : m));
+    if (next !== html) { await writeFile(file, next); changed.push(page); }
+  }
+  log(`role facts (${facts.current ? "current role" : "no current role"}): ${changed.length ? "updated " + changed.join(", ") : "pages already match"}`);
+};
 
 const renderSlider = async (repos) => {
   const cfg = config.slider || {};
