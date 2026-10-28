@@ -331,3 +331,10 @@ a, p, li, span, b, small { min-width: 0; }
   :root { --line: rgba(255, 255, 255, .32); --muted: rgba(255, 255, 255, .8); }
   .sk-btn--solid, .shake, .panel--burg, .contact2__panel, .pslide--more, .ghcard__links a.is-live, .pslide__links a.is-live { outline-color: #fff; }
 }
+
+/* ---------- Phones: the fixed nav gets its own dark glass bar ----------
+   On desktop it blends over the page (difference mode); on a narrow screen that let page
+   content show through the brand, sound bars and ⌘K as you scrolled, so it sits on a bar. */
+@media (max-width: 900px) {
+  .nav { mix-blend-mode: normal; background: rgba(0, 0, 0, .78); -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); border-bottom: 1px solid var(--line); padding-top: 12px; padding-bottom: 12px; }
+}
