@@ -346,8 +346,8 @@ const roleFacts = (resume) => {
   const now = jobs.find((j) => ongoing(j.when));
   const job = now || jobs[0]; // the résumé lists newest first
   const org = shortOrg(job.org), role = job.role;
-  const lead = now ? `${role} @ ${org}` : "AI Engineer";
-  const tail = "Data pipelines, ML models and the interfaces that make them usable.";
+  const lead = now ? `AI/ML Enthusiast & Software Engineer · ${role} @ ${org}` : "AI/ML Enthusiast & Software Engineer";
+  const tail = "Building across ideas & systems."; // his LinkedIn headline
   return {
     current: !!now,
     text: {

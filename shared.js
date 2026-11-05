@@ -57,7 +57,7 @@
     const openP = () => {
       onOpen();
       root.hidden = false; input.value = ""; shown = items; sel = 0; render();
-      setTimeout(() => input.focus(), 10);
+      if (matchMedia("(hover: hover) and (pointer: fine)").matches) setTimeout(() => input.focus(), 10);
     };
     const closeP = () => { root.hidden = true; onClose(); };
     const runSel = () => { const it = shown[sel]; if (!it) return; closeP(); it.run(); };
@@ -89,4 +89,58 @@
     e.preventDefault();
     SK.copy(el.dataset.copy, el.dataset.copyLabel || "Copied to clipboard");
   }));
+})();
+
+/* ===== Nov 5: pagination for any list with data-paginate="N", certificate filter, copy intern ID ===== */
+(() => {
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const pagers = new Map();
+  const refreshScroll = () => { try { window.ScrollTrigger && window.ScrollTrigger.refresh(); } catch (_) {} };
+  $$("[data-paginate]").forEach((list) => {
+    const per = +list.dataset.paginate;
+    const nav = document.createElement("nav");
+    nav.className = "pager"; nav.setAttribute("aria-label", "Pages");
+    list.after(nav);
+    let page = 0;
+    const render = (reset) => {
+      if (reset) page = 0;
+      const items = [...list.children].filter((el) => !el.classList.contains("is-hidden"));
+      const pages = Math.max(1, Math.ceil(items.length / per));
+      page = Math.min(Math.max(page, 0), pages - 1);
+      [...list.children].forEach((el) => el.classList.remove("is-paged"));
+      items.forEach((el, i) => el.classList.toggle("is-paged", Math.floor(i / per) !== page));
+      nav.hidden = pages < 2;
+      nav.innerHTML = `<button type="button" data-p="prev" aria-label="Previous page"${page ? "" : " disabled"}>←</button>` +
+        Array.from({ length: pages }, (_, i) => `<button type="button" data-p="${i}"${i === page ? ' class="is-on" aria-current="page"' : ""}>${String(i + 1).padStart(2, "0")}</button>`).join("") +
+        `<button type="button" data-p="next" aria-label="Next page"${page < pages - 1 ? "" : " disabled"}>→</button><span>${items.length} items</span>`;
+      refreshScroll();
+    };
+    nav.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b || b.disabled) return;
+      const p = b.dataset.p;
+      page = p === "prev" ? page - 1 : p === "next" ? page + 1 : +p;
+      render();
+      if (list.getBoundingClientRect().top < 60) list.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    pagers.set(list, render);
+    render();
+  });
+  window.repaginate = (list) => { const r = list && pagers.get(list); if (r) r(true); };
+
+  const grid = document.querySelector(".lic__grid");
+  $$("[data-lic]").forEach((b, _, all) => b.addEventListener("click", () => {
+    all.forEach((x) => x.classList.toggle("is-on", x === b));
+    $$("[data-cat]", grid).forEach((c) => c.classList.toggle("is-hidden", b.dataset.lic !== "all" && c.dataset.cat !== b.dataset.lic));
+    window.repaginate(grid);
+  }));
+
+  $$("[data-copy]").forEach((btn) => {
+    const label = btn.innerHTML;
+    const fallback = () => { const t = document.createElement("textarea"); t.value = btn.dataset.copy; t.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (_) {} t.remove(); };
+    btn.addEventListener("click", () => {
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(btn.dataset.copy).catch(fallback); else fallback();
+      btn.classList.add("is-copied"); btn.textContent = "COPIED ✓ — PASTE IT ON THE VERIFY PAGE";
+      setTimeout(() => { btn.classList.remove("is-copied"); btn.innerHTML = label; }, 2200);
+    });
+  });
 })();

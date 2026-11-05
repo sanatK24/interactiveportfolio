@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sanatkarkhanisportfolio-cha8.vercel.app/sitemap.xml

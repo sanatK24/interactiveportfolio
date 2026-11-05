@@ -1,0 +1,68 @@
+# Sanat Karkhanis
+
+> AI/ML enthusiast and software engineer, currently learning game development. Completed an AI/LLM internship at ReasonateAI (Aug – Oct 2026). B.Tech Computer Engineering (Data Science) student at Ramrao Adik Institute of Technology, D. Y. Patil University, Navi Mumbai, India (CGPA 9.00/10). LinkedIn headline: "Software & AI | Building Across Ideas & Systems".
+
+Open to internships, research collaborations and hackathon teams.
+
+## Contact
+- Website: https://sanatkarkhanisportfolio-cha8.vercel.app/
+- Email: sanat.karkhanis2@gmail.com
+- LinkedIn: https://linkedin.com/in/sanat-karkhanis/
+- GitHub: https://github.com/sanatK24
+- Resume (PDF): https://sanatkarkhanisportfolio-cha8.vercel.app/assets/Sanat_Karkhanis_Resume.pdf
+
+## Experience
+- AI Engineer Intern, ReasonateAI Private Limited (AI/LLM, hybrid / work from home), Aug – Oct 2026 — completed; certificate https://api.reasonateai.com/api/interns/RAI-INT-2026-0075/certificate.pdf (verify ID RAI-INT-2026-0075 at https://reasonateai.com/verify): UI for an AI vibecoding platform used by 25K+ users; front end wired to GPU-hosted LLM inference over secure SSH tunnels.
+- Trainee Intern, ServiceIO Consultancy Services (Thane), May – Jul 2026: bidirectional Jira ↔ ServiceNow integration with Scripted REST APIs and webhooks.
+- Webmaster · Tech Lead, RAIT ACM SIGAI Student Chapter, Sep 2025 – Jul 2026: tech lead for national hackathons with 2,000+ participants; Editor-in-Chief of Synara 2026.
+- Innovation Campus Trainee, Samsung India Innovation Campus (RAIT), Nov 2025 – 2026.
+- TechSaksham Intern, Microsoft & SAP · Edunet Foundation, Dec 2024 – Jan 2025.
+- Data Science Intern, Academor, Nov 2023 – Jan 2024 (Outstanding Performance certificate).
+
+## Projects
+- TradeFlow — fixed-income electronic trading simulator (FastAPI, React, PostgreSQL, Redis, WebSockets, Docker).
+- AI Financial Research Assistant — ETL from yFinance/SEC EDGAR, indicator dashboards, RAG summaries (Python, LangChain, FAISS).
+- EmpathI — AI crowdfunding platform, 90%+ fraud detection (LightGBM, XGBoost): https://empathi-frontend.onrender.com
+- Messier Deep Sky Navigator — 10,000+ tile deep-zoom sky catalogue, NASA Space Apps 2025 Global Nominee: https://messier-catalog-nasa-space-challeng.vercel.app
+- F1 Analyzer — Formula 1 analysis platform: https://f1-driver-sphere-ui.vercel.app
+- EduMate AI — AI study assistant: https://edu-mate-ai.vercel.app
+
+## Achievements
+- NASA International Space Apps Challenge 2025 — Local winner (Amritsar), Global Nominee (top ~10% of 11,500+).
+- Winter Internship Program 2025 (RAIT) — 1st place, malariaCARE LLM healthcare chatbot.
+- Flipkart Gridlock Hackathon 2.0 — Round 2 (prototype phase).
+- Adobe University Hackathon 2026 — online assessment qualified.
+- Samsung Innovation Campus hackathon — EmpathI.
+- Smart India Hackathon 2025 — RAIT internal round, Team Ayushkriti (Software).
+- KAINOS 2024 AI National Hackathon — F1 race-data analysis.
+
+## Skills
+Python, SQL, Java, PostgreSQL, MySQL, SQLite, MongoDB, Firestore, FastAPI, React, TensorFlow, Scikit-learn, LightGBM, XGBoost, LangChain, FAISS, Pandas, NumPy, Plotly, Tableau, Power BI, Excel, Docker, Redis, WebSockets, Git, Agile/SDLC.
+
+## Certifications
+- AI / LLM Internship — ReasonateAI Private Limited, Oct 2026 (ID RAI-INT-2026-0075): https://api.reasonateai.com/api/interns/RAI-INT-2026-0075/certificate.pdf
+- Adobe University Hackathon 2026 — Round 1 Online Assessment (MCQ + Coding) — Unstop, Aug 2026 (ID 3c919269-6c40-481a-8cd3-ea0dbd123c98): https://unstop.com/certificate-preview/3c919269-6c40-481a-8cd3-ea0dbd123c98
+- Data Analytics Essentials — Cisco Networking Academy, Jun 2026 (ID 5f3efbfc-2e62-4318-ba38-93aed4249e91)
+- Power BI for Beginners — Simplilearn SkillUp, Apr 2026: https://simpli.app.link/HTBU69X3j2b
+- AWS Academy Graduate — Cloud Foundations — Amazon Web Services (AWS), Mar 2026: https://www.credly.com/badges/535eb523-89cc-41a0-8063-678122c74dd5
+- McKinsey.org Forward Program — McKinsey & Company, Dec 2025: https://www.credly.com/badges/962c708c-770a-456e-af55-80ff3e3eecae
+- Aspire Leadership Program — Cohort 5, 2025 — Aspire Institute, Dec 2025
+- Gemini Certified University Student — Google, Nov 2025 (ID 167368853): https://edu.google.accredible.com/7bcd3120-6610-49c4-b653-2dfe80d5a686
+- 5-Day AI Agents Intensive — Google × Kaggle, Nov 2025: https://www.linkedin.com/feed/update/urn:li:activity:7395154259320745985/
+- Internal Hackathon for Smart India Hackathon 2025 — Software category (Team Ayushkriti) — Ramrao Adik Institute of Technology, Sep 2025
+- Project-Based Learning Program — CSRBOX × IBM SkillsBuild, Aug 2025 (ID AAI2025CSRBOX3001)
+- Deloitte Australia — Technology Job Simulation — Forage, Jul 2025 (ID 35gemaXd7EtnPQXNj): https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/udmxiyHeqYQLkTPvf_9PBTqmSxAf6zZTseP_CWs5vxEFLkC7Aincb_1752330136063_completion_certificate.pdf
+- Accenture Nordics — Software Engineering Job Simulation — Forage, Jul 2025 (ID QLv6stdpDtaQS72SQ): https://www.theforage.com/completion-certificates/xhih9yFWsf6AYfngd/HNpZwZcuYwona2d8Y_xhih9yFWsf6AYfngd_CWs5vxEFLkC7Aincb_1752331348712_completion_certificate.pdf
+- Deloitte Australia — Data Analytics Job Simulation — Forage, Jul 2025 (ID PZjkrkewMa8m66689): https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/io9DzWKe3PTsiS6GG_9PBTqmSxAf6zZTseP_CWs5vxEFLkC7Aincb_1752302890130_completion_certificate.pdf
+- Deloitte Australia — Cyber Job Simulation — Forage, Jul 2025 (ID B4Y8qpqtbQkQgimzP): https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/E9pA6qsdbeyEkp3ti_9PBTqmSxAf6zZTseP_CWs5vxEFLkC7Aincb_1752300814272_completion_certificate.pdf
+- J.P. Morgan — Software Engineering Job Simulation — Forage, Jul 2025 (ID qnDAvemYtZSAdTjEr): https://www.theforage.com/completion-certificates/Sj7temL583QAYpHXD/E6McHJDKsQYh79moz_Sj7temL583QAYpHXD_CWs5vxEFLkC7Aincb_1752299823522_completion_certificate.pdf
+- AWS — Solutions Architecture Job Simulation — Forage, Jul 2025 (ID DjTzHcgLkapzQRQPH): https://www.theforage.com/completion-certificates/pmnMSL4QiQ9JCgE3W/kkE9HyeNcw6rwCRGw_pmnMSL4QiQ9JCgE3W_CWs5vxEFLkC7Aincb_1752245871742_completion_certificate.pdf
+- From Learner to Builder: AI Agent Architect — IBM SkillsBuild, Jul 2025: https://www.linkedin.com/feed/update/urn:li:activity:7347711631591669760/
+- Prompt Design in Vertex AI — Google Cloud, May 2025: https://www.credly.com/badges/ee6a8bf8-9639-40b3-8bb5-0b362c283152
+- CS50's Introduction to Programming with Python — edX · HarvardX, May 2025 (ID 8b1c89ac671349419561a81d740a0262): https://courses.edx.org/certificates/8b1c89ac671349419561a81d740a0262
+- Introduction to Web Development with HTML5, CSS3, and JavaScript — edX, Apr 2025 (ID 38088a3fe0dc407eb29686a2433f4cde): https://courses.edx.org/certificates/38088a3fe0dc407eb29686a2433f4cde
+- Foundation Course on IR 4.0 Technologies — AICTE · TechSaksham, Mar 2025 (ID TSPIN25_612541): https://www.techsaksham.org/verify-certificate-v2/TSPIN25_612541
+- A&O Shearman — Technology and M&A Law Job Simulation — Forage, Sep 2024 (ID ohH9eZTj8pphehnNH): https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/A%26O%20Shearman/Gtrbt8qAYMCjk4nXh_A%26O%20Shearman_CWs5vxEFLkC7Aincb_1725806015228_completion_certificate.pdf
+- IBM — Cloud Computing Core — edX · IBM, Sep 2024 (ID 526680bf68354e4a829e88f2c5eb2100): https://www.credly.com/badges/6fdde8bb-1f25-4b74-9294-1752cc1af155
+- CS50's Introduction to Computer Science (CS50x) — edX · HarvardX, Jun 2024 (ID 630b7e4481e3420da37d4a09548d80f4): https://courses.edx.org/certificates/630b7e4481e3420da37d4a09548d80f4
+- Getting Started with Data Analytics on AWS — edX · AWS, Sep 2023 (ID 6fcd24da800f4881a582eda55fe2386e): https://courses.edx.org/certificates/6fcd24da800f4881a582eda55fe2386e

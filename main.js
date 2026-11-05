@@ -52,7 +52,10 @@
 
   /* ---------- Cursor ---------- */
   const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
-  addEventListener("pointermove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+  const trackPointer = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.pressure = e.pointerType === "pen" ? e.pressure : 0; };
+  addEventListener("pointermove", trackPointer, { passive: true });
+  addEventListener("pointerdown", trackPointer, { passive: true });
+  addEventListener("pointerup", (e) => { if (e.pointerType === "pen") mouse.pressure = 0; }, { passive: true });
 
   if (finePointer) {
     const cursor = $(".cursor"), ring = $(".cursor__ring"), dot = $(".cursor__dot"), label = $(".cursor__label");
@@ -207,7 +210,7 @@
     // interaction sounds: a faint tick on hovering links/buttons, a soft tap on click
     let lastHover = null, lastT = 0;
     document.addEventListener("pointerover", (e) => {
-      if (!on || e.pointerType !== "mouse") return;
+      if (!on || e.pointerType === "touch") return;
       const t = e.target.closest("a, button");
       if (!t || t === lastHover) return;
       lastHover = t;
@@ -313,7 +316,7 @@
   /* ---------- Hero: variable-font proximity ---------- */
   function initHeroLetters() {
     const letters = $$(".hw");
-    if (!finePointer || reduced || !letters.length) return;
+    if (reduced || !letters.length) return;
     const state = letters.map(() => ({ w: 800, s: 112, hot: false }));
     let active = false;
     const hero = $(".hero");
@@ -325,7 +328,7 @@
         if (active) {
           const r = el.getBoundingClientRect();
           const d = Math.hypot(mouse.x - (r.left + r.width / 2), mouse.y - (r.top + r.height / 2));
-          const k = clamp(1 - d / (r.height * 1.6), 0, 1);
+          const k = clamp((1 - d / (r.height * (1.6 + (mouse.pressure || 0) * 1.2))) * (1 + (mouse.pressure || 0) * 0.6), 0, 1);
           tw = lerp(650, 900, k);
           ts = lerp(100, 125, k);
           const hot = k > 0.55;
@@ -988,7 +991,7 @@
 
     // drag-to-scroll (mouse); touch uses native scrolling
     let down = false, moved = false, sx = 0, sl = 0;
-    rail.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft; });
+    rail.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch") return; down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft; });
     addEventListener("pointermove", (e) => {
       if (!down) return;
       const dx = e.clientX - sx;
@@ -1050,6 +1053,7 @@
       const f = b.dataset.filter;
       const state = window.Flip && !reduced ? Flip.getState(tickets) : null;
       tickets.forEach((t) => t.classList.toggle("is-hidden", f !== "all" && t.dataset.cat !== f));
+      window.repaginate && window.repaginate(document.querySelector(".tickets"));
       gsap.set(".stamp", { scale: 1, opacity: 0.92, rotate: -11 });
       if (state) {
         Flip.from(state, {
